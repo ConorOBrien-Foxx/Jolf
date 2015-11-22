@@ -1,5 +1,5 @@
 # Jolf
-Jolf is a prefix golfing language. It runs and compiles to JavaScript. Keep in mind that it is incomplete, and the commadns are subject to change or modification in behaviour.
+Jolf is a prefix golfing language. It runs and compiles to JavaScript. Keep in mind that it is incomplete, and the commands are subject to change or modification in behaviour.
 
 ## What is prefix language?
 There are three main types of operator-data placement schemes: Prefix, infix, and postfix. Infix is the one we are all familiar with, in which the operator is placed in between the operands, as in `5 + 7`. Infix is found in, erm, _practical_ programming langauges. Postfix is the scheme in which the operators follow the operands, as in `5 7 +`. Postifx schemes are found in stack-based languages, such as [><>](https://esolangs.org/wiki/Fish) and [Vitsy](https://github.com/VTCAKAVSMoACE/Vitsy). Lastly is prefix, in which the operators precede the operands, as in `+ 5 7`. The following statements are all equivalent in prefix, infix, and postfix respectively:
