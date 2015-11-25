@@ -11,7 +11,7 @@ function isNum(x){
 }
 
 var ops = {	// constant-arity ops
-	"A": function(J){
+	"a": function(J){
 		J.comp += "alert(";
 		return 1;
 	},
@@ -26,6 +26,10 @@ var ops = {	// constant-arity ops
 	"_": function(J){
 		J.comp += "neg(";
 		return 1;
+	},
+	".": function(J){
+		J.comp += "getProp(";
+		return 2;
 	}
 }
 
@@ -37,18 +41,62 @@ var inf = {	// data/arguments
 		}
 		J.comp += "i";
 	},
+	"N": function(J){
+		J.comp += "Number";
+	},
+	"A": function(J){
+		J.comp += "Array";
+	},
+	"p": function(J){
+		J.comp += "prototype";
+	},
+	"S": function(J){
+		J.comp += "String";
+	},
+	"s": function(J){
+		J.comp += "Set";
+	},
+	"M": function(J){
+		J.comp += "Math";
+	},
+	"w": function(J){
+		J.comp += "window";
+	},
+	"q": function(J){
+		J.comp += "J.comp";
+	},
 	"": function(){}
 }
 
+var mod = {	// zero-arity functions
+	":": function(J){
+		J.comp += "\"";
+		J.fin = "\"";
+	},
+	"\"": function(J){
+		J.comp += "\"";
+		J.mode = 1;
+	},
+	"'": function(J){
+		J.comp += "\"";
+		J.mode = 2;
+	}
+}
 
 function Jolf(code){
-	this.code  = code;
-	this.enc   = {};
-	this.prec  = "";
-	this.comp  = "";
-	this.index = 0;
-	this.func  = [];
-	this.total = "";
+	if(code==""){	// easter egg
+		this.comp = "var i=+prompt();alert(i);while(i){alert(i)}";
+	}
+	this.code   = code;
+	this.enc    = {};
+	this.fin    = "";
+	this.prec   = "";
+	this.comp   = "";
+	this.index  = 0;
+	this.mode   = 0;
+	this.func   = [];
+	this.total  = "";
+	this.outted = false;
 	return this;
 }
 
@@ -87,26 +135,58 @@ Jolf.prototype.step = function(){
 	// var for char
 	var chr = this.code[this.index];// || "";
 	
-	// read the character and get its type
-	if(ops[chr]){ // if the character is an operator
-		var arity = ops[chr](this);
-		this.func.push(arity);
-	} else if(inf[chr]){	// if the character is data
-		inf[chr](this);
-	} else if(isNum(chr)){	// if the character is a number
-		this.comp += chr;
-		while(isNum(this.code[++this.index])){
-			this.comp += this.code[this.index];
-		}
-		this.index--;
+	switch(this.mode){
+		case 0:
+			// read the character and get its type
+			if(mod[chr]){	// if the character is a modifier
+				mod[chr](this);
+			} else if(ops[chr]){ // if the character is an operator
+				var arity = ops[chr](this);
+				this.func.push(arity);
+			} else if(inf[chr]){	// if the character is data
+				inf[chr](this);
+			} else if(isNum(chr)){	// if the character is a number
+				this.comp += chr;
+				//while(isNum(this.code[++this.index])){
+				//	this.comp += this.code[this.index];
+				//}
+				//this.index--;
+			}
+			if(inf[chr]||isNum(chr)){	// activate consumption
+				// add final mark, if any, and reset
+				this.comp += this.fin;
+				this.fin  = "";
+				this.check();
+			}
+		break;
+		case 1:	// string mode
+			if(chr=="\\"){	// escape next character
+				this.comp+=this.code[this.index++];
+				this.comp+=chr;
+			} else if(chr=="\""||typeof chr=="undefined"){
+				this.mode = 0;
+				this.comp+="\"";
+				this.check();
+			} else {
+				this.comp+=chr;
+			}
+		break;
+		case 2:
+			this.comp+=this.code[this.index++];
+			this.comp+="\"";
+			this.check();
+		break;
 	}
-	if(inf[chr]||isNum(chr)){	// activate consumption
-		this.check();
-	}
-		
 	// increment for next step
 	this.index++;
 	return this;
+}
+
+function evalJolf(code){	// lightweight wrapper code
+	var instance = new Jolf(code);
+	instance.run();
+	instance.exec();
+	return instance;
 }
 
 {// functions
@@ -120,7 +200,11 @@ Jolf.prototype.step = function(){
 		}
 		return a + b;
 	}
-
+	
+	function getProp(a,b){
+		return a[b];
+	}
+	
 	function neg(a){
 		if(typeof a=="string"){
 			return a.split("").reverse().join("");
