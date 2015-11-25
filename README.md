@@ -19,7 +19,7 @@ Being a prefix langauge, Jolf can easier be thought of as a sort of functional s
 # Commands
 ## Function instructions
 These instructions are the operators of Jolf.
- * `A` - alerts 1 argument
+ * `a` - alerts 1 argument
  * `+` - adds 2 arguments, according to their types:
    * `number, number` - adds the two numbers
    * `anything, string` or `string, anything` - returns `string` concatted with `anything` (preserving order)
@@ -31,9 +31,25 @@ These instructions are the operators of Jolf.
    * `string` or `array` or `set` - reverses the entity
    * `number` - negates the entity
  * `-` - subtracts 2 arguments (behaviour TBA)
+ * `.` - takes 2 arguments `O` and `p` and returns `O[p]`.
 
 ## Data commands
 These instructions are the data/arguments of Jolf.
 
  * `i` - receive input from `prompt`
  * `0-9` - that number
+ * `N` - writes `Number` to the compiled code
+ * `A` - writes `Array` to the compiled code
+ * `p` - writes `prototype` to the compiled code
+ * `S` - writes `String` to the compiled code
+ * `s` - writes `Set` to the compiled code
+ * `M` - writes `Math` to the compiled code
+ * `q` - writes the source code's reference to the the compiled code
+
+## Null-arity commands
+These instructions do no affect the compiled code _per se_, but provide structure.
+
+ * `:` - surrounds next commands compiled value with quotes
+ * `"` - begins string literal; writes characters to compiled code (surrounded by quotes) until another unescaped `"` is met
+ * `'` - character literal; writes next character to compiled code (surrounded by quotes)
+ * **UNIMPLEMENTED** `$` - begin function literal; writes characters to compiled code as is, until another unescaped `$` is met
