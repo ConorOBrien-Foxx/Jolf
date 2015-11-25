@@ -63,7 +63,7 @@ var inf = {	// data/arguments
 		J.comp += "window";
 	},
 	"q": function(J){
-		J.comp += J.code;
+		J.comp += "\""+J.code+"\"";
 	},
 	"": function(){}
 }
