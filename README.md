@@ -32,6 +32,15 @@ These instructions are the operators of Jolf.
    * `number` - negates the entity
  * `-` - subtracts 2 arguments (behaviour TBA)
  * `.` - takes 2 arguments `O` and `p` and returns `O[p]`.
+ * `v` - takes 2 arguments `S` and `V`; sets the value of variable `S` to `V` and creates `S` if nonexistant (returns `V`)
+ * `V` - taoes 1 argument `S` and is the value `V` of `S`.
+ * `r` - takes 2 arguments `a` and `b` and creates a range `[a,b)` (inclusive of `a` and exclusive of `b`)
+ * `t` - takes 3 arguments `a`, `b`, and `s` and creates a range `[a,b)` with a step `s`
+ * `u` - takes 1 argument
+   * `array` or `set` - returns the sum of the array
+   * `string` - undefined
+   * `number` - takes the digit sum of the number (e.g. `u(140) = 1 + 4 + 0 = 5`)
+ * `f` - takes 2 arguments `F` and `R` as a function and takes the array `R` as its commands.
 
 ## Data commands
 These instructions are the data/arguments of Jolf.
