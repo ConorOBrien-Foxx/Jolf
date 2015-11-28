@@ -10,13 +10,31 @@ function isNum(x){
 	return x==parseInt(x);
 }
 
+// why you no have RegExp.escape regularly, JavaScript?!
+RegExp.escape = function(s){
+	return s.replace(/[-\/\\^$*+?.()|[\]{}]/g,"\\$&");
+}
+
 var ops = {	// constant-arity ops
 	"a": function(J){
 		J.comp += "alert(";
+		J.outted = true;
 		return 1;
 	},
 	"+": function(J){
 		J.comp += "add(";
+		return 2;
+	},
+	"*": function(J){
+		J.comp += "mul(";
+		return 2;
+	},
+	"/": function(J){
+		J.comp += "div(";
+		return 2;
+	},
+	"^": function(J){
+		J.comp += "pow(";
 		return 2;
 	},
 	"-": function(J){
@@ -30,6 +48,55 @@ var ops = {	// constant-arity ops
 	".": function(J){
 		J.comp += "getProp(";
 		return 2;
+	},
+	"v": function(J){
+		J.comp += "assign(";
+		return 2;
+	},
+	"V": function(J){
+		J.comp += "getVar(";
+		return 1;
+	},
+	"r": function(J){
+		J.comp += "range(";
+		return 2;
+	},
+	"p": function(J){
+		J.comp += "stepRange(";
+		return 3;
+	},
+	"u": function(J){
+		J.comp += "sum(";
+		return 1;
+	},
+	"f": function(J){
+		J.comp += "apply(";
+		return 2;
+	},
+	"@": function(J){
+		J.comp += "charCodeAt(";
+		J.mode = 2;
+		return 1;
+	},
+	"P": function(J){
+		J.comp += "Number(";
+		return 1;
+	},
+	"T": function(J){
+		J.comp += "setInterval(";
+		return 2;
+	},
+	"R": function(J){
+		J.comp += "setTimeout(";
+		return 2;
+	},
+	"c": function(J){
+		J.comp += "console.log(";
+		return 1;
+	},
+	"e": function(J){
+		J.comp += "evalJolf(";
+		return 1;
 	}
 }
 
@@ -41,52 +108,101 @@ var inf = {	// data/arguments
 		}
 		J.comp += "i";
 	},
-	"N": function(J){
-		J.comp += "Number";
+	"I": function(J){
+		if(!J.enc.I){
+			J.prec += "var I=prompt(\"I = \");";
+			J.enc.I = true;
+		}
+		J.comp += "I";
 	},
-	"A": function(J){
-		J.comp += "Array";
+	"j": function(J){
+		if(!J.enc.j){
+			J.prec += "var j=Number(prompt(\"j = \"));";
+			J.enc.j = true;
+		}
+		J.comp += "j";
 	},
-	"p": function(J){
-		J.comp += "prototype";
-	},
-	"S": function(J){
-		J.comp += "String";
-	},
-	"s": function(J){
-		J.comp += "Set";
-	},
-	"M": function(J){
-		J.comp += "Math";
-	},
-	"w": function(J){
-		J.comp += "window";
+	"J": function(J){
+		if(!J.enc.J){
+			J.prec += "var J=Number(prompt(\"J = \"));";
+			J.enc.J = true;
+		}
+		J.comp += "J";
 	},
 	"q": function(J){
 		J.comp += "\""+J.code+"\"";
+	},
+	"t": function(J){
+		J.comp += "10";
 	},
 	"": function(){}
 }
 
 var mod = {	// zero-arity functions
-	":": function(J){
-		J.comp += "\"";
-		J.fin = "\"";
-	},
 	"\"": function(J){
 		J.comp += "\"";
 		J.mode = 1;
 	},
 	"'": function(J){
-		J.comp += "\"";
 		J.mode = 2;
+	},
+	"[": function(J){
+		J.comp += "[";
+		J.mode = 3;
+	},
+	"$": function(J){
+		J.mode = 4;
+	},
+	":": function(J){
+		J.mode = 6;
+	},
+	"{": function(J){
+		J.mode = 5;
+	},
+	"`": function(J){
+		J.check();
+	},
+	"~": function(J){
+		var r = J.comp + "";
+		r = r.split("");
+		var x0 = r.pop();
+		var x1 = r.pop();
+		r.push(x0,x1);
+		J.comp = r.join("");
 	}
 }
 
+var sbs = {	// substitution characters
+	"#": function(J){
+		return "()";
+	},
+	"N": function(J){
+		return "Number";
+	},
+	"A": function(J){
+		return "Array";
+	},
+	"D": function(J){
+		return "Date";
+	},
+	"p": function(J){
+		return "prototype";
+	},
+	"S": function(J){
+		return "String";
+	},
+	"s": function(J){
+		return "Set";
+	},
+	"M": function(J){
+		return "Math";
+	},
+	"w": function(J){
+		return "window";
+	},
+}
+
 function Jolf(code){
-	if(code==""){	// easter egg
-		this.comp = "var i=+prompt();alert(i);while(i){alert(i)}";
-	}
 	this.code   = code;
 	this.enc    = {};
 	this.fin    = "";
@@ -96,18 +212,23 @@ function Jolf(code){
 	this.mode   = 0;
 	this.func   = [];
 	this.total  = "";
+	this.build  = "";
 	this.outted = false;
+	this.debug  = false;
+	if(code==""){	// easter egg
+		this.comp = "var i=+prompt();alert(i);while(i){alert(i)}";
+	}
 	return this;
 }
 
 Jolf.prototype.run = function(){
-	while(this.step()){};
+	while(this.step());
 	return this;
 }
 
 Jolf.prototype.exec = function(){
-	if(this.total) return eval(this.total);
-	else return eval(this.prec+this.comp);
+	var ret = this.total?this.total:this.prec+this.comp;
+	return (this.outted?function(f){return f}:alert)(eval(ret));
 }
 
 Jolf.prototype.check = function(){
@@ -133,13 +254,17 @@ Jolf.prototype.step = function(){
 		return false;
 	}
 	// var for char
-	var chr = this.code[this.index];// || "";
+	var chr = this.code[this.index];
+	
+	console.log(chr,this.index);
 	
 	switch(this.mode){
 		case 0:
 			// read the character and get its type
 			if(mod[chr]){	// if the character is a modifier
 				mod[chr](this);
+			} else if(sbs[chr]){
+				this.comp += sbs[chr](this);
 			} else if(ops[chr]){ // if the character is an operator
 				var arity = ops[chr](this);
 				this.func.push(arity);
@@ -151,6 +276,8 @@ Jolf.prototype.step = function(){
 				//	this.comp += this.code[this.index];
 				//}
 				//this.index--;
+			} else if(chr){
+				this.comp += chr;
 			}
 			if(inf[chr]||isNum(chr)){	// activate consumption
 				// add final mark, if any, and reset
@@ -161,31 +288,84 @@ Jolf.prototype.step = function(){
 		break;
 		case 1:	// string mode
 			if(chr=="\\"){	// escape next character
-				this.comp+=this.code[this.index++];
-				this.comp+=chr;
+				this.comp += this.code[this.index++];
+				this.comp += chr;
 			} else if(chr=="\""||typeof chr=="undefined"){
 				this.mode = 0;
-				this.comp+="\"";
+				this.comp += "\"";
 				this.check();
 			} else {
-				this.comp+=chr;
+				this.comp += chr;
 			}
 		break;
 		case 2:
-			this.comp+=this.code[this.index++];
-			this.comp+="\"";
+			this.comp += "\"";
+			this.comp += chr;
+			this.comp += "\"";
 			this.check();
+			this.mode = 0;
+		break;
+		case 3:	// array mode
+			if(chr=="\\"){
+				this.index++;
+			}
+			this.comp += this.code[this.index];
+			if(chr=="]"){
+				this.mode = 0;
+				this.check();
+			}
+		break;
+		case 4:	// JS literal mode
+			if(chr=="$"){
+				this.mode = 0;
+				break;
+			}
+			if(chr=="\\") this.index++;
+			this.comp += this.code[this.index];
+		break;
+		case 5:	// golfy array
+			if(chr=="\\")this.index++;
+			if(chr!="}"&&chr){
+				this.build += this.code[this.index];
+			} else if(chr=="}") {
+				var innerJolf = new Jolf(this.build);
+				// ensuring we don't have multiple var calls
+				innerJolf.enc = this.enc;
+				innerJolf.run();
+				// if any new var calls were made
+				this.prec += innerJolf.prec;
+				
+				// the comp contains (hopefully) a series of entries split by semicolons
+				var golfArr = innerJolf.comp.split(";");
+				// removing the trailing semicolon
+				golfArr.pop();      // safety ~~~.
+				// composing the array           v
+				this.comp += "[" + golfArr.join(",") + "]";
+				// ensuring we don't run into the ) again
+				//this.index++;
+				// checking
+				this.check();
+			}
+		break;
+		case 6:	// JS literal mode (short)
+			this.comp += this.code[this.index];
+			this.mode = 0;
 		break;
 	}
 	// increment for next step
 	this.index++;
+	if(this.debug) console.log(this);
 	return this;
 }
 
 function evalJolf(code){	// lightweight wrapper code
 	var instance = new Jolf(code);
 	instance.run();
-	instance.exec();
+	try {
+		instance.exec();
+	} catch(e){
+		console.log(e);
+	}
 	return instance;
 }
 
@@ -199,6 +379,16 @@ function evalJolf(code){	// lightweight wrapper code
 			}
 		}
 		return a + b;
+	}
+	
+	function sub(a,b){
+		if(typeof a=="string") return a.replace(RegExp.escape(b),"");
+		else if(Array.isArray(a)) return a.filter(function(x){return x!=b});
+		else if(a instanceof Set){
+			a.delete(b);
+			return a;
+		}
+		return a - b;
 	}
 	
 	function getProp(a,b){
@@ -216,4 +406,35 @@ function evalJolf(code){	// lightweight wrapper code
 			return a;
 		}
 	}
+	
+	function quote(x){
+		if(sbs[x]){
+			x = sbs[x];
+		} else if(ops[x]){
+			x = ops[x].toString().match(/J\.comp \+= "(.+?)"/)[1];
+		}
+		return "\""+x+"\"";
+	}
+	
+	function assign(name,value){
+		return window[name] = value;
+	}
+	
+	function getVar(name){
+		return window[name];
+	}
+	
+	function apply(f,a){
+		return f.apply(window,a);
+	}
+	
+	function charCodeAt(x){
+		return x.charCodeAt();
+	}
+	
+	function pow(x,y){
+		return Math.pow(x,y);
+	}
+	
+	(function(f){window.alert=function(a,J){f(JSON.stringify(a));(J||{}).outted=true;}})(alert);
 }
