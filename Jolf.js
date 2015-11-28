@@ -1,0 +1,440 @@
+/*
+   JJJ  OO  L    FFFF
+     J O  O L    F
+  J  J O  O L    FFF
+   JJJ  OO  LLLL F
+  By ~ Conor ~ O'Brien
+*/
+
+function isNum(x){
+	return x==parseInt(x);
+}
+
+// why you no have RegExp.escape regularly, JavaScript?!
+RegExp.escape = function(s){
+	return s.replace(/[-\/\\^$*+?.()|[\]{}]/g,"\\$&");
+}
+
+var ops = {	// constant-arity ops
+	"a": function(J){
+		J.comp += "alert(";
+		J.outted = true;
+		return 1;
+	},
+	"+": function(J){
+		J.comp += "add(";
+		return 2;
+	},
+	"*": function(J){
+		J.comp += "mul(";
+		return 2;
+	},
+	"/": function(J){
+		J.comp += "div(";
+		return 2;
+	},
+	"^": function(J){
+		J.comp += "pow(";
+		return 2;
+	},
+	"-": function(J){
+		J.comp += "sub(";
+		return 2;
+	},
+	"_": function(J){
+		J.comp += "neg(";
+		return 1;
+	},
+	".": function(J){
+		J.comp += "getProp(";
+		return 2;
+	},
+	"v": function(J){
+		J.comp += "assign(";
+		return 2;
+	},
+	"V": function(J){
+		J.comp += "getVar(";
+		return 1;
+	},
+	"r": function(J){
+		J.comp += "range(";
+		return 2;
+	},
+	"p": function(J){
+		J.comp += "stepRange(";
+		return 3;
+	},
+	"u": function(J){
+		J.comp += "sum(";
+		return 1;
+	},
+	"f": function(J){
+		J.comp += "apply(";
+		return 2;
+	},
+	"@": function(J){
+		J.comp += "charCodeAt(";
+		J.mode = 2;
+		return 1;
+	},
+	"P": function(J){
+		J.comp += "Number(";
+		return 1;
+	},
+	"T": function(J){
+		J.comp += "setInterval(";
+		return 2;
+	},
+	"R": function(J){
+		J.comp += "setTimeout(";
+		return 2;
+	},
+	"c": function(J){
+		J.comp += "console.log(";
+		return 1;
+	},
+	"e": function(J){
+		J.comp += "evalJolf(";
+		return 1;
+	}
+}
+
+var inf = {	// data/arguments
+	"i": function(J){
+		if(!J.enc.i){
+			J.prec += "var i=prompt(\"i = \");";
+			J.enc.i = true;
+		}
+		J.comp += "i";
+	},
+	"I": function(J){
+		if(!J.enc.I){
+			J.prec += "var I=prompt(\"I = \");";
+			J.enc.I = true;
+		}
+		J.comp += "I";
+	},
+	"j": function(J){
+		if(!J.enc.j){
+			J.prec += "var j=Number(prompt(\"j = \"));";
+			J.enc.j = true;
+		}
+		J.comp += "j";
+	},
+	"J": function(J){
+		if(!J.enc.J){
+			J.prec += "var J=Number(prompt(\"J = \"));";
+			J.enc.J = true;
+		}
+		J.comp += "J";
+	},
+	"q": function(J){
+		J.comp += "\""+J.code+"\"";
+	},
+	"t": function(J){
+		J.comp += "10";
+	},
+	"": function(){}
+}
+
+var mod = {	// zero-arity functions
+	"\"": function(J){
+		J.comp += "\"";
+		J.mode = 1;
+	},
+	"'": function(J){
+		J.mode = 2;
+	},
+	"[": function(J){
+		J.comp += "[";
+		J.mode = 3;
+	},
+	"$": function(J){
+		J.mode = 4;
+	},
+	":": function(J){
+		J.mode = 6;
+	},
+	"{": function(J){
+		J.mode = 5;
+	},
+	"`": function(J){
+		J.check();
+	},
+	"~": function(J){
+		var r = J.comp + "";
+		r = r.split("");
+		var x0 = r.pop();
+		var x1 = r.pop();
+		r.push(x0,x1);
+		J.comp = r.join("");
+	}
+}
+
+var sbs = {	// substitution characters
+	"#": function(J){
+		return "()";
+	},
+	"N": function(J){
+		return "Number";
+	},
+	"A": function(J){
+		return "Array";
+	},
+	"D": function(J){
+		return "Date";
+	},
+	"p": function(J){
+		return "prototype";
+	},
+	"S": function(J){
+		return "String";
+	},
+	"s": function(J){
+		return "Set";
+	},
+	"M": function(J){
+		return "Math";
+	},
+	"w": function(J){
+		return "window";
+	},
+}
+
+function Jolf(code){
+	this.code   = code;
+	this.enc    = {};
+	this.fin    = "";
+	this.prec   = "";
+	this.comp   = "";
+	this.index  = 0;
+	this.mode   = 0;
+	this.func   = [];
+	this.total  = "";
+	this.build  = "";
+	this.outted = false;
+	this.debug  = false;
+	if(code==""){	// easter egg
+		this.comp = "var i=+prompt();alert(i);while(i){alert(i)}";
+	}
+	return this;
+}
+
+Jolf.prototype.run = function(){
+	while(this.step());
+	return this;
+}
+
+Jolf.prototype.exec = function(){
+	var ret = this.total?this.total:this.prec+this.comp;
+	return (this.outted?function(f){return f}:alert)(eval(ret));
+}
+
+Jolf.prototype.check = function(){
+	var consump = this.func.pop();
+	if(typeof consump!=="undefined"){
+		consump--;
+		if(!consump){
+			this.comp += ")";
+			this.check();
+		} else {
+			this.comp += ",";
+			this.func.push(consump);
+		}
+	} else {
+		this.comp += ";";
+	}
+}
+
+Jolf.prototype.step = function(){
+	// checking index bounds / func stack
+	if(this.index > this.code.length){
+		this.total = this.prec+this.comp;
+		return false;
+	}
+	// var for char
+	var chr = this.code[this.index];
+	
+	console.log(chr,this.index);
+	
+	switch(this.mode){
+		case 0:
+			// read the character and get its type
+			if(mod[chr]){	// if the character is a modifier
+				mod[chr](this);
+			} else if(sbs[chr]){
+				this.comp += sbs[chr](this);
+			} else if(ops[chr]){ // if the character is an operator
+				var arity = ops[chr](this);
+				this.func.push(arity);
+			} else if(inf[chr]){	// if the character is data
+				inf[chr](this);
+			} else if(isNum(chr)){	// if the character is a number
+				this.comp += chr;
+				//while(isNum(this.code[++this.index])){
+				//	this.comp += this.code[this.index];
+				//}
+				//this.index--;
+			} else if(chr){
+				this.comp += chr;
+			}
+			if(inf[chr]||isNum(chr)){	// activate consumption
+				// add final mark, if any, and reset
+				this.comp += this.fin;
+				this.fin  = "";
+				this.check();
+			}
+		break;
+		case 1:	// string mode
+			if(chr=="\\"){	// escape next character
+				this.comp += this.code[this.index++];
+				this.comp += chr;
+			} else if(chr=="\""||typeof chr=="undefined"){
+				this.mode = 0;
+				this.comp += "\"";
+				this.check();
+			} else {
+				this.comp += chr;
+			}
+		break;
+		case 2:
+			this.comp += "\"";
+			this.comp += chr;
+			this.comp += "\"";
+			this.check();
+			this.mode = 0;
+		break;
+		case 3:	// array mode
+			if(chr=="\\"){
+				this.index++;
+			}
+			this.comp += this.code[this.index];
+			if(chr=="]"){
+				this.mode = 0;
+				this.check();
+			}
+		break;
+		case 4:	// JS literal mode
+			if(chr=="$"){
+				this.mode = 0;
+				break;
+			}
+			if(chr=="\\") this.index++;
+			this.comp += this.code[this.index];
+		break;
+		case 5:	// golfy array
+			if(chr=="\\")this.index++;
+			if(chr!="}"&&chr){
+				this.build += this.code[this.index];
+			} else if(chr=="}") {
+				var innerJolf = new Jolf(this.build);
+				// ensuring we don't have multiple var calls
+				innerJolf.enc = this.enc;
+				innerJolf.run();
+				// if any new var calls were made
+				this.prec += innerJolf.prec;
+				
+				// the comp contains (hopefully) a series of entries split by semicolons
+				var golfArr = innerJolf.comp.split(";");
+				// removing the trailing semicolon
+				golfArr.pop();      // safety ~~~.
+				// composing the array           v
+				this.comp += "[" + golfArr.join(",") + "]";
+				// ensuring we don't run into the ) again
+				//this.index++;
+				// checking
+				this.check();
+			}
+		break;
+		case 6:	// JS literal mode (short)
+			this.comp += this.code[this.index];
+			this.mode = 0;
+		break;
+	}
+	// increment for next step
+	this.index++;
+	if(this.debug) console.log(this);
+	return this;
+}
+
+function evalJolf(code){	// lightweight wrapper code
+	var instance = new Jolf(code);
+	instance.run();
+	try {
+		instance.exec();
+	} catch(e){
+		console.log(e);
+	}
+	return instance;
+}
+
+{// functions
+	function add(a,b){
+		if(Array.isArray(a)){
+			if(Array.isArray(b)){
+				return a.concat(b);
+			} else {
+				a.push(b);
+			}
+		}
+		return a + b;
+	}
+	
+	function sub(a,b){
+		if(typeof a=="string") return a.replace(RegExp.escape(b),"");
+		else if(Array.isArray(a)) return a.filter(function(x){return x!=b});
+		else if(a instanceof Set){
+			a.delete(b);
+			return a;
+		}
+		return a - b;
+	}
+	
+	function getProp(a,b){
+		return a[b];
+	}
+	
+	function neg(a){
+		if(typeof a=="string"){
+			return a.split("").reverse().join("");
+		} else if(typeof a=="number"){
+			return -a;
+		} else if(typeof a=="array"){
+			return a.reverse();
+		} else {
+			return a;
+		}
+	}
+	
+	function quote(x){
+		if(sbs[x]){
+			x = sbs[x];
+		} else if(ops[x]){
+			x = ops[x].toString().match(/J\.comp \+= "(.+?)"/)[1];
+		}
+		return "\""+x+"\"";
+	}
+	
+	function assign(name,value){
+		return window[name] = value;
+	}
+	
+	function getVar(name){
+		return window[name];
+	}
+	
+	function apply(f,a){
+		return f.apply(window,a);
+	}
+	
+	function charCodeAt(x){
+		return x.charCodeAt();
+	}
+	
+	function pow(x,y){
+		return Math.pow(x,y);
+	}
+	
+	(function(f){window.alert=function(a,J){f(JSON.stringify(a));(J||{}).outted=true;}})(alert);
+}
