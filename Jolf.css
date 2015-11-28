@@ -1,0 +1,81 @@
+body {
+	font-family: "Gadugi", "Constantia", "Consolas", monospace;
+	color: #333;
+}
+
+p, textarea {
+	margin: 0;
+}
+
+textarea {
+	min-height: 2.25em;
+	min-width: 50ch;
+	max-width: 100%;
+	padding: 5px;
+}
+
+p + p {
+	text-indent: 20px;
+}
+
+#options {
+	padding: 20px;
+	max-width: 250px;
+	position: absolute;
+	top: 30px;
+	right: 30px;
+	background: white;
+}
+
+#options, textarea {
+	border: 1px solid #AAA;
+	border-radius: 5px;
+}
+
+#options h2 {
+	margin: 0 0 10px 0;
+	border-bottom: 1px solid #AAA;
+}
+
+.sev {
+	position: relative;
+	width: 30%;
+	left: 30%;
+	margin-top: 15px;
+}
+
+#menu {
+	display: inline-block;
+}
+
+#inner {
+	position: fixed;
+	overflow: hidden;
+	height: 0px;
+	background-color: #5BC0DE;
+	border-color: #46B8DA;
+}
+
+#inner ul {
+	list-style-type: none;
+	padding: 10px;
+}
+
+textarea + p {
+	margin-top: 30px;
+}
+
+header > h1 {
+	display: inline-block;
+	margin-right: 20px;
+}
+
+textarea {
+	width: 100%;
+	height: 60px;
+	font-family: "Consolas", monospace;
+}
+
+#container {
+	margin: 20px;
+}
