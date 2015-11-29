@@ -38,7 +38,7 @@ These instructions are the operators of Jolf.
  * `P` - takes 1 argument `A` and returns `Number(A)` (converts all to number, if possible) (TO BE ADDED: conversion of an array into a number, as in `[1,2,3,1,0,2] => 123102`)
  * `Q` - squares 1 argument `S`, according to its type:
    * `number` - multiplies it by itself
-   * `array` - (TBA) takes the length of the array `N` and returns an array containing `N` copies of itself
+   * `array` - takes the length of the array `N` and returns an array containing `N` copies of itself
    * `string` - TBA
  * `T` - takes 2 arguments `F` and `s`; surrounds `F` expression (after compilation) with quotes and evaluates that action `F` every `s` milliseconds
  * `R` - takes 2 arguments `F` and `s`; runs `F` after `s` milliseconds
