@@ -7,7 +7,7 @@ p, textarea {
 	margin: 0;
 }
 
-textarea {
+textarea, #output {
 	min-height: 2.25em;
 	min-width: 50ch;
 	max-width: 100%;
@@ -27,7 +27,7 @@ p + p {
 	background: white;
 }
 
-#options, textarea {
+#options, textarea, #output {
 	border: 1px solid #AAA;
 	border-radius: 5px;
 }
