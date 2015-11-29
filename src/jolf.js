@@ -83,7 +83,8 @@ var ops = {	// constant-arity ops
 		return 1;
 	},
 	"T": function(J){
-		J.comp += "setInterval(";
+		J.comp += "setInterval(\"";
+		J.fin = "\"";
 		return 2;
 	},
 	"R": function(J){
@@ -237,13 +238,22 @@ Jolf.prototype.check = function(){
 		consump--;
 		if(!consump){
 			this.comp += ")";
-			this.check();
+			x = this.check();
+			if(x>0){
+				var lst = this.comp.slice(-1);
+				this.comp = this.comp.slice(0,-1);
+				this.comp += this.fin + lst;
+				this.fin = "";
+			}
+			return 0;
 		} else {
 			this.comp += ",";
 			this.func.push(consump);
+			return 0.5;
 		}
 	} else {
 		this.comp += ";";
+		return 1
 	}
 }
 
@@ -281,8 +291,8 @@ Jolf.prototype.step = function(){
 			}
 			if(inf[chr]||isNum(chr)){	// activate consumption
 				// add final mark, if any, and reset
-				this.comp += this.fin;
-				this.fin  = "";
+				//this.comp += this.fin;
+				//this.fin  = "";
 				this.check();
 			}
 		break;
@@ -294,6 +304,8 @@ Jolf.prototype.step = function(){
 				this.mode = 0;
 				this.comp += "\"";
 				this.check();
+			} else if(chr==this.fin){	// escape currnet charater
+				this.comp += "\\" + chr;
 			} else {
 				this.comp += chr;
 			}
@@ -436,5 +448,13 @@ function evalJolf(code){	// lightweight wrapper code
 		return Math.pow(x,y);
 	}
 	
-	(function(f){window.alert=function(a,J){f(JSON.stringify(a));(J||{}).outted=true;}})(alert);
+	(function(f){window.alert=function(a,J){f(JSON.stringify(a));(J||{}).outted=true;}})(function(x){
+		var iu = document.getElementById("output");
+		// on browser?
+		if(iu){
+			iu.innerHTML += x + "<br>";
+		} else {
+			alert(x);
+		}
+	});
 }
