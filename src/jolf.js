@@ -515,6 +515,13 @@ function evalJolf(code){	// lightweight wrapper code
 	}
 	
 	function square(x){
+		if(Array.isArray(x)){
+			var a = [];
+			for(var i=0;i<x.length;i++){
+				a.push(x);
+			}
+			return x;
+		}
 		return x*x;
 	}
 	
