@@ -98,6 +98,14 @@ var ops = {	// constant-arity ops
 	"e": function(J){
 		J.comp += "evalJolf(";
 		return 1;
+	},
+	"L": function(J){
+		J.comp += "logBASE(";
+		return 2;
+	},
+	"~i": function(J){
+		J.comp += "(function(x){return x})(";
+		return 1;
 	}
 }
 
@@ -136,6 +144,30 @@ var inf = {	// data/arguments
 	"t": function(J){
 		J.comp += "10";
 	},
+	"~p": function(J){
+		J.comp += "Math.PI"
+	},
+	"~e": function(J){
+		J.comp += "Math.E"
+	},
+	"~P": function(J){
+		J.comp += "(1+Math.sqrt(5))/2";
+	},
+	"~0": function(J){
+		J.comp += "Infinity";
+	},
+	"~1": function(J){
+		J.comp += "100";
+	},
+	"~2": function(J){
+		J.comp += "1000";
+	},
+	"~3": function(J){
+		J.comp += "10000";
+	},
+	"~4": function(J){
+		J.comp += "100000";
+	},
 	"": function(){}
 }
 
@@ -162,14 +194,6 @@ var mod = {	// zero-arity functions
 	},
 	"`": function(J){
 		J.check();
-	},
-	"~": function(J){
-		var r = J.comp + "";
-		r = r.split("");
-		var x0 = r.pop();
-		var x1 = r.pop();
-		r.push(x0,x1);
-		J.comp = r.join("");
 	}
 }
 
@@ -200,7 +224,7 @@ var sbs = {	// substitution characters
 	},
 	"w": function(J){
 		return "window";
-	},
+	}
 }
 
 function Jolf(code){
@@ -214,6 +238,7 @@ function Jolf(code){
 	this.func   = [];
 	this.total  = "";
 	this.build  = "";
+	this.bldChr = ""; 
 	this.outted = false;
 	this.debug  = false;
 	if(code==""){	// easter egg
@@ -266,7 +291,18 @@ Jolf.prototype.step = function(){
 	// var for char
 	var chr = this.code[this.index];
 	
-	console.log(chr,this.index);
+	console.log(this.bldChr[0]=="~",this.bldChr,chr);
+	// extended functions
+	if(this.bldChr.length<2&&this.bldChr[0]=="~"){
+		this.bldChr += chr;
+		chr = this.bldChr;
+	} else if(this.bldChr.length>=2){
+		this.bldChr = "";
+	} else if(chr=="~"){
+		this.bldChr = "~";
+		this.index++;
+		return this;
+	}
 	
 	switch(this.mode){
 		case 0:
@@ -286,7 +322,7 @@ Jolf.prototype.step = function(){
 				//	this.comp += this.code[this.index];
 				//}
 				//this.index--;
-			} else if(chr){
+			} else if(chr!="~"&&chr){
 				this.comp += chr;
 			}
 			if(inf[chr]||isNum(chr)){	// activate consumption
@@ -448,7 +484,11 @@ function evalJolf(code){	// lightweight wrapper code
 		return Math.pow(x,y);
 	}
 	
-	(function(f){window.alert=function(a,J){f(JSON.stringify(a));(J||{}).outted=true;}})(function(x){
+	function logBASE(a,b){
+		return Math.log(a)/Math.log(b);
+	}
+	
+	(function(f){window.alert=function(a,J){if(a==Infinity){f(Infinity)}else{f(JSON.stringify(a))};(J||{}).outted=true;}})(function(x){
 		var iu = document.getElementById("output");
 		// on browser?
 		if(iu){
