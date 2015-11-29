@@ -15,6 +15,13 @@ RegExp.escape = function(s){
 	return s.replace(/[-\/\\^$*+?.()|[\]{}]/g,"\\$&");
 }
 
+var ctl = {	// control flow; not working
+	"W": function(J){
+		J.comp += "while(";
+		J.mode = 7.0;
+	}
+}
+
 var ops = {	// constant-arity ops
 	"a": function(J){
 		J.comp += "alert(";
@@ -114,6 +121,10 @@ var ops = {	// constant-arity ops
 	"~i": function(J){
 		J.comp += "(function(x){return x})(";
 		return 1;
+	},
+	"Q": function(J){
+		J.comp += "square(";
+		return 1;
 	}
 }
 
@@ -162,7 +173,7 @@ var inf = {	// data/arguments
 		J.comp += "(1+Math.sqrt(5))/2";
 	},
 	"~0": function(J){
-		J.comp += "Infinity";
+		J.comp += "0/1";
 	},
 	"~1": function(J){
 		J.comp += "100";
@@ -407,6 +418,9 @@ Jolf.prototype.step = function(){
 			this.comp += this.code[this.index];
 			this.mode = 0;
 		break;
+		case 7.0:	// control structure mode: look for condition(s)
+			
+		break;
 	}
 	// increment for next step
 	this.index++;
@@ -498,6 +512,17 @@ function evalJolf(code){	// lightweight wrapper code
 	
 	function toBinary(a){
 		return (a).toString(2);
+	}
+	
+	function square(x){
+		if(Array.isArray(x)){
+			var a = [];
+			for(var i=0;i<x.length;i++){
+				a.push(x);
+			}
+			return x;
+		}
+		return x*x;
 	}
 	
 	(function(f){window.alert=function(a,J){if(a==Infinity){f(Infinity)}else{f(JSON.stringify(a))};(J||{}).outted=true;}})(function(x){
