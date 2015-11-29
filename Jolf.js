@@ -21,6 +21,14 @@ var ops = {	// constant-arity ops
 		J.outted = true;
 		return 1;
 	},
+	"B": function(J){
+		J.comp += "toBinary(";
+		return 1;
+	},
+	"C": function(J){
+		J.comp += "parseInt(";
+		return 2;
+	},
 	"+": function(J){
 		J.comp += "add(";
 		return 2;
@@ -486,6 +494,10 @@ function evalJolf(code){	// lightweight wrapper code
 	
 	function logBASE(a,b){
 		return Math.log(a)/Math.log(b);
+	}
+	
+	function toBinary(a){
+		return (a).toString(2);
 	}
 	
 	(function(f){window.alert=function(a,J){if(a==Infinity){f(Infinity)}else{f(JSON.stringify(a))};(J||{}).outted=true;}})(function(x){
