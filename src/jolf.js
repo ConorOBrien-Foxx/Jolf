@@ -84,6 +84,10 @@ var ops = {	// constant-arity ops
 		J.comp += "sum(";
 		return 1;
 	},
+	"z": function(J){
+		J.comp += "unaryRange(";
+		return 1;
+	},
 	"f": function(J){
 		J.comp += "apply(";
 		return 2;
@@ -523,6 +527,38 @@ function evalJolf(code){	// lightweight wrapper code
 			return x;
 		}
 		return x*x;
+	}
+	
+	function range(x,y){
+		var v = [];
+		var min = x;
+		var max = y;
+		if(x>=y){
+			min = y+1;
+			max = x+1;
+		}
+		for(var i=min;i<max;i++){
+			v.push(i);
+		}
+		return v;
+	}
+	
+	function unaryRange(x){
+		return range(1,x+1);
+	}
+	
+	function stepRange(x,y,s){
+		var v = [];
+		var min = x;
+		var max = y;
+		if(x>=y){
+			min = y+1;
+			max = x+1;
+		}
+		for(var i=min;i<max;i+=s){
+			v.push(i);
+		}
+		return v;
 	}
 	
 	(function(f){window.alert=function(a,J){if(a==Infinity){f(Infinity)}else{f(JSON.stringify(a))};(J||{}).outted=true;}})(function(x){
