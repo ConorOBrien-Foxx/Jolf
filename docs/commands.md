@@ -2,7 +2,8 @@
 (One can form a two-byte command by prefixing an instruction with a tilde (`~`).
 
 ## Function instructions
-These instructions are the operators of Jolf. `typeA, typeB` (&) means the order does not matter
+These instructions are the operators of Jolf. "`typeA, typeB` (&)" means the order does not matter.
+
  * `*` - multiplies 2 arguments
    * `number, number` - multiplies the two numbers
    * `string, number` (&) - repeats `string` `number` times
