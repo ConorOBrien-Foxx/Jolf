@@ -1,7 +1,8 @@
-# Commands
-(One can form a two-byte command by prefixing an instruction with a tilde (`~`).
+# 2. Command Index
+This is an index of the commands.
+(One can form a two-byte command by prefixing an instruction with a tilde (`~`).)
 
-## Function instructions
+## 2.1. Function instructions
 These instructions are the operators of Jolf. "`typeA, typeB` (&)" means the order does not matter.
 
  * `*` - multiplies 2 arguments
@@ -46,7 +47,7 @@ These instructions are the operators of Jolf. "`typeA, typeB` (&)" means the ord
  * `v` - takes 2 arguments `S` and `V`; sets the value of variable `S` to `V` and creates `S` if nonexistant (returns `V`)
  * `~i` - takes 1 argument and returns that argument (the identity function)
 
-## Data commands
+## 2.2 Data commands
 These instructions are the data/arguments of Jolf.
 
  * `0-9` - that number
@@ -65,7 +66,7 @@ These instructions are the data/arguments of Jolf.
  * `~p` - &pi; approx `3.141592`
  * `~P` - &varphi;, `(1+sqrt[5])/2`
 
-## Null-arity commands
+## 2.3. Null-arity commands
 These instructions do no affect the compiled code _per se_, but provide structure.
 
  * `"` - begins string literal; writes characters to compiled code (surrounded by quotes) until another unescaped `"` is met
