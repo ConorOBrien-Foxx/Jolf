@@ -20,8 +20,11 @@ Being a prefix langauge, Jolf can easier be thought of as a sort of functional s
 (One can form a two-byte command by prefixing an instruction with a tilde (`~`).
 
 ## Function instructions
-These instructions are the operators of Jolf.
- * `*` - multiplies 2 arguments (behaviour TBA)
+These instructions are the operators of Jolf. `typeA, typeB` (*) means the order does not matter
+ * `*` - multiplies 2 arguments
+   * `number, number` - multiplies the two numbers
+   * `string, number` (*) - repeats `string` `number` times
+   * `array, number` - creates a 2D array of length `number` that contains `array` as all of its members
  * `+` - adds 2 arguments, according to their types:
    * `number, number` - adds the two numbers
    * `anything, string` or `string, anything` - returns `string` concatted with `anything` (preserving order)
