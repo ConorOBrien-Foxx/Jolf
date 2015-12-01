@@ -587,7 +587,7 @@ function evalJolf(code){	// lightweight wrapper code
 	}
 	
 	function unaryRange(x){
-		return range(1,x+1);
+		return range(1,x+1)||[1];
 	}
 	
 	function stepRange(x,y,s){
