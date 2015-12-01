@@ -587,7 +587,7 @@ function evalJolf(code){	// lightweight wrapper code
 	}
 	
 	function unaryRange(x){
-		return range(1,x+1);
+		return range(1,x+1)||[1];
 	}
 	
 	function stepRange(x,y,s){
@@ -639,3 +639,4 @@ function evalJolf(code){	// lightweight wrapper code
 {	// polyfills from developer.mozilla.org
 String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(null==this)throw new TypeError("can't convert "+this+" to object");var r=""+this;if(t=+t,t!=t&&(t=0),0>t)throw new RangeError("repeat count must be non-negative");if(t==1/0)throw new RangeError("repeat count must be less than infinity");if(t=Math.floor(t),0==r.length||0==t)return"";if(r.length*t>=1<<28)throw new RangeError("repeat count must not overflow maximum string size");for(var e="";1==(1&t)&&(e+=r),t>>>=1,0!=t;)r+=r;return e});
 }
+
