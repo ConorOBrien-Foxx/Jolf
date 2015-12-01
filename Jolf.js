@@ -15,6 +15,11 @@ RegExp.escape = function(s){
 	return s.replace(/[-\/\\^$*+?.()|[\]{}]/g,"\\$&");
 }
 
+// dev tool for detection of existant commands
+function isAvailable(cmd){
+	return !(ctl[cmd]||ops[cmd]||inf[cmd]||mod[cmd]||sbs[cmd]);
+}
+
 var ctl = {	// control flow; not working
 	"W": function(J){
 		J.comp += "while(";
@@ -35,6 +40,68 @@ var ops = {	// constant-arity ops
 	"C": function(J){
 		J.comp += "parseInt(";
 		return 2;
+	},
+	"c": function(J){
+		J.comp += "console.log(";
+		J.outted = true;
+		return 1;
+	},
+	"e": function(J){
+		J.comp += "evalJolf(";
+		return 1;
+	},
+	"f": function(J){
+		J.comp += "apply(";
+		return 2;
+	},
+	"L": function(J){
+		J.comp += "logBASE(";
+		return 2;
+	},
+	"O": function(J){
+		J.comp += "prod(";
+		return 1;
+	},
+	"P": function(J){
+		J.comp += "Number(";
+		return 1;
+	},
+	"p": function(J){
+		J.comp += "stepRange(";
+		return 3;
+	},
+	"Q": function(J){
+		J.comp += "square(";
+		return 1;
+	},
+	"R": function(J){
+		J.comp += "setTimeout(";
+		return 2;
+	},
+	"r": function(J){
+		J.comp += "range(";
+		return 2;
+	},
+	"T": function(J){
+		J.comp += "setInterval(\"";
+		J.fin = "\"";
+		return 2;
+	},
+	"u": function(J){
+		J.comp += "sum(";
+		return 1;
+	},
+	"v": function(J){
+		J.comp += "assign(";
+		return 2;
+	},
+	"V": function(J){
+		J.comp += "getVar(";
+		return 1;
+	},
+	"z": function(J){
+		J.comp += "unaryRange(";
+		return 1;
 	},
 	"+": function(J){
 		J.comp += "add(";
@@ -64,71 +131,26 @@ var ops = {	// constant-arity ops
 		J.comp += "getProp(";
 		return 2;
 	},
-	"v": function(J){
-		J.comp += "assign(";
-		return 2;
-	},
-	"V": function(J){
-		J.comp += "getVar(";
-		return 1;
-	},
-	"r": function(J){
-		J.comp += "range(";
-		return 2;
-	},
-	"p": function(J){
-		J.comp += "stepRange(";
-		return 3;
-	},
-	"u": function(J){
-		J.comp += "sum(";
-		return 1;
-	},
-	"z": function(J){
-		J.comp += "unaryRange(";
-		return 1;
-	},
-	"f": function(J){
-		J.comp += "apply(";
-		return 2;
-	},
 	"@": function(J){
 		J.comp += "charCodeAt(";
 		J.mode = 2;
 		return 1;
 	},
-	"P": function(J){
-		J.comp += "Number(";
-		return 1;
-	},
-	"T": function(J){
-		J.comp += "setInterval(\"";
-		J.fin = "\"";
-		return 2;
-	},
-	"R": function(J){
-		J.comp += "setTimeout(";
-		return 2;
-	},
-	"c": function(J){
-		J.comp += "console.log(";
-		return 1;
-	},
-	"e": function(J){
-		J.comp += "evalJolf(";
-		return 1;
-	},
-	"L": function(J){
-		J.comp += "logBASE(";
-		return 2;
-	},
 	"~i": function(J){
 		J.comp += "(function(x){return x})(";
 		return 1;
 	},
-	"Q": function(J){
-		J.comp += "square(";
-		return 1;
+	"=": function(J){
+		J.comp += "equals(";
+		return 2;
+	},
+	"<": function(J){
+		J.comp += "less(";
+		return 2;
+	},
+	">": function(J){
+		J.comp += "more(";
+		return 2;
 	}
 }
 
@@ -217,6 +239,12 @@ var mod = {	// zero-arity functions
 	},
 	"`": function(J){
 		J.check();
+	},
+	"\b": function(J){
+		J.outted = true;
+	},
+	"X": function(J){
+		J.index = J.code.length + 1;
 	}
 }
 
@@ -465,6 +493,21 @@ function evalJolf(code){	// lightweight wrapper code
 		return a - b;
 	}
 	
+	function mul(x,y){
+		if(typeof x=="string"&&typeof y=="number"){
+			return x.repeat(y);
+		} else if(typeof y=="string"&&typeof x=="number"){
+			return y.repeat(x);
+		} else if(Array.isArray(x)&&typeof y=="number"){
+			var a = [];
+			for(var i=0;i<y;i++){
+				a.push(x);
+			}
+			return a;
+		}
+		return x*y;
+	}
+	
 	function getProp(a,b){
 		return a[b];
 	}
@@ -561,6 +604,25 @@ function evalJolf(code){	// lightweight wrapper code
 		return v;
 	}
 	
+	function equals(x,y){
+		return x == y;
+	}
+	
+	function less(x,y){
+		return x < y;
+	}
+	
+	function more(x,y){
+		return y < x;
+	}
+	
+	function prod(x){
+		if(Array.isArray(x)){
+			return x.reduce(function(a,b){return a*b});
+		}
+		return Number(x.toString().split("").map(Number).reduce(function(a,b){return a*b}))
+	}
+	
 	(function(f){window.alert=function(a,J){if(a==Infinity){f(Infinity)}else{f(JSON.stringify(a))};(J||{}).outted=true;}})(function(x){
 		var iu = document.getElementById("output");
 		// on browser?
@@ -570,4 +632,11 @@ function evalJolf(code){	// lightweight wrapper code
 			alert(x);
 		}
 	});
+	
+	(function(N){var x=window[N];delete window[N];window[N]=function(num){return Array.isArray(num)?x(num.join("")):x(num);}})("Number");
 }
+
+{	// polyfills from developer.mozilla.org
+String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(null==this)throw new TypeError("can't convert "+this+" to object");var r=""+this;if(t=+t,t!=t&&(t=0),0>t)throw new RangeError("repeat count must be non-negative");if(t==1/0)throw new RangeError("repeat count must be less than infinity");if(t=Math.floor(t),0==r.length||0==t)return"";if(r.length*t>=1<<28)throw new RangeError("repeat count must not overflow maximum string size");for(var e="";1==(1&t)&&(e+=r),t>>>=1,0!=t;)r+=r;return e});
+}
+
