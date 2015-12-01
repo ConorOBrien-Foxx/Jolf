@@ -91,6 +91,10 @@ var ops = {	// constant-arity ops
 		J.comp += "sum(";
 		return 1;
 	},
+	"U": function(J){
+		J.comp += "sqrt(";
+		return 1;
+	},
 	"v": function(J){
 		J.comp += "assign(";
 		return 2;
@@ -508,6 +512,18 @@ function evalJolf(code){	// lightweight wrapper code
 		return x*y;
 	}
 	
+	function div(x,y){
+		if(typeof x=="string"){
+			return x.replace(new RegExp(y,"g"),"");
+		} else if(Array.isArray(x)){
+			if(Array.isArray(y)) return 42;	// unimplemented
+			return x.filter(function(a,b){return b%y});
+		} else if(Array.isArray(y)){
+			return 42;	// unimplemented
+		}
+		return x/y;
+	}
+	
 	function getProp(a,b){
 		return a[b];
 	}
@@ -632,6 +648,11 @@ function evalJolf(code){	// lightweight wrapper code
 			alert(x);
 		}
 	});
+	
+	function sqrt(x){
+		// add operator overloading
+		return Math.sqrt(x);
+	}
 	
 	(function(N){var x=window[N];delete window[N];window[N]=function(num){return Array.isArray(num)?x(num.join("")):x(num);}})("Number");
 }
