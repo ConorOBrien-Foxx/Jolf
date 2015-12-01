@@ -465,6 +465,21 @@ function evalJolf(code){	// lightweight wrapper code
 		return a - b;
 	}
 	
+	function mul(x,y){
+		if(typeof x=="string"&&typeof y=="number"){
+			return x.repeat(y);
+		} else if(typeof y=="string"&&typeof x=="number"){
+			return y.repeat(x);
+		} else if(Array.isArray(x)&&typeof y=="number"){
+			var a = [];
+			for(var i=0;i<y;i++){
+				a.push(x);
+			}
+			return a;
+		}
+		return x*y;
+	}
+	
 	function getProp(a,b){
 		return a[b];
 	}
@@ -570,4 +585,8 @@ function evalJolf(code){	// lightweight wrapper code
 			alert(x);
 		}
 	});
+}
+
+{	// polyfills from developer.mozilla.org
+String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(null==this)throw new TypeError("can't convert "+this+" to object");var r=""+this;if(t=+t,t!=t&&(t=0),0>t)throw new RangeError("repeat count must be non-negative");if(t==1/0)throw new RangeError("repeat count must be less than infinity");if(t=Math.floor(t),0==r.length||0==t)return"";if(r.length*t>=1<<28)throw new RangeError("repeat count must not overflow maximum string size");for(var e="";1==(1&t)&&(e+=r),t>>>=1,0!=t;)r+=r;return e});
 }
