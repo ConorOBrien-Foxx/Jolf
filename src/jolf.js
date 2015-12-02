@@ -45,6 +45,10 @@ var ops = {	// constant-arity ops
 		J.comp += "toBinary(";
 		return 1;
 	},
+	"b": function(J){
+		J.comp += "toString(";
+		return 2;
+	}
 	"C": function(J){
 		J.comp += "parseInt(";
 		return 2;
@@ -167,6 +171,12 @@ var ops = {	// constant-arity ops
 }
 
 var inf = {	// data/arguments
+	"E": function(J){
+		J.comp += "\"\"";
+	},
+	"Y": function(J){
+		J.comp += "[]";
+	},
 	"i": function(J){
 		if(!J.enc.i){
 			J.prec += "var i=prompt(\"i = \");";
@@ -696,6 +706,10 @@ function evalJolf(code){	// lightweight wrapper code
 			x = x.replace(new RegExp(y[i],"g"),z[i%min]);
 		}
 		return x;
+	}
+	
+	function toString(N,b){
+		return N.toString(b);
 	}
 	
 	(function(N){var x=window[N];delete window[N];window[N]=function(num){return Array.isArray(num)?x(num.join("")):x(num);}})("Number");
