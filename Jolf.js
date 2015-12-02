@@ -23,7 +23,11 @@ function isAvailable(cmd){
 var ctl = {	// control flow; not working
 	"W": function(J){
 		J.comp += "while(";
-		J.mode = 7.0;
+		J.haltChecking();
+	},
+	")": function(J){
+		J.comp += "){";
+		J.resumeChecking();
 	}
 }
 
@@ -33,10 +37,18 @@ var ops = {	// constant-arity ops
 		J.outted = true;
 		return 1;
 	},
+	"A": function(J){
+		J.comp += "dictRepl(";
+		return 3;
+	},
 	"B": function(J){
 		J.comp += "toBinary(";
 		return 1;
 	},
+	"b": function(J){
+		J.comp += "toString(";
+		return 2;
+	}
 	"C": function(J){
 		J.comp += "parseInt(";
 		return 2;
@@ -89,6 +101,10 @@ var ops = {	// constant-arity ops
 	},
 	"u": function(J){
 		J.comp += "sum(";
+		return 1;
+	},
+	"U": function(J){
+		J.comp += "sqrt(";
 		return 1;
 	},
 	"v": function(J){
@@ -155,6 +171,12 @@ var ops = {	// constant-arity ops
 }
 
 var inf = {	// data/arguments
+	"E": function(J){
+		J.comp += "\"\"";
+	},
+	"Y": function(J){
+		J.comp += "[]";
+	},
 	"i": function(J){
 		if(!J.enc.i){
 			J.prec += "var i=prompt(\"i = \");";
@@ -252,29 +274,38 @@ var sbs = {	// substitution characters
 	"#": function(J){
 		return "()";
 	},
-	"N": function(J){
+	"~N": function(J){
 		return "Number";
 	},
-	"A": function(J){
+	"~A": function(J){
 		return "Array";
 	},
-	"D": function(J){
+	"~D": function(J){
 		return "Date";
 	},
-	"p": function(J){
+	"~o": function(J){
 		return "prototype";
 	},
-	"S": function(J){
+	"~S": function(J){
 		return "String";
 	},
-	"s": function(J){
+	"~s": function(J){
 		return "Set";
 	},
 	"M": function(J){
 		return "Math";
 	},
-	"w": function(J){
+	"~w": function(J){
 		return "window";
+	},
+	"}": function(J){
+		return "}";
+	},
+	"»": function(J){
+		return "++";
+	},
+	"«": function(J){
+		return "--";
 	}
 }
 
@@ -290,6 +321,7 @@ function Jolf(code){
 	this.total  = "";
 	this.build  = "";
 	this.bldChr = ""; 
+	this.checkQ = true;
 	this.outted = false;
 	this.debug  = false;
 	if(code==""){	// easter egg
@@ -298,17 +330,29 @@ function Jolf(code){
 	return this;
 }
 
+Jolf.prototype.haltChecking = function(){
+	this.checkQ = false;
+}
+
+Jolf.prototype.resumeChecking = function(){
+	this.checkQ = true;
+}
+
 Jolf.prototype.run = function(){
-	while(this.step());
+	if(this.step()) setTimeout(function(J){J.run()},1,this);
 	return this;
 }
 
 Jolf.prototype.exec = function(){
-	var ret = this.total?this.total:this.prec+this.comp;
-	return (this.outted?function(f){return f}:alert)(eval(ret));
+	if(this.step()) setTimeout(function(J){J.exec()},1,this);
+	else {
+		var ret = this.total?this.total:this.prec+this.comp;
+		return (this.outted?function(f){return f}:alert)(eval(ret));
+	}
 }
 
 Jolf.prototype.check = function(){
+	if(!this.checkQ) return;
 	var consump = this.func.pop();
 	if(typeof consump!=="undefined"){
 		consump--;
@@ -360,6 +404,8 @@ Jolf.prototype.step = function(){
 			// read the character and get its type
 			if(mod[chr]){	// if the character is a modifier
 				mod[chr](this);
+			} else if(ctl[chr]){	// if the character is a control
+				ctl[chr](this);
 			} else if(sbs[chr]){
 				this.comp += sbs[chr](this);
 			} else if(ops[chr]){ // if the character is an operator
@@ -450,9 +496,6 @@ Jolf.prototype.step = function(){
 			this.comp += this.code[this.index];
 			this.mode = 0;
 		break;
-		case 7.0:	// control structure mode: look for condition(s)
-			
-		break;
 	}
 	// increment for next step
 	this.index++;
@@ -462,7 +505,6 @@ Jolf.prototype.step = function(){
 
 function evalJolf(code){	// lightweight wrapper code
 	var instance = new Jolf(code);
-	instance.run();
 	try {
 		instance.exec();
 	} catch(e){
@@ -508,6 +550,18 @@ function evalJolf(code){	// lightweight wrapper code
 		return x*y;
 	}
 	
+	function div(x,y){
+		if(typeof x=="string"){
+			return x.replace(new RegExp(y,"g"),"");
+		} else if(Array.isArray(x)){
+			if(Array.isArray(y)) return 42;	// unimplemented
+			return x.filter(function(a,b){return b%y});
+		} else if(Array.isArray(y)){
+			return 42;	// unimplemented
+		}
+		return x/y;
+	}
+	
 	function getProp(a,b){
 		return a[b];
 	}
@@ -538,6 +592,7 @@ function evalJolf(code){	// lightweight wrapper code
 	}
 	
 	function getVar(name){
+		if(typeof name=="number") return name % 2 ? "even" : "odd";
 		return window[name];
 	}
 	
@@ -591,17 +646,21 @@ function evalJolf(code){	// lightweight wrapper code
 	}
 	
 	function stepRange(x,y,s){
-		var v = [];
-		var min = x;
-		var max = y;
-		if(x>=y){
-			min = y+1;
-			max = x+1;
+		if(typeof x=="number"){
+			var v = [];
+			var min = x;
+			var max = y;
+			if(x>=y){
+				min = y+1;
+				max = x+1;
+			}
+			for(var i=min;i<max;i+=s){
+				v.push(i);
+			}
+			return v;
+		} else if(typeof x=="string"){
+			return x.replace(new RegExp(y,"g"),s);
 		}
-		for(var i=min;i<max;i+=s){
-			v.push(i);
-		}
-		return v;
 	}
 	
 	function equals(x,y){
@@ -632,6 +691,26 @@ function evalJolf(code){	// lightweight wrapper code
 			alert(x);
 		}
 	});
+	
+	function sqrt(x){
+		// add operator overloading
+		return Math.sqrt(x);
+	}
+	
+	function dictRepl(x,y,z){
+		y=typeof y=="string"?y.split(""):y;
+		z=typeof z=="string"?z.split(""):z;
+		var max = Math.max(y.length,z.length);
+		var min = Math.min(y.length,z.length);
+		for(var i=0;i<max;i++){
+			x = x.replace(new RegExp(y[i],"g"),z[i%min]);
+		}
+		return x;
+	}
+	
+	function toString(N,b){
+		return N.toString(b);
+	}
 	
 	(function(N){var x=window[N];delete window[N];window[N]=function(num){return Array.isArray(num)?x(num.join("")):x(num);}})("Number");
 }
