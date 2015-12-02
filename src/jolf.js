@@ -37,6 +37,10 @@ var ops = {	// constant-arity ops
 		J.outted = true;
 		return 1;
 	},
+	"A": function(J){
+		J.comp += "dictRepl(";
+		return 3;
+	},
 	"B": function(J){
 		J.comp += "toBinary(";
 		return 1;
@@ -260,28 +264,28 @@ var sbs = {	// substitution characters
 	"#": function(J){
 		return "()";
 	},
-	"N": function(J){
+	"~N": function(J){
 		return "Number";
 	},
-	"A": function(J){
+	"~A": function(J){
 		return "Array";
 	},
-	"D": function(J){
+	"~D": function(J){
 		return "Date";
 	},
-	"o": function(J){
+	"~o": function(J){
 		return "prototype";
 	},
-	"S": function(J){
+	"~S": function(J){
 		return "String";
 	},
-	"s": function(J){
+	"~s": function(J){
 		return "Set";
 	},
 	"M": function(J){
 		return "Math";
 	},
-	"w": function(J){
+	"~w": function(J){
 		return "window";
 	},
 	"}": function(J){
@@ -578,6 +582,7 @@ function evalJolf(code){	// lightweight wrapper code
 	}
 	
 	function getVar(name){
+		if(typeof name=="number") return name % 2 ? "even" : "odd";
 		return window[name];
 	}
 	
@@ -680,6 +685,17 @@ function evalJolf(code){	// lightweight wrapper code
 	function sqrt(x){
 		// add operator overloading
 		return Math.sqrt(x);
+	}
+	
+	function dictRepl(x,y,z){
+		y=typeof y=="string"?y.split(""):y;
+		z=typeof z=="string"?z.split(""):z;
+		var max = Math.max(y.length,z.length);
+		var min = Math.min(y.length,z.length);
+		for(var i=0;i<max;i++){
+			x = x.replace(new RegExp(y[i],"g"),z[i%min]);
+		}
+		return x;
 	}
 	
 	(function(N){var x=window[N];delete window[N];window[N]=function(num){return Array.isArray(num)?x(num.join("")):x(num);}})("Number");
