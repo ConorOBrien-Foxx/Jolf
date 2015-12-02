@@ -23,7 +23,11 @@ function isAvailable(cmd){
 var ctl = {	// control flow; not working
 	"W": function(J){
 		J.comp += "while(";
-		J.mode = 7.0;
+		J.haltChecking();
+	},
+	")": function(J){
+		J.comp += "){";
+		J.resumeChecking();
 	}
 }
 
@@ -265,7 +269,7 @@ var sbs = {	// substitution characters
 	"D": function(J){
 		return "Date";
 	},
-	"p": function(J){
+	"o": function(J){
 		return "prototype";
 	},
 	"S": function(J){
@@ -279,6 +283,15 @@ var sbs = {	// substitution characters
 	},
 	"w": function(J){
 		return "window";
+	},
+	"}": function(J){
+		return "}";
+	},
+	"»": function(J){
+		return "++";
+	},
+	"«": function(J){
+		return "--";
 	}
 }
 
@@ -294,6 +307,7 @@ function Jolf(code){
 	this.total  = "";
 	this.build  = "";
 	this.bldChr = ""; 
+	this.checkQ = true;
 	this.outted = false;
 	this.debug  = false;
 	if(code==""){	// easter egg
@@ -302,17 +316,29 @@ function Jolf(code){
 	return this;
 }
 
+Jolf.prototype.haltChecking = function(){
+	this.checkQ = false;
+}
+
+Jolf.prototype.resumeChecking = function(){
+	this.checkQ = true;
+}
+
 Jolf.prototype.run = function(){
-	while(this.step());
+	if(this.step()) setTimeout(function(J){J.run()},1,this);
 	return this;
 }
 
 Jolf.prototype.exec = function(){
-	var ret = this.total?this.total:this.prec+this.comp;
-	return (this.outted?function(f){return f}:alert)(eval(ret));
+	if(this.step()) setTimeout(function(J){J.exec()},1,this);
+	else {
+		var ret = this.total?this.total:this.prec+this.comp;
+		return (this.outted?function(f){return f}:alert)(eval(ret));
+	}
 }
 
 Jolf.prototype.check = function(){
+	if(!this.checkQ) return;
 	var consump = this.func.pop();
 	if(typeof consump!=="undefined"){
 		consump--;
@@ -364,6 +390,8 @@ Jolf.prototype.step = function(){
 			// read the character and get its type
 			if(mod[chr]){	// if the character is a modifier
 				mod[chr](this);
+			} else if(ctl[chr]){	// if the character is a control
+				ctl[chr](this);
 			} else if(sbs[chr]){
 				this.comp += sbs[chr](this);
 			} else if(ops[chr]){ // if the character is an operator
@@ -454,9 +482,6 @@ Jolf.prototype.step = function(){
 			this.comp += this.code[this.index];
 			this.mode = 0;
 		break;
-		case 7.0:	// control structure mode: look for condition(s)
-			
-		break;
 	}
 	// increment for next step
 	this.index++;
@@ -466,7 +491,6 @@ Jolf.prototype.step = function(){
 
 function evalJolf(code){	// lightweight wrapper code
 	var instance = new Jolf(code);
-	instance.run();
 	try {
 		instance.exec();
 	} catch(e){
@@ -607,17 +631,21 @@ function evalJolf(code){	// lightweight wrapper code
 	}
 	
 	function stepRange(x,y,s){
-		var v = [];
-		var min = x;
-		var max = y;
-		if(x>=y){
-			min = y+1;
-			max = x+1;
+		if(typeof x=="number"){
+			var v = [];
+			var min = x;
+			var max = y;
+			if(x>=y){
+				min = y+1;
+				max = x+1;
+			}
+			for(var i=min;i<max;i+=s){
+				v.push(i);
+			}
+			return v;
+		} else if(typeof x=="string"){
+			return x.replace(new RegExp(y,"g"),s);
 		}
-		for(var i=min;i<max;i+=s){
-			v.push(i);
-		}
-		return v;
 	}
 	
 	function equals(x,y){
@@ -660,4 +688,3 @@ function evalJolf(code){	// lightweight wrapper code
 {	// polyfills from developer.mozilla.org
 String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(null==this)throw new TypeError("can't convert "+this+" to object");var r=""+this;if(t=+t,t!=t&&(t=0),0>t)throw new RangeError("repeat count must be non-negative");if(t==1/0)throw new RangeError("repeat count must be less than infinity");if(t=Math.floor(t),0==r.length||0==t)return"";if(r.length*t>=1<<28)throw new RangeError("repeat count must not overflow maximum string size");for(var e="";1==(1&t)&&(e+=r),t>>>=1,0!=t;)r+=r;return e});
 }
-
