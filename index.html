@@ -35,8 +35,38 @@
 	function decode(string) {
 		return decodeURIComponent(escape(atob(unescape(string).replace(/-/g, "+").replace(/_/g, "/"))));
 	}
+	
 	// end from tryitonline.net
+	
+	var progs = {
+		"Hello World (1)": "\"Hello, World!",
+		"Hello World (2)": "e.$nsp$`0\b4",
+		"Adding two inputs": "+Jj"
+	};
+	
+	var nsp = [];
+	var keyz = Object.keys(progs);
+	for(var i=0;i<keyz.length;i++){
+		nsp.push(progs[keyz[i]]);
+	}
+	
+	function run(ex){
+		document.getElementById("code").value = progs[ex];
+	}
+	
+	function onEdit(){
+		document.getElementById("code").value = document.getElementById("code").value.replace(/\\b/g,"\b").replace(/\\n/g,"\n").replace(/\\t/g,"\t");
+	}
+	
 	function addListeners(){
+		document.getElementById("code").addEventListener("change",onEdit);
+		onEdit();
+		var qS = document.querySelectorAll("#openMenu + div#inner button");
+		for(var i=0;i<qS.length;i++){
+			qS[i].addEventListener("click",function(){
+				document.getElementById("code").value = progs[this.innerHTML] || "XError: program not found";
+			});
+		}
 		document.getElementById("save").addEventListener("click",save);
 		document.getElementById("load").addEventListener("click",load);
 		document.getElementById("openMenu").addEventListener("click",function(e){
