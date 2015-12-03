@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Jolf</title>
+	<meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Jolf : A golfier prefix version of JavaScript">
+	<link rel="stylesheet" href="bootstrap.css">
+	<script src="utf8.js"></script>
+	<script src="Jolf.js"></script>
+	<link rel="STYLESHEET" href="Jolf.css">
+	<script src="https://raw.githubusercontent.com/chjj/marked/master/marked.min.js"></script>
+	<script>
+	var tocHolder = {};
+	window.addEventListener("load",function(){
+		// markdown!
+		var mds = document.getElementsByTagName("markdown");
+		for(var i=0;i<mds.length;i++){
+			var Q = mds[i].innerHTML.replace(/&gt;/g,"<").replace(/&lt;/g,">").split("\n");
+			// get indentation of first line!
+			while(!(f=Q.shift()));
+			Q = [""].concat(Q);
+			var trimAmt = f.length-f.trimLeft().length;
+			console.log(Q);
+			Q = Q.map(function(e){
+				var ret = e.slice(trimAmt);
+				console.log(e,ret);
+				return ret;
+			});
+			mds[i].innerHTML = marked(f.trimLeft()+Q.join("\n")).replace(/GRAVE/g,"`");
+		}
+		// table of contents!
+		var toc = document.getElementById("toc");
+		h1s = document.querySelectorAll("h1, h2, h3, h4, h5, h6");
+		for(var i=0;i<h1s.length;i++){
+			h1s[i].id=h1s[i].id||h1s[i].innerHTML.replace(/[^A-Za-z0-9]/g,"-");
+			if(h1s[i].id!=="title"){
+				toc.innerHTML += "<a class=\"toc"+h1s[i].tagName.toLowerCase()+"\" href=\"#"+h1s[i].id+"\">"+h1s[i].innerHTML+"</a>";
+			}
+		}
+		toc.innerHTML = "<h2>Table of Contents</h2>"+toc.innerHTML;
+	});
+	</script>
+</head>
+<body>
+<div id="container">
+	<header>
+		<h1 id="title">Jolf</h1>
+		<a href="index.html">interpreter</a>
+	</header>
+	<sup>I use <a href="https://github.com/chjj/marked">marked</a>, along with <a href="">some code</a> I put together for this page. Enjoy!</sup>
+	<div id="toc"></div>
+	<markdown># 1. What is prefix language?
+There are three main types of operator-data placement schemes: Prefix, infix, and postfix. Infix is the one we are all familiar with, in which the operator is placed in between the operands, as in `5 + 7`. Infix is found in, erm, _practical_ programming langauges. Postfix is the scheme in which the operators follow the operands, as in `5 7 +`. Postifx schemes are found in stack-based languages, such as [><>](https://esolangs.org/wiki/Fish) and [Vitsy](https://github.com/VTCAKAVSMoACE/Vitsy). Lastly is prefix, in which the operators precede the operands, as in `+ 5 7`. The following statements are all equivalent in prefix, infix, and postfix respectively:
+
+    ^ 4 / + 5 9 2
+    4 ^ ((5 + 9) / 2)
+    4 5 9 + 2 / ^
+
+Being a prefix langauge, Jolf can easier be thought of as a sort of functional scheme, in which each command represents a function, with its arguments following afterwords. Say you have the JavaScript program `alert(3 + 5)`; then, if you think if `+` as a function `add`, you could re-write that as `alert(add(3,5))`. Since Jolf has a command for both `alert` and `add`, this is rewritten as `a+35`. This is the conversion process:
+
+    alert(3+5)
+    alert(add(3,5))
+    alert( +  3 5 )
+      a    +  3 5
+    a+35
+
+	</markdown>
+	<markdown># 2. Commands
+This is an index of the commands.
+(One can form a two-byte command by prefixing an instruction with a tilde (`~`).)
+
+## 2.1. Function instructions
+These instructions are the operators of Jolf. "`typeA, typeB` (&)" means the order does not matter. All ranges are integer ranges, unless they have a specified step.
+
+ * `*` - multiplies 2 arguments
+   * `number, number` - multiplies the two numbers
+   * `string, number` (&) - repeats `string` `number` times
+   * `array, number` - creates a 2D array of length `number` that contains `array` as all of its members
+ * `+` - adds 2 arguments, according to their types:
+   * `number, number` - adds the two numbers
+   * `anything, string` or `string, anything` - returns `string` concatted with `anything` (preserving order)
+   * `array, array` - concats the two arrays
+   * `non array, array` - Puts `non array` at the beginning of `array`
+   * `array, non array` - pushes `non array` to `array`
+   * `set, set` - the set union of the two sets
+ * `-` - subtracts 2 arguments (behaviour TBA)
+ * `.` - takes 2 arguments `O` and `p` and returns `O[p]`
+ * `/` - takes 2 arguments `A` and `B` and returns `A/B` (behaviour TBA)
+ * `&lt;` - takes 2 arguments `A` and `B` and returns `A &lt; B` (JS behaviour)
+ * `=` - takes 2 arguments `A` and `B` and returns `A == B`
+ * `&gt;` - takes 2 arguments `A` and `B` and returns `A > B` (JS behaviour)
+ * `@` - returns the character code of the next character
+ * `A` - takes 3 arguments `r`, `s`, and `t`; replaces each character in `s` found in `r` with the respective character found in `t`
+ * `B` - takes 1 argument `N` and converts it to binary as a string (equiv. `(N).toString(2)`)
+ * `C` - takes 2 arguments `A` and `B` and parses the string `A` as an integer in base `B` (equiv. `parseInt(A,B)`)
+ * `O` - takes the product of 1 argument, depending on its type:
+   * `array` - takes the product of the array
+ * `P` - takes 1 argument `A` and returns `Number(A)` (converts all to number, if possible) (conversion an array into a number, as in `[1,2,3,1,0,2] => 123102`)
+ * `Q` - squares 1 argument `S`, according to its type:
+   * `number` - multiplies it by itself
+   * `array` - takes the length of the array `N` and returns an array containing `N` copies of itself
+   * `string` - TBA
+ * `T` - takes 2 arguments `F` and `s`; surrounds `F` expression (after compilation) with quotes and evaluates that action `F` every `s` milliseconds
+ * `R` - takes 2 arguments `F` and `s`; runs `F` after `s` milliseconds
+ * `V` - takes 1 argument `S` and is the value `V` of `S`; if `S` is a number, returns `S`'s parity
+ * `^` - takes 2 arguments `A` and `B` and retursn `A^B` (exponentiation) (behaviour TBA)
+ * `_` - negates 1 argument, according to its type:
+   * `string` or `array` or `set` - reverses the entity
+   * `number` - negates the entity
+ * `a` - outputs (alerts/writes) 1 argument
+ * `b` - takes an integer `N` and a base `b` and returns `(N).toString(b)`; when `b = 1`, this is equal to a string of length `N` filled with `#`s.
+ * `c` - writes 1 argument to the log (`console.log` at the moment)
+ * `e` - takes 1 argument `S` and evaluates it as a new Jolf program; returns nothing at the moment
+ * `f` - takes 2 arguments `F` and `R` as a function and takes the array `R` as its commands.
+ * `p` - takes 3 arguments `a`, `b`, and `s` and creates a range `[a,b)` with a step `s`
+ * `r` - takes 2 arguments `a` and `b` and creates a range `[a,b)` (inclusive of `a` and exclusive of `b`)
+ * `u` - takes 1 argument
+   * `array` or `set` - returns the sum of the entity
+   * `string` - behaviour TBA
+   * `number` - takes the digit sum of the number (e.g. `u(140) = 1 + 4 + 0 = 5`)
+ * `v` - takes 2 arguments `S` and `V`; sets the value of variable `S` to `V` and creates `S` if nonexistant (returns `V`)
+ * `z` - takes 1 argument and returns a range `[1,a]`
+ * `~i` - takes 1 argument and returns that argument (the identity function)
+
+## 2.2. Data commands
+These instructions are the data/arguments of Jolf.
+### 2.2.1. As arguments
+These are written as arguments.
+ * `0-9` - that number
+ * `q` - writes the source code's reference to the the compiled code
+ * `i` and `I` - receive string input from `prompt`
+ * `j` and `J` - receive numeric input from `prompt`
+ * `E` - the empty string `""`
+ * `Y` - the empty array `[]`
+ * `~e` - Euler's number approx `2.718281828459045`
+ * `~p` - &pi; approx `3.141592`
+ * `~P` - &varphi;, `(1+sqrt[5])/2`
+
+### 2.2.2. As writing
+These are simply written to the compiled code.
+ * `~A` - writes `Array` to the compiled code
+ * `~M` - writes `Math` to the compiled code
+ * `~N` - writes `Number` to the compiled code
+ * `~S` - writes `String` to the compiled code
+ * `~p` - writes `prototype` to the compiled code
+ * `~0` - Infinity
+ * `~s` - writes `Set` to the compiled code
+ * `~N`, for `N in [1,2,3,4]` - `10^(N+1)`
+
+## 2.3. Null-arity commands
+These instructions do no affect the compiled code _per se_, but provide structure.
+
+ * `"` - begins string literal; writes characters to compiled code (surrounded by quotes) until another unescaped `"` is met
+ * `'` - character literal; writes next character to compiled code (surrounded by quotes)
+ * `$` - begin function literal; writes characters to compiled code as is, until another unescaped `$` is met
+ * `:` - begin character literal; writes the next character to compiled code as is
+ * `[` - begin array parsing (separated by commas)
+ * `GRAVE` - forces an argument check
+ * `\b` (hex 08) - prevents auto output
+ * `x` - quit parsing of expression
+
+	</markdown>
+</div>
+</body>
+</html>
