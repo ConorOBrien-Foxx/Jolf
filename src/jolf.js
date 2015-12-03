@@ -48,7 +48,7 @@ var ops = {	// constant-arity ops
 	"b": function(J){
 		J.comp += "toString(";
 		return 2;
-	}
+	},
 	"C": function(J){
 		J.comp += "parseInt(";
 		return 2;
