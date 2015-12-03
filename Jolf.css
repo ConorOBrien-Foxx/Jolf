@@ -7,6 +7,10 @@ p, textarea {
 	margin: 0;
 }
 
+p {
+	line-height: 26px;
+}
+
 textarea, #output {
 	font-family: "Consolas", monospace;
 	min-height: 2.25em;
@@ -66,9 +70,43 @@ textarea + p {
 	margin-top: 30px;
 }
 
+#toc a {
+	display: block;
+}
+
+#toc h2 {
+	border-bottom: 1px solid #333;
+	max-width: 40%;
+}
+
+.toch2 {
+	text-indent: 20px;
+}
+
+.toch3 {
+	text-indent: 40px;
+}
+
+.toch4 {
+	text-indent: 60px;
+}
+
+h1 {
+	font-size: 30px;
+}
+
+h2 {
+	font-size: 24px;
+}
+
+h3 {
+	font-size: 20px;
+}
+
 header > h1 {
 	display: inline-block;
 	margin-right: 20px;
+	font-size: 36px;
 }
 
 textarea {
@@ -78,4 +116,8 @@ textarea {
 
 #container {
 	margin: 20px;
+}
+
+h1,h2,h3,h4,h5,h6{
+	text-indent: none;
 }
