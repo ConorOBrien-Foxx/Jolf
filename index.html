@@ -6,7 +6,7 @@
     <meta http-equiv="X-UA-Compatible" content="chrome=1">
     <meta name="description" content="Jolf : A golfier prefix version of JavaScript">
 	<link rel="stylesheet" href="bootstrap.css">
-	<script src="utf8.js"></script>
+	<script src="https://rawgit.com/mathiasbynens/utf8.js/master/utf8.js"></script>
 	<script src="Jolf.js"></script>
 	<script>
 	// from tryitonline.net
@@ -56,10 +56,13 @@
 	
 	function onEdit(){
 		document.getElementById("code").value = document.getElementById("code").value.replace(/\\b/g,"\b").replace(/\\n/g,"\n").replace(/\\t/g,"\t");
+		document.getElementById("bytes").innerHTML = utf8.encode(document.getElementById("code").value).length;
 	}
 	
 	function addListeners(){
 		document.getElementById("code").addEventListener("change",onEdit);
+		document.getElementById("code").addEventListener("keydown",onEdit);
+		document.getElementById("code").addEventListener("keyup",onEdit);
 		onEdit();
 		var qS = document.querySelectorAll("#openMenu + div#inner button");
 		for(var i=0;i<qS.length;i++){
@@ -103,7 +106,7 @@
 		</div>
 		<a href="explanation.html">explanation</a>
 	</header>
-	<p>Code</p>
+	<p>Code (bytes: <span id="bytes">0</span>)</p>
 	<textarea id="code" spellcheck="false"></textarea>
 	<p>Input</p>
 	<textarea id="input" spellcheck="false"></textarea>
