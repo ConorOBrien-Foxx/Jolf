@@ -66,6 +66,14 @@ var ops = {	// constant-arity ops
 		J.comp += "apply(";
 		return 2;
 	},
+	"F": function(J){
+		J.comp += "getFirst(";
+		return 1;
+	},
+	"g": function(J){
+		J.comp += "getLast(";
+		return 1;
+	},
 	"L": function(J){
 		J.comp += "logBASE(";
 		return 2;
@@ -113,6 +121,10 @@ var ops = {	// constant-arity ops
 	},
 	"V": function(J){
 		J.comp += "getVar(";
+		return 1;
+	},
+	"y": function(J){
+		J.comp += "silentEvalJolf(";
 		return 1;
 	},
 	"z": function(J){
@@ -437,6 +449,10 @@ Jolf.prototype.step = function(){
 				this.mode = 0;
 				this.comp += "\"";
 				this.check();
+			} else if(chr=="'"){
+				this.comp += "\"";
+				this.check();
+				this.comp += "\"";
 			} else if(chr==this.fin){	// escape currnet charater
 				this.comp += "\\" + chr;
 			} else {
@@ -511,6 +527,14 @@ function evalJolf(code){	// lightweight wrapper code
 		console.log(e);
 	}
 	return instance;
+}
+
+function silentEvalJolf(code){
+	var x = new Jolf(code);
+	x.outted = true;
+	while(x.step());
+	x.total = "(function(){return "+x.total+"})();";
+	return eval(x.total);
 }
 
 {// functions
@@ -592,7 +616,7 @@ function evalJolf(code){	// lightweight wrapper code
 	}
 	
 	function getVar(name){
-		if(typeof name=="number") return name % 2 ? "even" : "odd";
+		if(typeof name=="number") return name % 2 ? "odd" : "even";
 		return window[name];
 	}
 	
@@ -698,6 +722,8 @@ function evalJolf(code){	// lightweight wrapper code
 	}
 	
 	function dictRepl(x,y,z){
+		if(typeof y=="number") y+="";
+		if(typeof z=="number") z+="";
 		y=typeof y=="string"?y.split(""):y;
 		z=typeof z=="string"?z.split(""):z;
 		var max = Math.max(y.length,z.length);
@@ -710,6 +736,14 @@ function evalJolf(code){	// lightweight wrapper code
 	
 	function toString(N,b){
 		return N.toString(b);
+	}
+	
+	function getFirst(x){
+		return x[0];
+	}
+	
+	function getLast(x){
+		return x[x.length-1];
 	}
 	
 	(function(N){var x=window[N];delete window[N];window[N]=function(num){return Array.isArray(num)?x(num.join("")):x(num);}})("Number");
