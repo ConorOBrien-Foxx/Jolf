@@ -6,23 +6,26 @@
   By ~ Conor ~ O'Brien
 */
 
-function isNum(x){
-	return x==parseInt(x);
+// polyfills from developer.mozilla.org
+{	
+String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(null==this)throw new TypeError("can't convert "+this+" to object");var r=""+this;if(t=+t,t!=t&&(t=0),0>t)throw new RangeError("repeat count must be non-negative");if(t==1/0)throw new RangeError("repeat count must be less than infinity");if(t=Math.floor(t),0==r.length||0==t)return"";if(r.length*t>=1<<28)throw new RangeError("repeat count must not overflow maximum string size");for(var e="";1==(1&t)&&(e+=r),t>>>=1,0!=t;)r+=r;return e});Array.prototype.every||(Array.prototype.every=function(r,t){"use strict";var e,n;if(null==this)throw new TypeError("this is null or not defined");var o=Object(this),i=o.length>>>0;if("function"!=typeof r)throw new TypeError;for(arguments.length>1&&(e=t),n=0;i>n;){var f;if(n in o){f=o[n];var y=r.call(e,f,n,o);if(!y)return!1}n++}return!0});Math.clz32=Math.clz32||function(){"use strict";var t=[32,31,0,16,0,30,3,0,15,0,0,0,29,10,2,0,0,0,12,14,21,0,19,0,0,28,0,25,0,9,1,0,17,0,4,,0,0,11,0,13,22,20,0,26,0,0,18,5,0,0,23,0,27,0,6,0,24,7,0,8,0,0,0];return function(r){var u=Number(r)>>>0;return u|=u>>>1,u|=u>>>2,u|=u>>>4,u|=u>>>8,u|=u>>>16,u=t[Math.imul(u,116069625)>>>26]}}();Math.trunc=Math.trunc||function(t){return 0>t?Math.ceil(t):Math.floor(t)};Math.sign=Math.sign||function(n){return n=+n,0===n||isNaN(n)?n:n>0?1:-1};Math.imul=Math.imul||function(t,u){var a=t>>>16&65535,i=65535&t,n=u>>>16&65535,r=65535&u;return i*r+(a*r+i*n<<16>>>0)|0};!function(){function t(t,n,o){return"undefined"==typeof o||0===+o?Math[t](n):(n=+n,o=+o,isNaN(n)||"number"!=typeof o||o%1!==0?NaN:(n=n.toString().split("e"),n=Math[t](+(n[0]+"e"+(n[1]?+n[1]-o:-o))),n=n.toString().split("e"),+(n[0]+"e"+(n[1]?+n[1]+o:o))))}Math.round10||(Math.round10=function(n,o){return t("round",n,o)}),Math.floor10||(Math.floor10=function(n,o){return t("floor",n,o)}),Math.ceil10||(Math.ceil10=function(n,o){return t("ceil",n,o)})}();Math.cbrt=Math.cbrt||function(t){var a=Math.pow(Math.abs(t),1/3);return 0>t?-a:a};Math.expm1=Math.expm1||function(t){return Math.exp(t)-1};Math.fround=Math.fround||function(n){return function(r){return n[0]=r,n[0]}}(Float32Array(1));
 }
 
-// why you no have RegExp.escape regularly, JavaScript?!
-RegExp.escape = function(s){
-	return s.replace(/[-\/\\^$*+?.()|[\]{}]/g,"\\$&");
-}
+// define various functions
+{ 
+	function isNum(x){
+		return x==parseInt(x);
+	}
 
-// dev tool for detection of existant commands
-function isAvailable(cmd){
-	return !(ctl[cmd]||ops[cmd]||inf[cmd]||mod[cmd]||sbs[cmd]);
-}
+	// why you no have RegExp.escape regularly, JavaScript?!
+	RegExp.escape = function(s){
+		return s.replace(/[-\/\\^$*+?.()|[\]{}]/g,"\\$&");
+	}
 
-
-function doNothing(){
-	return 3;
+	// dev tool for detection of existant commands
+	function isAvailable(cmd){
+		return !(ctl[cmd]||ops[cmd]||inf[cmd]||mod[cmd]||sbs[cmd]);
+	}
 }
 
 // define prototype shorts
@@ -61,9 +64,64 @@ function doNothing(){
 	}
 	Array.prototype.p = Array.prototype.pop;
 	String.prototype.r = String.prototype.trim;
+	
+	//--
+	Math._ = function negative(x){
+		return -Math.abs(x);
+	}
+	Math.a = Math.abs;
+	Math.A = Math.sign;
+	Math.b = Math.cosh;
+	Math.B = Math.acosh;
+	Math.c = Math.cos;
+	Math.C = Math.acos;
+	Math.d = Math.sinh;
+	Math.D = Math.asinh;
+	Math.e = Math.exp;
+	Math.f = Math.floor;
+	Math.F = Math.floor10;
+	Math.g = Math.ceil;
+	Math.G = Math.ceil10;
+	Math.h = Math.expm1;
+	Math.H = function ln(x){
+		return Math.log(x);
+	}
+	Math.i = Math.fround;
+	Math.I = Math.hypot;
+	Math.p = Math.cbrt;
+	Math.P = function cube(x){
+		return x*x*x;
+	};
+	Math.q = Math.sqrt;
+	Math.Q = function fortyTwo(){
+		return 42;
+	}
+	Math.r = Math.random;
+	Math.R = function randomInteger(min,max){
+		return Math.floor(Math.random()*(max-min+1))+min;
+	}
+	Math[0]= function randIntFromZero(x){
+		return Math.R(0,x)
+	}
+	Math[1]= function randIntFromOne(x){
+		return Math.R(1,x)
+	}
+	Math.s = Math.sin;
+	Math.S = Math.asin;
+	Math.t = Math.tan;
+	Math.T = Math.atan;
+	Math.u = Math.tanh;
+	Math.U = Math.atanh;
+	Math.v = Math.atan2;
+	Math.V = Math.clz32;
+	Math.w = Math.trunc;
+	Math.W = Math.imul;
+	Math.x = Math.round;
+	Math.X = Math.round10;
 }
 
-var ctl = {	// control flow; not working
+// control flow; not working well
+var ctl = {
 	"W": function(J){
 		J.comp += "while(";
 		J.haltChecking();
@@ -74,7 +132,8 @@ var ctl = {	// control flow; not working
 	}
 }
 
-var ops = {	// constant-arity ops
+// constant-arity ops
+var ops = {
 	" ": function(J){
 		var end=J.comp[J.comp.length-1];
 		J.comp = ",);".indexOf(end)+1?J.comp.slice(0,-1):J.comp;
@@ -110,10 +169,6 @@ var ops = {	// constant-arity ops
 		J.outted = true;
 		return 1;
 	},
-	"d": function(J){
-		J.comp += "doNothing(";
-		return 0;
-	},
 	"e": function(J){
 		J.comp += "evalJolf(";
 		return 1;
@@ -134,13 +189,33 @@ var ops = {	// constant-arity ops
 		J.comp += "split(";
 		return 2;
 	},
+	"h": function(J){
+		J.comp += "head(";
+		return 1;
+	},
 	"L": function(J){
 		J.comp += "logBASE(";
 		return 2;
 	},
+	"l": function(J){
+		J.comp += "length(";
+	},
 	"O": function(J){
 		J.comp += "prod(";
 		return 1;
+	},
+	"m": function(J){
+		var x = "Math[\"";
+		var chrTemp = J.code[++J.index];
+		x += chrTemp;
+		x += "\"](";
+		if(typeof Math[chrTemp]=="function"){
+			J.comp += x;
+			return Math[chrTemp].length;
+		} else {
+			J.comp += "(function(){return Math[\""+chrTemp+"\"]})(";
+			return 0;
+		}
 	},
 	"P": function(J){
 		J.comp += "Number(";
@@ -242,12 +317,19 @@ var ops = {	// constant-arity ops
 	}
 }
 
-var inf = {	// data/arguments
+// data/arguments
+var inf = {
 	"E": function(J){
 		J.comp += "\"\"";
 	},
 	"Y": function(J){
 		J.comp += "[]";
+	},
+	"H": function(J){
+		J.comp += "H";
+	},
+	"S": function(J){
+		J.comp += "S";
 	},
 	"i": function(J){
 		if(!J.enc.i){
@@ -324,7 +406,8 @@ var inf = {	// data/arguments
 	"": function(){}
 }
 
-var mod = {	// zero-arity functions
+// zero-arity functions
+var mod = {
 	"\"": function(J){
 		J.comp += "\"";
 		J.mode = 1;
@@ -345,6 +428,9 @@ var mod = {	// zero-arity functions
 	"{": function(J){
 		J.mode = 5;
 	},
+	"D": function(J){
+		
+	},
 	"`": function(J){
 		J.check();
 	},
@@ -356,7 +442,8 @@ var mod = {	// zero-arity functions
 	}
 }
 
-var sbs = {	// substitution characters
+// substitution characters
+var sbs = {
 	"#": function(J){
 		return "()";
 	},
@@ -378,9 +465,6 @@ var sbs = {	// substitution characters
 	"~s": function(J){
 		return "Set";
 	},
-	"M": function(J){
-		return "Math";
-	},
 	"~w": function(J){
 		return "window";
 	},
@@ -395,6 +479,7 @@ var sbs = {	// substitution characters
 	}
 }
 
+// jolf constructor
 function Jolf(code){
 	this.code   = code;
 	this.enc    = {};
@@ -407,6 +492,7 @@ function Jolf(code){
 	this.total  = "";
 	this.build  = "";
 	this.bldChr = ""; 
+	this.bldPrd = "";
 	this.checkQ = true;
 	this.prevCk = false;
 	this.outted = false;
@@ -415,6 +501,19 @@ function Jolf(code){
 		this.comp = "var i=+prompt();alert(i);while(i){alert(i)}";
 	}
 	return this;
+}
+
+// in-progress readable format of jolf compiled code
+Jolf.prototype.readable = function(){
+	var read = this.comp;
+	read = read.replace(/Math\["(.)"\]/g,function(match,p1){
+		if(typeof Math[p1].name !== "undefined"){
+			return "Math."+Math[p1].name;
+		} else {
+			return match;
+		}
+	});
+	return this.prec+read;
 }
 
 Jolf.prototype.haltChecking = function(){
@@ -605,6 +704,11 @@ Jolf.prototype.step = function(){
 		case 6:	// JS literal mode (short)
 			this.comp += this.code[this.index];
 			this.mode = 0;
+		break;
+		case 7:	// build predicate mode
+			this.bldPrd += this.chr;
+			// check the build
+			
 		break;
 	}
 	// increment for next step
@@ -844,9 +948,17 @@ function silentEvalJolf(code){
 		return x.toString().split(y);
 	}
 	
+	function head(x){
+		return x+1;
+	}
+	
+	function decrement(x){
+		return x-1;
+	}
+	
+	function length(x){
+		return x.length;
+	}
+	
 	(function(N){var x=window[N];delete window[N];window[N]=function(num){return Array.isArray(num)?x(num.join("")):x(num);}})("Number");
-}
-
-{	// polyfills from developer.mozilla.org
-String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(null==this)throw new TypeError("can't convert "+this+" to object");var r=""+this;if(t=+t,t!=t&&(t=0),0>t)throw new RangeError("repeat count must be non-negative");if(t==1/0)throw new RangeError("repeat count must be less than infinity");if(t=Math.floor(t),0==r.length||0==t)return"";if(r.length*t>=1<<28)throw new RangeError("repeat count must not overflow maximum string size");for(var e="";1==(1&t)&&(e+=r),t>>>=1,0!=t;)r+=r;return e});Array.prototype.every||(Array.prototype.every=function(r,t){"use strict";var e,n;if(null==this)throw new TypeError("this is null or not defined");var o=Object(this),i=o.length>>>0;if("function"!=typeof r)throw new TypeError;for(arguments.length>1&&(e=t),n=0;i>n;){var f;if(n in o){f=o[n];var y=r.call(e,f,n,o);if(!y)return!1}n++}return!0});
 }
