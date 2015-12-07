@@ -31,6 +31,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 // define prototype shorts
 {
 	var ars = {
+		"f":1,
 		"s":1,
 		"m":1,
 		"p":1,
@@ -42,6 +43,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Array.prototype.has = function(x){
 		return !!(this.indexOf(x)+1);
 	}
+	
+	Array.prototype.f = Array.prototype.filter;
+	Array.prototype.p = Array.prototype.pop;
 	Array.prototype.r = Array.prototype.getRandEl;
 	Array.prototype.s = Array.prototype.shift;
 	Array.prototype.m = function(f){
@@ -65,7 +69,6 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			}
 		}
 	}
-	Array.prototype.p = Array.prototype.pop;
 	String.prototype.r = String.prototype.trim;
 	
 	//--
@@ -197,6 +200,10 @@ var ops = {
 		J.outted = true;
 		return 1;
 	},
+	"d": function(J){
+		J.end.push("");
+		return 3;
+	},
 	"e": function(J){
 		J.comp += "evalJolf(";
 		return 1;
@@ -286,6 +293,10 @@ var ops = {
 		J.comp += "getVar(";
 		return 1;
 	},
+	"w": function(J){
+		J.comp += "decrement(";
+		return 1;
+	},
 	"y": function(J){
 		J.comp += "silentEvalJolf(";
 		return 1;
@@ -311,10 +322,11 @@ var ops = {
 		return 2;
 	},
 	";": function(J){
-		
+		J.end.push("");
+		return 2;
 	},
 	"%": function(J){
-		J.comp += "mod(";
+		J.comp += "modulo(";
 		return 2;
 	},
 	"-": function(J){
@@ -473,9 +485,6 @@ var mod = {
 		J.comp += "\"";
 		J.mode = 1;
 	},
-	"\\": function(J){
-		
-	},
 	"'": function(J){
 		J.mode = 2;
 	},
@@ -492,9 +501,12 @@ var mod = {
 	"{": function(J){
 		J.mode = 5;
 	},
+	"d": function(J){
+		
+	},
 	"D": function(J){
 		J.mode = 8;
-		J.comp += "function()"
+		J.comp += "function(H,S){"
 	},
 	"`": function(J){
 		J.check();
@@ -513,6 +525,9 @@ var mod = {
 var sbs = {
 	"#": function(J){
 		return "()";
+	},
+	"N": function(J){
+		return "return ";
 	},
 	"~N": function(J){
 		return "Number";
@@ -611,7 +626,9 @@ Jolf.prototype.check = function(){
 	var consump = this.func.pop();
 	if(typeof consump!=="undefined"){
 		if(!consump){
-			this.comp += this.end.pop()||")";
+			var ending = this.end.pop();
+			if(typeof ending==="undefined") ending = ")";
+			this.comp += ending;
 			x = this.check();
 			if(x>0){
 				var lst = this.comp.slice(-1);
@@ -623,7 +640,9 @@ Jolf.prototype.check = function(){
 		}
 		consump--;
 		if(!consump){
-			this.comp += ")";
+			var ending = this.end.pop();
+			if(typeof ending==="undefined") ending = ")";
+			this.comp += ending;
 			x = this.check();
 			if(x>0){
 				var lst = this.comp.slice(-1);
@@ -778,10 +797,11 @@ Jolf.prototype.step = function(){
 		case 8:	// build function mode
 			this.bldPrd += chr;
 			if(chr=="}"){
-				this.mode = 0;
-				var co = silentEvalJolfObj(this.bldPrd,{enc:this.enc});
+				var co = silentEvalJolfObj(this.bldPrd.slice(0,-1),{enc:this.enc});
 				this.prec += co.prec;
-				this.comp += co.comp;
+				this.comp += co.comp+"}";
+				this.mode = 0;
+				this.check();
 			}
 		break;
 	}
@@ -1046,6 +1066,11 @@ function silentEvalJolfObj(code,options){
 	
 	function doubleNeg(x){
 		return !!x;
+	}
+	
+	function modulo(x,y){
+		if(Array.isArray(x)) return x.filter(function(e){return e!==y})
+		return x%y;
 	}
 	
 	(function(N){var x=window[N];delete window[N];window[N]=function(num){return Array.isArray(num)?x(num.join("")):x(num);}})("Number");
