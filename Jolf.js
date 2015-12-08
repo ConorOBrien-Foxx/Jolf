@@ -8,7 +8,7 @@
 
 // polyfills from developer.mozilla.org
 {	
-String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(null==this)throw new TypeError("can't convert "+this+" to object");var r=""+this;if(t=+t,t!=t&&(t=0),0>t)throw new RangeError("repeat count must be non-negative");if(t==1/0)throw new RangeError("repeat count must be less than infinity");if(t=Math.floor(t),0==r.length||0==t)return"";if(r.length*t>=1<<28)throw new RangeError("repeat count must not overflow maximum string size");for(var e="";1==(1&t)&&(e+=r),t>>>=1,0!=t;)r+=r;return e});Array.prototype.every||(Array.prototype.every=function(r,t){"use strict";var e,n;if(null==this)throw new TypeError("this is null or not defined");var o=Object(this),i=o.length>>>0;if("function"!=typeof r)throw new TypeError;for(arguments.length>1&&(e=t),n=0;i>n;){var f;if(n in o){f=o[n];var y=r.call(e,f,n,o);if(!y)return!1}n++}return!0});Math.clz32=Math.clz32||function(){"use strict";var t=[32,31,0,16,0,30,3,0,15,0,0,0,29,10,2,0,0,0,12,14,21,0,19,0,0,28,0,25,0,9,1,0,17,0,4,,0,0,11,0,13,22,20,0,26,0,0,18,5,0,0,23,0,27,0,6,0,24,7,0,8,0,0,0];return function(r){var u=Number(r)>>>0;return u|=u>>>1,u|=u>>>2,u|=u>>>4,u|=u>>>8,u|=u>>>16,u=t[Math.imul(u,116069625)>>>26]}}();Math.trunc=Math.trunc||function(t){return 0>t?Math.ceil(t):Math.floor(t)};Math.sign=Math.sign||function(n){return n=+n,0===n||isNaN(n)?n:n>0?1:-1};Math.imul=Math.imul||function(t,u){var a=t>>>16&65535,i=65535&t,n=u>>>16&65535,r=65535&u;return i*r+(a*r+i*n<<16>>>0)|0};!function(){function t(t,n,o){return"undefined"==typeof o||0===+o?Math[t](n):(n=+n,o=+o,isNaN(n)||"number"!=typeof o||o%1!==0?NaN:(n=n.toString().split("e"),n=Math[t](+(n[0]+"e"+(n[1]?+n[1]-o:-o))),n=n.toString().split("e"),+(n[0]+"e"+(n[1]?+n[1]+o:o))))}Math.round10||(Math.round10=function(n,o){return t("round",n,o)}),Math.floor10||(Math.floor10=function(n,o){return t("floor",n,o)}),Math.ceil10||(Math.ceil10=function(n,o){return t("ceil",n,o)})}();Math.cbrt=Math.cbrt||function(t){var a=Math.pow(Math.abs(t),1/3);return 0>t?-a:a};Math.expm1=Math.expm1||function(t){return Math.exp(t)-1};Math.fround=Math.fround||function(n){return function(r){return n[0]=r,n[0]}}(Float32Array(1));Math.log10=Math.log10||function(t){return Math.log(t)/Math.LN10};Math.log2=Math.log2||function(t){return Math.log(t)/Math.LN2};Array.prototype.every||(Array.prototype.every=function(r,t){"use strict";var e,n;if(null==this)throw new TypeError("this is null or not defined");var o=Object(this),i=o.length>>>0;if("function"!=typeof r)throw new TypeError;for(arguments.length>1&&(e=t),n=0;i>n;){var f;if(n in o){f=o[n];var y=r.call(e,f,n,o);if(!y)return!1}n++}return!0});
+String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(null==this)throw new TypeError("can't convert "+this+" to object");var r=""+this;if(t=+t,t!=t&&(t=0),0>t)throw new RangeError("repeat count must be non-negative");if(t==1/0)throw new RangeError("repeat count must be less than infinity");if(t=Math.floor(t),0==r.length||0==t)return"";if(r.length*t>=1<<28)throw new RangeError("repeat count must not overflow maximum string size");for(var e="";1==(1&t)&&(e+=r),t>>>=1,0!=t;)r+=r;return e});Array.prototype.every||(Array.prototype.every=function(r,t){"use strict";var e,n;if(null==this)throw new TypeError("this is null or not defined");var o=Object(this),i=o.length>>>0;if("function"!=typeof r)throw new TypeError;for(arguments.length>1&&(e=t),n=0;i>n;){var f;if(n in o){f=o[n];var y=r.call(e,f,n,o);if(!y)return!1}n++}return!0});Math.clz32=Math.clz32||function(){"use strict";var t=[32,31,0,16,0,30,3,0,15,0,0,0,29,10,2,0,0,0,12,14,21,0,19,0,0,28,0,25,0,9,1,0,17,0,4,,0,0,11,0,13,22,20,0,26,0,0,18,5,0,0,23,0,27,0,6,0,24,7,0,8,0,0,0];return function(r){var u=Number(r)>>>0;return u|=u>>>1,u|=u>>>2,u|=u>>>4,u|=u>>>8,u|=u>>>16,u=t[Math.imul(u,116069625)>>>26]}}();Math.trunc=Math.trunc||function(t){return 0>t?Math.ceil(t):Math.floor(t)};Math.sign=Math.sign||function(n){return n=+n,0===n||isNaN(n)?n:n>0?1:-1};Math.imul=Math.imul||function(t,u){var a=t>>>16&65535,i=65535&t,n=u>>>16&65535,r=65535&u;return i*r+(a*r+i*n<<16>>>0)|0};!function(){function t(t,n,o){return"undefined"==typeof o||0===+o?Math[t](n):(n=+n,o=+o,isNaN(n)||"number"!=typeof o||o%1!==0?NaN:(n=n.toString().split("e"),n=Math[t](+(n[0]+"e"+(n[1]?+n[1]-o:-o))),n=n.toString().split("e"),+(n[0]+"e"+(n[1]?+n[1]+o:o))))}Math.round10||(Math.round10=function(n,o){return t("round",n,o)}),Math.floor10||(Math.floor10=function(n,o){return t("floor",n,o)}),Math.ceil10||(Math.ceil10=function(n,o){return t("ceil",n,o)})}();Math.cbrt=Math.cbrt||function(t){var a=Math.pow(Math.abs(t),1/3);return 0>t?-a:a};Math.expm1=Math.expm1||function(t){return Math.exp(t)-1};Math.fround=Math.fround||function(n){return function(r){return n[0]=r,n[0]}}(Float32Array(1));Math.log10=Math.log10||function(t){return Math.log(t)/Math.LN10};Math.log2=Math.log2||function(t){return Math.log(t)/Math.LN2};Array.prototype.every||(Array.prototype.every=function(r,t){"use strict";var e,n;if(null==this)throw new TypeError("this is null or not defined");var o=Object(this),i=o.length>>>0;if("function"!=typeof r)throw new TypeError;for(arguments.length>1&&(e=t),n=0;i>n;){var f;if(n in o){f=o[n];var y=r.call(e,f,n,o);if(!y)return!1}n++}return!0});Math.hypot=Math.hypot||function(){for(var t=0,r=arguments.length,n=0;r>n;n++){if(arguments[n]===1/0||arguments[n]===-(1/0))return 1/0;t+=arguments[n]*arguments[n]}return Math.sqrt(t)};Math.log10=Math.log10||function(t){return Math.log(t)/Math.LN10};
 }
 
 // define various functions
@@ -25,6 +25,15 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	// dev tool for detection of existant commands
 	function isAvailable(cmd){
 		return !(ctl[cmd]||ops[cmd]||inf[cmd]||mod[cmd]||sbs[cmd]);
+	}
+	
+	// factorial
+	window.life = {};
+	window.life.f = [];
+	function factorial(n){
+		if(n==0||n==1) return 1;
+		if(window.life.f[n]>0) return window.life.f[n];
+		return window.life.f[n]=factorial(n-1)*n;
 	}
 }
 
@@ -74,10 +83,15 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 	}
 	String.prototype.r = String.prototype.trim;
-	
+	Date.prototype.r   = Date.prototype.getTime;
 	//--
+	Math.memoized = {};
 	Math._ = function negative(x){
 		return -Math.abs(x);
+	}
+	Math["!"] = factorial;
+	Math["#"] = function(c){
+		return Math.memoized[c];
 	}
 	Math.a = Math.abs;
 	Math.A = Math.sign;
@@ -87,7 +101,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Math.C = Math.acos;
 	Math.d = Math.sinh;
 	Math.D = Math.asinh;
-	Math.e = Math.exp;
+	Math.e = function base10e(a,b){
+		return a*Math.pow(10,b);
+	}
 	Math.f = Math.floor;
 	Math.F = Math.floor10;
 	Math.g = Math.ceil;
@@ -99,6 +115,26 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Math.j = function ln(x){
 		return Math.log(x);
 	}
+	Math.J = Math.phi = Math.PHI = (1+Math.sqrt(5))/2;
+	Math.k = function perm(r,n){return factorial(r)/factorial(r-n)}
+	Math.K = function binom(r,n){perm(r,n)/factorial(n)}
+	Math.memoized.l = [0,1];
+	Math.l = function fibonacci(n){
+		n = Math.floor(n);
+		if(n<=1) return n;
+		else if(Math.memoized.l[n]) return Math.memoized.l[n];
+		else return Math.memoized.l[n] = Math.l(n-1)+Math.l(n-2);
+	}
+	Math.L = function phibonacci(n){
+		return (Math.pow(Math.PHI,n)-Math.pow(-Math.PHI,-n))/sqrt(5);
+	}
+	Math.m = function intIfInt(a,b){
+		
+	}
+	Math.n = function sigFig(a){
+		return a.toString(10).replace(/.+\./)
+	}
+	Math.o = Math.exp;
 	Math.p = Math.cbrt;
 	Math.P = function cube(x){
 		return x*x*x;
@@ -149,7 +185,11 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	Math[2] = Math.max;
 	Math[3] = Math.min;
-	
+	Math[4] = function aSum(x){
+		if(typeof x==="string") return aSum(x.split(""))
+		else if(typeof x==="number") return aSum(x.toString(10).split(""))
+		return sub.apply(window,x);
+	}
 	window.M = Math;
 	window.A = Array;
 	window.S = String;
@@ -159,12 +199,22 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 var ctl = {
 	"W": function(J){
 		J.comp += "while(";
-		J.haltChecking();
+	},
+	"?": function(J){
+		J.comp += "if(";
+	},
+	"!": function(J){
+		J.comp += "} else if("
+	},
+	"]": function(J){
+		J.comp += "} else {"
 	},
 	")": function(J){
 		J.comp += "){";
-		J.resumeChecking();
-	}
+		J.comp = J.comp.replace(/(while|if|repeat)\((.*)\){.*$/,function(m,p1,p2){
+			return p1+"("+p2.replace(/;*/g,"").replace(/;/g,",")+"){";
+		});
+	},
 }
 
 // constant-arity ops
@@ -172,7 +222,7 @@ var ops = {
 	" ": function(J){
 		var end=J.comp[J.comp.length-1];
 		J.comp = ",);".indexOf(end)+1?J.comp.slice(0,-1):J.comp;
-		J.comp += "[\"";
+		J.comp += " [\"";
 		var chrTemp = J.code[++J.index];
 		J.comp += chrTemp;
 		J.comp += "\"](";
@@ -207,6 +257,10 @@ var ops = {
 	"d": function(J){
 		J.end.push("");
 		return 3;
+	},
+	"~D": function(J){
+		J.comp += "new Date(";
+		return 1;
 	},
 	"e": function(J){
 		J.comp += "evalJolf(";
@@ -539,9 +593,6 @@ var sbs = {
 	"~A": function(J){
 		return "Array";
 	},
-	"~D": function(J){
-		return "Date";
-	},
 	"~o": function(J){
 		return "prototype";
 	},
@@ -773,10 +824,8 @@ Jolf.prototype.step = function(){
 			if(chr!="}"&&chr){
 				this.build += this.code[this.index];
 			} else if(chr=="}") {
-				var innerJolf = new Jolf(this.build);
 				// ensuring we don't have multiple var calls
-				innerJolf.enc = this.enc;
-				innerJolf.run();
+				var innerJolf = silentEvalJolfObj(this.build,{enc:this.enc});
 				// if any new var calls were made
 				this.prec += innerJolf.prec;
 				
@@ -845,6 +894,7 @@ function silentEvalJolfObj(code,options){
 
 {// functions
 	function add(a,b){
+		if(arguments.length>2) return add(x,add.equals(window,Array.from(arguments).slice(1)));
 		if(Array.isArray(a)){
 			if(Array.isArray(b)){
 				return a.concat(b);
@@ -856,6 +906,7 @@ function silentEvalJolfObj(code,options){
 	}
 	
 	function sub(a,b){
+		if(arguments.length>2) return sub(x,sub.equals(window,Array.from(arguments).slice(1)));
 		if(typeof a=="string") return a.replace(RegExp.escape(b),"");
 		else if(Array.isArray(a)) return a.filter(function(x){return x!=b});
 		else if(a instanceof Set){
@@ -866,6 +917,7 @@ function silentEvalJolfObj(code,options){
 	}
 	
 	function mul(x,y){
+		if(arguments.length>2) return mul(x,mul.equals(window,Array.from(arguments).slice(1)));
 		if(typeof x=="string"&&typeof y=="number"){
 			return x.repeat(y);
 		} else if(typeof y=="string"&&typeof x=="number"){
@@ -893,7 +945,7 @@ function silentEvalJolfObj(code,options){
 	}
 	
 	function getProp(a,b){
-		return a[b]||window[a][b];
+		return a[b]||window[a][b]||42;
 	}
 	
 	function neg(a){
@@ -935,10 +987,12 @@ function silentEvalJolfObj(code,options){
 	}
 	
 	function pow(x,y){
+		if(arguments.length>2) return pow(x,pow.equals(window,Array.from(arguments).slice(1)));
 		return Math.pow(x,y);
 	}
 	
 	function logBASE(a,b){
+		if(arguments.length>2) return logBASE(x,logBASE.equals(window,Array.from(arguments).slice(1)));
 		return Math.log(a)/Math.log(b);
 	}
 	
@@ -994,14 +1048,17 @@ function silentEvalJolfObj(code,options){
 	}
 	
 	function equals(x,y){
+		if(arguments.length>2) return equals(x,less.equals(window,Array.from(arguments).slice(1)));
 		return x == y;
 	}
 	
 	function less(x,y){
+		if(arguments.length>2) return less(x,less.apply(window,Array.from(arguments).slice(1)));
 		return x < y;
 	}
 	
 	function more(x,y){
+		if(arguments.length>2) return more(x,more.apply(window,Array.from(arguments).slice(1)));
 		return y < x;
 	}
 	
@@ -1023,7 +1080,10 @@ function silentEvalJolfObj(code,options){
 	});
 	
 	function sqrt(x){
-		// add operator overloading
+		if(typeof x==="string"){
+			// add more!
+			return x.replace(/`/g,"in").replace(/~/g,"ll").replace(/@/g,"th").replace(/\[/g,"on").replace(/\]/g,"qu").replace(/#/g,"er")
+		}
 		return Math.sqrt(x);
 	}
 	
@@ -1065,6 +1125,7 @@ function silentEvalJolfObj(code,options){
 	}
 	
 	function length(x){
+		if(typeof x==="number") return Math.abs(x).toString().length;
 		return x.length;
 	}
 	
@@ -1073,8 +1134,37 @@ function silentEvalJolfObj(code,options){
 	}
 	
 	function modulo(x,y){
+		if(arguments.length>2) return modulo(x,modulo.apply(window,Array.from(arguments).slice(1)));
 		if(Array.isArray(x)) return x.filter(function(e){return e!==y})
 		return x%y;
+	}
+	
+	function and(x,y){
+		if(arguments.length>2) return and(x,and.apply(window,Array.from(arguments).slice(1)));
+		if(Array.isArray(x)&&Array.isArray(y)){
+			return x.filter(function(e){
+				return y.indexOf(e)>-1;
+			});
+		}
+		return x&&y;
+	}
+	
+	function or(x,y){
+		if(arguments.length>2) return or(x,or.apply(window,Array.from(arguments).slice(1)));
+		if(Array.isArray(x)&&Array.isArray(x)) return x.concat(y);
+		return x||y;
+	}
+	
+	function sum(x){
+		if(typeof x==="string") return sum(x.split(""))
+		else if(typeof x==="number") return sum(x.toString(10).split(""))
+		return add.apply(window,x);
+	}
+	
+	function aSum(x){
+		if(typeof x==="string") return aSum(x.split(""))
+		else if(typeof x==="number") return aSum(x.toString(10).split(""))
+		return sub.apply(window,x);
 	}
 	
 	(function(N){var x=window[N];delete window[N];window[N]=function(num){return Array.isArray(num)?x(num.join("")):x(num);}})("Number");
