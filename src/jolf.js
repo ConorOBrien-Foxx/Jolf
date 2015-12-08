@@ -34,7 +34,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		if(n==0||n==1) return 1;
 		if(window.life.f[n]>0) return window.life.f[n];
 		return window.life.f[n]=factorial(n-1)*n;
-	} ​
+	}
 }
 
 // define prototype shorts
@@ -83,12 +83,16 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 	}
 	String.prototype.r = String.prototype.trim;
-	
+	Date.prototype.r   = Date.prototype.getTime;
 	//--
+	Math.memoized = {};
 	Math._ = function negative(x){
 		return -Math.abs(x);
 	}
 	Math["!"] = factorial;
+	Math["#"] = function(c){
+		return Math.memoized[c];
+	}
 	Math.a = Math.abs;
 	Math.A = Math.sign;
 	Math.b = Math.cosh;
@@ -97,7 +101,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Math.C = Math.acos;
 	Math.d = Math.sinh;
 	Math.D = Math.asinh;
-	Math.e = Math.exp;
+	Math.e = function base10e(a,b){
+		return a*Math.pow(10,b);
+	}
 	Math.f = Math.floor;
 	Math.F = Math.floor10;
 	Math.g = Math.ceil;
@@ -109,10 +115,26 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Math.j = function ln(x){
 		return Math.log(x);
 	}
-	Math.J = null;
+	Math.J = Math.phi = Math.PHI = (1+Math.sqrt(5))/2;
 	Math.k = function perm(r,n){return factorial(r)/factorial(r-n)}
 	Math.K = function binom(r,n){perm(r,n)/factorial(n)}
-	
+	Math.memoized.l = [0,1];
+	Math.l = function fibonacci(n){
+		n = Math.floor(n);
+		if(n<=1) return n;
+		else if(Math.memoized.l[n]) return Math.memoized.l[n];
+		else return Math.memoized.l[n] = Math.l(n-1)+Math.l(n-2);
+	}
+	Math.L = function phibonacci(n){
+		return (Math.pow(Math.PHI,n)-Math.pow(-Math.PHI,-n))/sqrt(5);
+	}
+	Math.m = function intIfInt(a,b){
+		
+	}
+	Math.n = function sigFig(a){
+		return a.toString(10).replace(/.+\./)
+	}
+	Math.o = Math.exp;
 	Math.p = Math.cbrt;
 	Math.P = function cube(x){
 		return x*x*x;
@@ -163,7 +185,11 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	Math[2] = Math.max;
 	Math[3] = Math.min;
-	
+	Math[4] = function aSum(x){
+		if(typeof x==="string") return aSum(x.split(""))
+		else if(typeof x==="number") return aSum(x.toString(10).split(""))
+		return sub.apply(window,x);
+	}
 	window.M = Math;
 	window.A = Array;
 	window.S = String;
@@ -173,12 +199,22 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 var ctl = {
 	"W": function(J){
 		J.comp += "while(";
-		J.haltChecking();
+	},
+	"?": function(J){
+		J.comp += "if(";
+	},
+	"!": function(J){
+		J.comp += "} else if("
+	},
+	"]": function(J){
+		J.comp += "} else {"
 	},
 	")": function(J){
 		J.comp += "){";
-		J.resumeChecking();
-	}
+		J.comp = J.comp.replace(/(while|if|repeat)\((.*)\){.*$/,function(m,p1,p2){
+			return p1+"("+p2.replace(/;*/g,"").replace(/;/g,",")+"){";
+		});
+	},
 }
 
 // constant-arity ops
@@ -186,7 +222,7 @@ var ops = {
 	" ": function(J){
 		var end=J.comp[J.comp.length-1];
 		J.comp = ",);".indexOf(end)+1?J.comp.slice(0,-1):J.comp;
-		J.comp += "[\"";
+		J.comp += " [\"";
 		var chrTemp = J.code[++J.index];
 		J.comp += chrTemp;
 		J.comp += "\"](";
@@ -221,6 +257,10 @@ var ops = {
 	"d": function(J){
 		J.end.push("");
 		return 3;
+	},
+	"~D": function(J){
+		J.comp += "new Date(";
+		return 1;
 	},
 	"e": function(J){
 		J.comp += "evalJolf(";
@@ -553,9 +593,6 @@ var sbs = {
 	"~A": function(J){
 		return "Array";
 	},
-	"~D": function(J){
-		return "Date";
-	},
 	"~o": function(J){
 		return "prototype";
 	},
@@ -787,10 +824,8 @@ Jolf.prototype.step = function(){
 			if(chr!="}"&&chr){
 				this.build += this.code[this.index];
 			} else if(chr=="}") {
-				var innerJolf = new Jolf(this.build);
 				// ensuring we don't have multiple var calls
-				innerJolf.enc = this.enc;
-				innerJolf.run();
+				var innerJolf = silentEvalJolfObj(this.build,{enc:this.enc});
 				// if any new var calls were made
 				this.prec += innerJolf.prec;
 				
@@ -1124,6 +1159,12 @@ function silentEvalJolfObj(code,options){
 		if(typeof x==="string") return sum(x.split(""))
 		else if(typeof x==="number") return sum(x.toString(10).split(""))
 		return add.apply(window,x);
+	}
+	
+	function aSum(x){
+		if(typeof x==="string") return aSum(x.split(""))
+		else if(typeof x==="number") return aSum(x.toString(10).split(""))
+		return sub.apply(window,x);
 	}
 	
 	(function(N){var x=window[N];delete window[N];window[N]=function(num){return Array.isArray(num)?x(num.join("")):x(num);}})("Number");
