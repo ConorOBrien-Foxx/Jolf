@@ -54,16 +54,19 @@
 		document.getElementById("code").value = progs[ex];
 	}
 	
-	function onEdit(){
-		document.getElementById("code").value = document.getElementById("code").value.replace(/\\b/g,"\b").replace(/\\n/g,"\n").replace(/\\t/g,"\t");
+	function updateByteCount(){
 		document.getElementById("bytes").innerHTML = utf8.encode(document.getElementById("code").value).length;
 	}
 	
+	function onEdit(){
+		document.getElementById("code").value = document.getElementById("code").value.replace(/\\b/g,"\b").replace(/\\n/g,"\n").replace(/\\t/g,"\t");
+		updateByteCount();
+	}
+	
 	function addListeners(){
-		document.getElementById("code").addEventListener("change",onEdit);
-		document.getElementById("code").addEventListener("keydown",onEdit);
-		document.getElementById("code").addEventListener("keyup",onEdit);
-		onEdit();
+		document.getElementById("code").addEventListener("change",updateByteCount);
+		document.getElementById("code").addEventListener("keydown",updateByteCount);
+		document.getElementById("code").addEventListener("keyup",updateByteCount);
 		var qS = document.querySelectorAll("#openMenu + div#inner button");
 		for(var i=0;i<qS.length;i++){
 			qS[i].addEventListener("click",function(){
@@ -79,6 +82,11 @@
 		document.getElementById("run").addEventListener("click",function(){
 			var x = evalJolf(document.getElementById("code").value);
 		});
+		document.getElementById("runnn").addEventListener("click",function(){
+			var x = silentEvalJolf(document.getElementById("code").value);
+			alert(x);
+		});
+		document.getElementById("transform").addEventListener("click",onEdit);
 	}
 	
 	window.addEventListener("load",load);
@@ -108,9 +116,11 @@
 	</header>
 	<p>Code (bytes: <span id="bytes">0</span>)</p>
 	<textarea id="code" spellcheck="false"></textarea>
+	<button id="transform" class="btn btn-info">apply transformation of code</button>
 	<p>Input</p>
 	<textarea id="input" spellcheck="false"></textarea>
-	<button class="btn btn-block btn-primary sev" id="run">Run</button>
+	<button class="btn btn-block btn-primary sev" id="run">Step Run (executes commands until finished)</button>
+	<button class="btn btn-block btn-warning sev" id="runnn">Full Run (executes commands at once)</button>
 	<p>Output</p>
 	<div id="output"></div>
 	<div id="options"><h2>Options</h2><input type="checkbox" id="altInput"> Take input from input box?<br><input type="checkbox" id="winOut"> Window is output source?<br><input type="checkbox"> Safety mode?</div>
