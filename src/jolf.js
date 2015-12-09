@@ -40,6 +40,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 // define prototype shorts
 {
 	var ars = {
+		"\"":1,
 		"e":1,
 		"f":1,
 		"h":1,
@@ -129,10 +130,16 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return (Math.pow(Math.PHI,n)-Math.pow(-Math.PHI,-n))/sqrt(5);
 	}
 	Math.m = function intIfInt(a,b){
-		
+		return Math.floor(a)==a?Math.floor(b):b;
+	}
+	Math.M = function arithmeticMean(a,b){
+		return sum(Array.from(arguments))/arguments.length;
 	}
 	Math.n = function sigFig(a){
-		return a.toString(10).replace(/.+\./)
+		return a.toString(10).replace(/.+\./,"").length;
+	}
+	Math.N = function geometricMean(a,b){
+		return Math.sqrt(prod(Array.from(arguments)))
 	}
 	Math.o = Math.exp;
 	Math.p = Math.cbrt;
@@ -148,10 +155,10 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return Math.floor(Math.random()*(max-min+1))+min;
 	}
 	Math[0]= function randIntFromZero(x){
-		return Math.R(0,x)
+		return Math.R(0,x);
 	}
 	Math[1]= function randIntFromOne(x){
-		return Math.R(1,x)
+		return Math.R(1,x);
 	}
 	Math.s = Math.sin;
 	Math.S = Math.asin;
@@ -214,19 +221,22 @@ var ctl = {
 		J.comp = J.comp.replace(/(while|if|repeat)\((.*)\){.*$/,function(m,p1,p2){
 			return p1+"("+p2.replace(/;*/g,"").replace(/;/g,",")+"){";
 		});
-	},
+	}
 }
 
 // constant-arity ops
 var ops = {
 	" ": function(J){
-		var end=J.comp[J.comp.length-1];
-		J.comp = ",);".indexOf(end)+1?J.comp.slice(0,-1):J.comp;
-		J.comp += " [\"";
+		J.comp += "prototypeFunc("
 		var chrTemp = J.code[++J.index];
-		J.comp += chrTemp;
-		J.comp += "\"](";
-		return ars[chrTemp];
+		try {
+			eval("\""+chrTemp+"\"");
+		} catch(e){
+			chrTemp = "\\"+chrTemp;
+		} finally {
+			J.comp += "\""+chrTemp+"\",";
+		}
+		return ars[chrTemp]+1;
 	},
 	"a": function(J){
 		J.comp += "alert(";
@@ -253,10 +263,6 @@ var ops = {
 		J.comp += "console.log(";
 		J.outted = true;
 		return 1;
-	},
-	"d": function(J){
-		J.end.push("");
-		return 3;
 	},
 	"~D": function(J){
 		J.comp += "new Date(";
@@ -296,6 +302,10 @@ var ops = {
 	"O": function(J){
 		J.comp += "prod(";
 		return 1;
+	},
+	"M": function(J){
+		J.end.push("");
+		return 3;
 	},
 	"m": function(J){
 		var x = "Math[\"";
@@ -894,7 +904,7 @@ function silentEvalJolfObj(code,options){
 
 {// functions
 	function add(a,b){
-		if(arguments.length>2) return add(x,add.equals(window,Array.from(arguments).slice(1)));
+		if(arguments.length>2) return add(x,add.apply(window,Array.from(arguments).slice(1)));
 		if(Array.isArray(a)){
 			if(Array.isArray(b)){
 				return a.concat(b);
@@ -906,7 +916,7 @@ function silentEvalJolfObj(code,options){
 	}
 	
 	function sub(a,b){
-		if(arguments.length>2) return sub(x,sub.equals(window,Array.from(arguments).slice(1)));
+		if(arguments.length>2) return sub(x,sub.apply(window,Array.from(arguments).slice(1)));
 		if(typeof a=="string") return a.replace(RegExp.escape(b),"");
 		else if(Array.isArray(a)) return a.filter(function(x){return x!=b});
 		else if(a instanceof Set){
@@ -917,7 +927,7 @@ function silentEvalJolfObj(code,options){
 	}
 	
 	function mul(x,y){
-		if(arguments.length>2) return mul(x,mul.equals(window,Array.from(arguments).slice(1)));
+		if(arguments.length>2) return mul(x,mul.apply(window,Array.from(arguments).slice(1)));
 		if(typeof x=="string"&&typeof y=="number"){
 			return x.repeat(y);
 		} else if(typeof y=="string"&&typeof x=="number"){
@@ -987,12 +997,12 @@ function silentEvalJolfObj(code,options){
 	}
 	
 	function pow(x,y){
-		if(arguments.length>2) return pow(x,pow.equals(window,Array.from(arguments).slice(1)));
+		if(arguments.length>2) return pow(x,pow.apply(window,Array.from(arguments).slice(1)));
 		return Math.pow(x,y);
 	}
 	
 	function logBASE(a,b){
-		if(arguments.length>2) return logBASE(x,logBASE.equals(window,Array.from(arguments).slice(1)));
+		if(arguments.length>2) return logBASE(x,logBASE.apply(window,Array.from(arguments).slice(1)));
 		return Math.log(a)/Math.log(b);
 	}
 	
@@ -1048,7 +1058,7 @@ function silentEvalJolfObj(code,options){
 	}
 	
 	function equals(x,y){
-		if(arguments.length>2) return equals(x,less.equals(window,Array.from(arguments).slice(1)));
+		if(arguments.length>2) return equals(x,less.apply(window,Array.from(arguments).slice(1)));
 		return x == y;
 	}
 	
@@ -1165,6 +1175,15 @@ function silentEvalJolfObj(code,options){
 		if(typeof x==="string") return aSum(x.split(""))
 		else if(typeof x==="number") return aSum(x.toString(10).split(""))
 		return sub.apply(window,x);
+	}
+	
+	function prototypeFunc(chr,func){
+		var otherArgs = Array.from(arguments).slice(2);
+		console.log(func,chr,func[chr],otherArgs,otherArgs.length);
+		if(otherArgs.length == 0)
+			return func[chr]();
+		else
+			return func[chr].apply(func,otherArgs);
 	}
 	
 	(function(N){var x=window[N];delete window[N];window[N]=function(num){return Array.isArray(num)?x(num.join("")):x(num);}})("Number");
