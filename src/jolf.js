@@ -118,7 +118,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	Math.J = Math.phi = Math.PHI = (1+Math.sqrt(5))/2;
 	Math.k = function perm(r,n){return factorial(r)/factorial(r-n)}
-	Math.K = function binom(r,n){perm(r,n)/factorial(n)}
+	Math.K = function binom(r,n){Math.k(r,n)/factorial(n)}
 	Math.memoized.l = [0,1];
 	Math.l = function fibonacci(n){
 		n = Math.floor(n);
@@ -196,6 +196,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		if(typeof x==="string") return aSum(x.split(""))
 		else if(typeof x==="number") return aSum(x.toString(10).split(""))
 		return sub.apply(window,x);
+	}
+	Math.$ = function Catalan(n){
+		return Math.K(2*n,n)/(n+1);
 	}
 	window.M = Math;
 	window.A = Array;
