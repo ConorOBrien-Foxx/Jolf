@@ -578,7 +578,7 @@ var mod = {
 		J.mode = 5;
 	},
 	"d": function(J){
-		J.mode = 9;
+		J.mode = 7;
 		// work it
 		// J.comp += "(H,S,n)=>";
 		// equivalent, for non-ES6:
@@ -687,6 +687,11 @@ Jolf.prototype.resumeChecking = function(){
 
 Jolf.prototype.run = function(){
 	if(this.step()) setTimeout(function(J){J.run()},1,this);
+	return this;
+}
+
+Jolf.prototype.runUnpaused = function(){
+	while(this.step());
 	return this;
 }
 
@@ -874,6 +879,7 @@ Jolf.prototype.step = function(){
 			var testJolf = new Jolf(this.bldPrd);
 			testJolf.enc = this.enc;
 			while(testJolf.step());
+			console.log(testJolf.comp);
 			if(testJolf.total.endsWith(";")){	// this is an acceptable one-liner
 				this.prec += testJolf.prec;
 				this.comp += testJolf.comp+"}";
