@@ -43,6 +43,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		"\"":1,
 		"e":1,
 		"f":1,
+		"F":1,
 		"h":1,
 		"m":1,
 		"p":1,
@@ -58,6 +59,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	
 	Array.prototype.e = Array.prototype.every;
 	Array.prototype.f = Array.prototype.filter;
+	Array.prototype.F = Array.prototype.forEach;
 	Array.prototype.h = Array.prototype.has;
 	Array.prototype.p = Array.prototype.pop;
 	Array.prototype.r = Array.prototype.getRandEl;
@@ -118,7 +120,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	Math.J = Math.phi = Math.PHI = (1+Math.sqrt(5))/2;
 	Math.k = function perm(r,n){return factorial(r)/factorial(r-n)}
-	Math.K = function binom(r,n){Math.k(r,n)/factorial(n)}
+	Math.K = function binom(r,n){return Math.k(r,n)/factorial(n)}
 	Math.memoized.l = [0,1];
 	Math.l = function fibonacci(n){
 		n = Math.floor(n);
@@ -200,12 +202,8 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Math.$ = function Catalan(n){
 		return Math.K(2*n,n)/(n+1);
 	}
-	window.M = Math;
-	window.A = Array;
-	window.S = String;
 }
 
-// control flow; not working well
 var ctl = {
 	"W": function(J){
 		J.comp += "while(";
@@ -273,6 +271,10 @@ var ops = {
 	},
 	"e": function(J){
 		J.comp += "evalJolf(";
+		return 1;
+	},
+	"~e": function(J){
+		J.comp += "eval(";
 		return 1;
 	},
 	"f": function(J){
@@ -461,6 +463,9 @@ var inf = {
 	"S": function(J){
 		J.comp += "S";
 	},
+	"n": function(J){
+		J.comp += "n";
+	},
 	"i": function(J){
 		if(!J.enc.i){
 			J.prec += "var i=prompt(\"i = \");";
@@ -573,11 +578,15 @@ var mod = {
 		J.mode = 5;
 	},
 	"d": function(J){
-		
+		J.mode = 7;
+		// work it
+		// J.comp += "(H,S,n)=>";
+		// equivalent, for non-ES6:
+		J.comp += "function(H,S,n){return ";
 	},
 	"D": function(J){
 		J.mode = 8;
-		J.comp += "function(H,S){"
+		J.comp += "function(H,S,n){"
 	},
 	"`": function(J){
 		J.check();
@@ -644,6 +653,7 @@ function Jolf(code){
 	this.build  = "";
 	this.bldChr = ""; 
 	this.bldPrd = "";
+	this.bldFun = "";
 	this.checkQ = true;
 	this.prevCk = false;
 	this.outted = false;
@@ -677,6 +687,11 @@ Jolf.prototype.resumeChecking = function(){
 
 Jolf.prototype.run = function(){
 	if(this.step()) setTimeout(function(J){J.run()},1,this);
+	return this;
+}
+
+Jolf.prototype.runUnpaused = function(){
+	while(this.step());
 	return this;
 }
 
@@ -859,15 +874,26 @@ Jolf.prototype.step = function(){
 			this.mode = 0;
 		break;
 		case 7:	// build predicate mode
+			this.bldPrd += chr;
+			// determine if we are done building
+			var testJolf = new Jolf(this.bldPrd);
+			testJolf.enc = this.enc;
+			while(testJolf.step());
+			console.log(testJolf.comp);
+			if(testJolf.total.endsWith(";")){	// this is an acceptable one-liner
+				this.prec += testJolf.prec;
+				this.comp += testJolf.comp+"}";
+			} // else, we're fine ^_^ carry on
 		break;
 		case 8:	// build function mode
-			this.bldPrd += chr;
+			this.bldFun += chr;
 			if(chr=="}"){
-				var co = silentEvalJolfObj(this.bldPrd.slice(0,-1),{enc:this.enc});
+				var co = silentEvalJolfObj(this.bldFun.slice(0,-1),{enc:this.enc});
 				this.prec += co.prec;
 				this.comp += co.comp+"}";
 				this.mode = 0;
 				this.check();
+				this.bldFun = "";
 			}
 		break;
 	}
