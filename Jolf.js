@@ -385,6 +385,10 @@ var ops = {
 		J.comp += "range(";
 		return 2;
 	},
+	"s": function(J){
+		J.comp += "rangeInclusive(";
+		return 2;
+	},
 	"T": function(J){
 		J.comp += "setInterval(\"";
 		J.fin = "\"";
@@ -977,7 +981,7 @@ function silentEvalJolfObj(code,options){
 
 {// functions
 	function add(a,b){
-		if(arguments.length>2) return add(x,add.apply(window,Array.from(arguments).slice(1)));
+		if(arguments.length>2) return add(a,add.apply(window,Array.from(arguments).slice(1)));
 		if(Array.isArray(a)){
 			if(Array.isArray(b)){
 				return a.concat(b);
@@ -989,7 +993,7 @@ function silentEvalJolfObj(code,options){
 	}
 	
 	function sub(a,b){
-		if(arguments.length>2) return sub(x,sub.apply(window,Array.from(arguments).slice(1)));
+		if(arguments.length>2) return sub(a,sub.apply(window,Array.from(arguments).slice(1)));
 		if(typeof a=="string") return a.replace(RegExp.escape(b),"");
 		else if(Array.isArray(a)) return a.filter(function(x){return x!=b});
 		else if(a instanceof Set){
@@ -1103,6 +1107,20 @@ function silentEvalJolfObj(code,options){
 			max = x+1;
 		}
 		for(var i=min;i<max;i++){
+			v.push(i);
+		}
+		return v;
+	}
+	
+	function rangeInclusive(x,y){
+		var v = [];
+		var min = x;
+		var max = y;
+		if(x>=y){
+			min = y+1;
+			max = x+1;
+		}
+		for(var i=min;i<=max;i++){
 			v.push(i);
 		}
 		return v;
