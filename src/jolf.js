@@ -102,7 +102,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	// from http://www.javascripter.net/faq/numberisprime.htm
 	Math["("] = function leastFactor(r){if(isNaN(r)||!isFinite(r))return NaN;if(0==r)return 0;if(r%1||2>r*r)return 1;if(r%2==0)return 2;if(r%3==0)return 3;if(r%5==0)return 5;for(var t=Math.sqrt(r),i=7;t>=i;i+=30){if(r%i==0)return i;if(r%(i+4)==0)return i+4;if(r%(i+6)==0)return i+6;if(r%(i+10)==0)return i+10;if(r%(i+12)==0)return i+12;if(r%(i+16)==0)return i+16;if(r%(i+22)==0)return i+22;if(r%(i+24)==0)return i+24}return r};
-	Math[")"]
+	Math[")"] = function factor(t){if(isNaN(t)||!isFinite(t)||t%1!=0||0==t)return[t];if(0>t)return[-(D=factor(-t)).shift()].concat(D);var r=Math["("](t);return t==r?[t]:[r].concat(factor(t/r))}
 	Math["{"] = function isPrime(n){
 		if(isNaN(n)||!isFinite(n)||n%1||n<2)return false; 
 		if(n==Math["("](n))return true;
@@ -494,7 +494,22 @@ var ops = {
 	"\x7f": function(J){
 		J.comp += "booleanNegation(";
 		return 1;
+	},
+	"\x0B": function(J){
+		J.comp += "...";
+		J.func.pop();
+		J.end.push("");
+		return 1;
+	},
+	"\f": function(J){
+		J.comp += "min(";
+		return 2;
+	},
+	"\r": function(J){
+		J.comp += "max(";
+		return 2;
 	}
+	
 }
 
 // data/arguments
@@ -1279,6 +1294,16 @@ function silentEvalJolfObj(code,options){
 			return func[chr]();
 		else
 			return func[chr].apply(func,otherArgs);
+	}
+	
+	function min(x,y){
+		if(arguments.length>2) return min(x,min.apply(window,Array.from(arguments).slice(1)));
+		return Math.min(x,y);
+	}
+	
+	function max(x,y){
+		if(arguments.length>2) return max(x,max.apply(window,Array.from(arguments).slice(1)));
+		return Math.max(x,y);
 	}
 	
 	(function(N){var x=window[N];delete window[N];window[N]=function(num){return Array.isArray(num)?x(num.join("")):x(num);}})("Number");
