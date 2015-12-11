@@ -49,6 +49,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		"p":1,
 		"r":0,
 		"s":1,
+		"S":1,
 	}
 	Array.prototype.getRandEl = function(){
 		return this[Math.floor(Math.random()*this.length)];
@@ -56,6 +57,8 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Array.prototype.has = function(x){
 		return !!(this.indexOf(x)+1);
 	}
+	// from http://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#comment54935095_10142256
+	Array.prototype.shuffle=function(){var t,h,r=this.length;if(0==r)return this;for(;--r;)t=Math.floor(Math.random()*(r+1)),h=this[r],this[r]=this[t],this[t]=h;return this};
 	
 	Array.prototype.e = Array.prototype.every;
 	Array.prototype.f = Array.prototype.filter;
@@ -64,6 +67,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Array.prototype.p = Array.prototype.pop;
 	Array.prototype.r = Array.prototype.getRandEl;
 	Array.prototype.s = Array.prototype.shift;
+	Array.prototype.S = Array.prototype.shuffle;
 	Array.prototype.m = function(f){
 		if(typeof f=="function"){
 			return this.map(f);
@@ -96,6 +100,25 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Math["#"] = function(c){
 		return Math.memoized[c];
 	}
+	// from http://www.javascripter.net/faq/numberisprime.htm
+	Math["("] = function leastFactor(r){if(isNaN(r)||!isFinite(r))return NaN;if(0==r)return 0;if(r%1||2>r*r)return 1;if(r%2==0)return 2;if(r%3==0)return 3;if(r%5==0)return 5;for(var t=Math.sqrt(r),i=7;t>=i;i+=30){if(r%i==0)return i;if(r%(i+4)==0)return i+4;if(r%(i+6)==0)return i+6;if(r%(i+10)==0)return i+10;if(r%(i+12)==0)return i+12;if(r%(i+16)==0)return i+16;if(r%(i+22)==0)return i+22;if(r%(i+24)==0)return i+24}return r};
+	Math[")"]
+	Math["{"] = function isPrime(n){
+		if(isNaN(n)||!isFinite(n)||n%1||n<2)return false; 
+		if(n==Math["("](n))return true;
+		return false;
+	}
+	// A000040
+	Math.memoized["}"] = [2,3,5,7,11,13,17,19,23,29,31,37,41,43,47,53,59,61,67,71,73,79,83,89,97,101,103,107,109,113,127,131,137,139,149,151,157,163,167,173,179,181,191,193,197,199,211,223,227,229,233,239,241,251,257,263,269,271];
+	Math["}"] = function nthPrime(n){
+		if(Math.memoized["}"][n]) return Math.memoized["}"][n];
+		v = Math.max.apply(null,Math.memoized["}"]);
+		while(Math.memoized["}"].length<=n){
+			while(!Math["{"](++v));
+			Math.memoized["}"].push(v);
+		}
+		return Math.memoized["}"][n];
+	}
 	Math.a = Math.abs;
 	Math.A = Math.sign;
 	Math.b = Math.cosh;
@@ -115,8 +138,11 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Math.H = Math.log1p;
 	Math.i = Math.fround;
 	Math.I = Math.hypot;
-	Math.j = function ln(x){
-		return Math.log(x);
+	Math.memoized.j = [2,1];
+	Math.j = function lucas(n){
+		n = Math.floor(n);
+		if(Math.memoized.j[n]) return Math.memoized.j[n];
+		else return Math.memoized.j[n] = Math.j(n-1)+Math.j(n-2);
 	}
 	Math.J = Math.phi = Math.PHI = (1+Math.sqrt(5))/2;
 	Math.k = function perm(r,n){return factorial(r)/factorial(r-n)}
@@ -144,6 +170,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return Math.sqrt(prod(Array.from(arguments)))
 	}
 	Math.o = Math.exp;
+	Math.O = function ln(x){
+		return Math.log(x);
+	}
 	Math.p = Math.cbrt;
 	Math.P = function cube(x){
 		return x*x*x;
@@ -202,6 +231,16 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Math.$ = function Catalan(n){
 		return Math.K(2*n,n)/(n+1);
 	}
+	Math["~"] = function prompt(){return prompt()};
+	Math[";"] = function evalPrompt(){
+		return eval(prompt());
+	}
+	Math[":"] = function numericPrompt(){
+		return Number(prompt());
+	}
+	Math["`"] = function numericPrompt(){
+		return eval("["+prompt("comma seprated")+"]");
+	}
 }
 
 var ctl = {
@@ -228,7 +267,7 @@ var ctl = {
 // constant-arity ops
 var ops = {
 	" ": function(J){
-		J.comp += "prototypeFunc("
+		J.comp += "prototypeFunc(";
 		var chrTemp = J.code[++J.index];
 		try {
 			eval("\""+chrTemp+"\"");
@@ -303,6 +342,7 @@ var ops = {
 	},
 	"l": function(J){
 		J.comp += "length(";
+		return 1;
 	},
 	"O": function(J){
 		J.comp += "prod(";
@@ -445,6 +485,10 @@ var ops = {
 	},
 	",": function(J){
 		J.comp += "doubleNeg(";
+		return 1;
+	},
+	"\x7f": function(J){
+		J.comp += "booleanNegation(";
 		return 1;
 	}
 }
@@ -1170,6 +1214,10 @@ function silentEvalJolfObj(code,options){
 	
 	function doubleNeg(x){
 		return !!x;
+	}
+	
+	function booleanNegation(x){
+		return !x;
 	}
 	
 	function modulo(x,y){
