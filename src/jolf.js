@@ -49,6 +49,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		"p":1,
 		"r":0,
 		"s":1,
+		"S":1,
 	}
 	Array.prototype.getRandEl = function(){
 		return this[Math.floor(Math.random()*this.length)];
@@ -56,6 +57,8 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Array.prototype.has = function(x){
 		return !!(this.indexOf(x)+1);
 	}
+	// from http://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#comment54935095_10142256
+	Array.prototype.shuffle=function(){var t,h,r=this.length;if(0==r)return this;for(;--r;)t=Math.floor(Math.random()*(r+1)),h=this[r],this[r]=this[t],this[t]=h;return this};
 	
 	Array.prototype.e = Array.prototype.every;
 	Array.prototype.f = Array.prototype.filter;
@@ -64,6 +67,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Array.prototype.p = Array.prototype.pop;
 	Array.prototype.r = Array.prototype.getRandEl;
 	Array.prototype.s = Array.prototype.shift;
+	Array.prototype.S = Array.prototype.shuffle;
 	Array.prototype.m = function(f){
 		if(typeof f=="function"){
 			return this.map(f);
@@ -338,6 +342,7 @@ var ops = {
 	},
 	"l": function(J){
 		J.comp += "length(";
+		return 1;
 	},
 	"O": function(J){
 		J.comp += "prod(";
