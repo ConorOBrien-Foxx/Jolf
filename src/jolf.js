@@ -119,6 +119,27 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 		return Math.memoized["}"][n];
 	}
+	Math.memoized[","] = [[1]];
+	Math[","] = function partitions(n){
+		if(Math.memoized[","][n]) return Math.memoized[","][n];
+		var res = [[n]];
+		for(var i=1;i<n;i++){
+			var a = n-i;
+			var Q = partitions(i);
+			for(var q=0;q<Q.length;q++){
+				if(Q[q][0]<=a) res.push([a].concat(Q[q]));
+			}
+		}
+		Math.memoized[","][n] = res;
+		return res;
+	}
+	Math["."] = function strictPartitions(n){
+		return Math[","](n).filter(function(x){
+			var k  = x.length;
+			var λk = Math.max.apply(Math,x);
+			return λk-k>0;
+		});
+	}
 	Math.a = Math.abs;
 	Math.A = Math.sign;
 	Math.b = Math.cosh;
