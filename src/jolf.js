@@ -8,7 +8,7 @@
 
 // polyfills from developer.mozilla.org
 {	
-String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(null==this)throw new TypeError("can't convert "+this+" to object");var r=""+this;if(t=+t,t!=t&&(t=0),0>t)throw new RangeError("repeat count must be non-negative");if(t==1/0)throw new RangeError("repeat count must be less than infinity");if(t=Math.floor(t),0==r.length||0==t)return"";if(r.length*t>=1<<28)throw new RangeError("repeat count must not overflow maximum string size");for(var e="";1==(1&t)&&(e+=r),t>>>=1,0!=t;)r+=r;return e});Array.prototype.every||(Array.prototype.every=function(r,t){"use strict";var e,n;if(null==this)throw new TypeError("this is null or not defined");var o=Object(this),i=o.length>>>0;if("function"!=typeof r)throw new TypeError;for(arguments.length>1&&(e=t),n=0;i>n;){var f;if(n in o){f=o[n];var y=r.call(e,f,n,o);if(!y)return!1}n++}return!0});Math.clz32=Math.clz32||function(){"use strict";var t=[32,31,0,16,0,30,3,0,15,0,0,0,29,10,2,0,0,0,12,14,21,0,19,0,0,28,0,25,0,9,1,0,17,0,4,,0,0,11,0,13,22,20,0,26,0,0,18,5,0,0,23,0,27,0,6,0,24,7,0,8,0,0,0];return function(r){var u=Number(r)>>>0;return u|=u>>>1,u|=u>>>2,u|=u>>>4,u|=u>>>8,u|=u>>>16,u=t[Math.imul(u,116069625)>>>26]}}();Math.trunc=Math.trunc||function(t){return 0>t?Math.ceil(t):Math.floor(t)};Math.sign=Math.sign||function(n){return n=+n,0===n||isNaN(n)?n:n>0?1:-1};Math.imul=Math.imul||function(t,u){var a=t>>>16&65535,i=65535&t,n=u>>>16&65535,r=65535&u;return i*r+(a*r+i*n<<16>>>0)|0};!function(){function t(t,n,o){return"undefined"==typeof o||0===+o?Math[t](n):(n=+n,o=+o,isNaN(n)||"number"!=typeof o||o%1!==0?NaN:(n=n.toString().split("e"),n=Math[t](+(n[0]+"e"+(n[1]?+n[1]-o:-o))),n=n.toString().split("e"),+(n[0]+"e"+(n[1]?+n[1]+o:o))))}Math.round10||(Math.round10=function(n,o){return t("round",n,o)}),Math.floor10||(Math.floor10=function(n,o){return t("floor",n,o)}),Math.ceil10||(Math.ceil10=function(n,o){return t("ceil",n,o)})}();Math.cbrt=Math.cbrt||function(t){var a=Math.pow(Math.abs(t),1/3);return 0>t?-a:a};Math.expm1=Math.expm1||function(t){return Math.exp(t)-1};Math.fround=Math.fround||function(n){return function(r){return n[0]=r,n[0]}}(Float32Array(1));Math.log10=Math.log10||function(t){return Math.log(t)/Math.LN10};Math.log2=Math.log2||function(t){return Math.log(t)/Math.LN2};Array.prototype.every||(Array.prototype.every=function(r,t){"use strict";var e,n;if(null==this)throw new TypeError("this is null or not defined");var o=Object(this),i=o.length>>>0;if("function"!=typeof r)throw new TypeError;for(arguments.length>1&&(e=t),n=0;i>n;){var f;if(n in o){f=o[n];var y=r.call(e,f,n,o);if(!y)return!1}n++}return!0});Math.hypot=Math.hypot||function(){for(var t=0,r=arguments.length,n=0;r>n;n++){if(arguments[n]===1/0||arguments[n]===-(1/0))return 1/0;t+=arguments[n]*arguments[n]}return Math.sqrt(t)};Math.log10=Math.log10||function(t){return Math.log(t)/Math.LN10};
+String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(null==this)throw new TypeError("can't convert "+this+" to object");var r=""+this;if(t=+t,t!=t&&(t=0),0>t)throw new RangeError("repeat count must be non-negative");if(t==1/0)throw new RangeError("repeat count must be less than infinity");if(t=Math.floor(t),0==r.length||0==t)return"";if(r.length*t>=1<<28)throw new RangeError("repeat count must not overflow maximum string size");for(var e="";1==(1&t)&&(e+=r),t>>>=1,0!=t;)r+=r;return e});Array.prototype.every||(Array.prototype.every=function(r,t){"use strict";var e,n;if(null==this)throw new TypeError("this is null or not defined");var o=Object(this),i=o.length>>>0;if("function"!=typeof r)throw new TypeError;for(arguments.length>1&&(e=t),n=0;i>n;){var f;if(n in o){f=o[n];var y=r.call(e,f,n,o);if(!y)return!1}n++}return!0});Math.clz32=Math.clz32||function(){"use strict";var t=[32,31,0,16,0,30,3,0,15,0,0,0,29,10,2,0,0,0,12,14,21,0,19,0,0,28,0,25,0,9,1,0,17,0,4,,0,0,11,0,13,22,20,0,26,0,0,18,5,0,0,23,0,27,0,6,0,24,7,0,8,0,0,0];return function(r){var u=Number(r)>>>0;return u|=u>>>1,u|=u>>>2,u|=u>>>4,u|=u>>>8,u|=u>>>16,u=t[Math.imul(u,116069625)>>>26]}}();Math.trunc=Math.trunc||function(t){return 0>t?Math.ceil(t):Math.floor(t)};Math.sign=Math.sign||function(n){return n=+n,0===n||isNaN(n)?n:n>0?1:-1};Math.imul=Math.imul||function(t,u){var a=t>>>16&65535,i=65535&t,n=u>>>16&65535,r=65535&u;return i*r+(a*r+i*n<<16>>>0)|0};!function(){function t(t,n,o){return"undefined"==typeof o||0===+o?Math[t](n):(n=+n,o=+o,isNaN(n)||"number"!=typeof o||o%1!==0?NaN:(n=n.toString().split("e"),n=Math[t](+(n[0]+"e"+(n[1]?+n[1]-o:-o))),n=n.toString().split("e"),+(n[0]+"e"+(n[1]?+n[1]+o:o))))}Math.round10||(Math.round10=function(n,o){return t("round",n,o)}),Math.floor10||(Math.floor10=function(n,o){return t("floor",n,o)}),Math.ceil10||(Math.ceil10=function(n,o){return t("ceil",n,o)})}();Math.cbrt=Math.cbrt||function(t){var a=Math.pow(Math.abs(t),1/3);return 0>t?-a:a};Math.expm1=Math.expm1||function(t){return Math.exp(t)-1};Math.fround=Math.fround||function(n){return function(r){return n[0]=r,n[0]}}(Float32Array(1));Math.log10=Math.log10||function(t){return Math.log(t)/Math.LN10};Math.log2=Math.log2||function(t){return Math.log(t)/Math.LN2};Array.prototype.every||(Array.prototype.every=function(r,t){"use strict";var e,n;if(null==this)throw new TypeError("this is null or not defined");var o=Object(this),i=o.length>>>0;if("function"!=typeof r)throw new TypeError;for(arguments.length>1&&(e=t),n=0;i>n;){var f;if(n in o){f=o[n];var y=r.call(e,f,n,o);if(!y)return!1}n++}return!0});Math.hypot=Math.hypot||function(){for(var t=0,r=arguments.length,n=0;r>n;n++){if(arguments[n]===1/0||arguments[n]===-(1/0))return 1/0;t+=arguments[n]*arguments[n]}return Math.sqrt(t)};Math.log10=Math.log10||function(t){return Math.log(t)/Math.LN10};String.fromCodePoint||!function(){var r=function(){try{var r={},n=Object.defineProperty,t=n(r,r,r)&&n}catch(e){}return t}(),n=String.fromCharCode,t=Math.floor,e=function(){var r,e,o=16384,i=[],a=-1,u=arguments.length;if(!u)return"";for(var f="";++a<u;){var g=Number(arguments[a]);if(!isFinite(g)||0>g||g>1114111||t(g)!=g)throw RangeError("Invalid code point: "+g);65535>=g?i.push(g):(g-=65536,r=(g>>10)+55296,e=g%1024+56320,i.push(r,e)),(a+1==u||i.length>o)&&(f+=n.apply(null,i),i.length=0)}return f};r?r(String,"fromCodePoint",{value:e,configurable:!0,writable:!0}):String.fromCodePoint=e}();Array.prototype.fill||(Array.prototype.fill=function(t){if(null==this)throw new TypeError("this is null or not defined");for(var r=Object(this),n=r.length>>>0,i=arguments[1],a=i>>0,e=0>a?Math.max(n+a,0):Math.min(a,n),o=arguments[2],h=void 0===o?n:o>>0,l=0>h?Math.max(n+h,0):Math.min(h,n);l>e;)r[e]=t,e++;return r});
 }
 
 // define various functions
@@ -50,6 +50,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		"r":0,
 		"s":1,
 		"S":1,
+		"`":1,
 	}
 	Array.prototype.getRandEl = function(){
 		return this[Math.floor(Math.random()*this.length)];
@@ -89,7 +90,11 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			}
 		}
 	}
+	Array.prototype["`"] = Array.prototype.fill;
+	
 	String.prototype.r = String.prototype.trim;
+	String.prototype["`"] = 
+	
 	Date.prototype.r   = Date.prototype.getTime;
 	//--
 	Math.memoized = {};
@@ -262,6 +267,50 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Math["`"] = function numericPrompt(){
 		return eval("["+prompt("comma seprated")+"]");
 	}
+	// adding string stuff
+	String.A = String.fromCharCode
+	String.a = String.fromCodePoint;
+	String.l = "abcdefghijklmnopqrstuvwxyz";
+	String.L = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
+	String.s = function unTextese(x){
+		function replaceTextese(orig,textese,normal){
+			normal=normal.split("");
+			return orig.replace(textese,function(a,...matches){
+				
+			});
+		}
+		return x.replace(/(l)(o)(l)/gi,"$1aughing $2ut $3oud").replace(/(b)(r)(b)/gi,"$1e $2ight $3ack");
+	}
+	String.u = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	String.U = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
+	
+	Array.s = function(a){
+		// get the closest square number corresponding to the length
+		var clLen = Math.ceil(Math.sqrt(a.length));
+		var j=0;
+		var res=[];
+		for(var i=0;i<Math.pow(clLen,2);i++){
+			res[j] = res[j]||[];
+			res[j].push(a[i]||" ");
+			if(i%clLen==clLen-1&&i){
+				if(j%2) res[j].reverse();
+				j++;
+			}
+		}
+		return res.map(function(x){return x.join(" ");}).join("\n");
+	}
+	Array.w = function(a){
+		// [1,2,3,4,5,6,7,8,9]
+		/*
+		3 2 2 1 1
+		4 3 3 2 2 1 1
+		[
+			[1,2,3],
+			[8,9,4],
+			[7,6,5]
+		]
+		*/
+	}
 }
 
 var ctl = {
@@ -287,6 +336,10 @@ var ctl = {
 
 // constant-arity ops
 var ops = {
+	"#": function(J){
+		J.comp += "toHex(";
+		return 1;
+	},
 	" ": function(J){
 		J.comp += "prototypeFunc(";
 		var chrTemp = J.code[++J.index];
@@ -316,11 +369,15 @@ var ops = {
 		J.comp += "toString(";
 		return 2;
 	},
+	"c": function(J){
+		J.comp += "parseInt(";
+		return 1;
+	},
 	"C": function(J){
 		J.comp += "parseInt(";
 		return 2;
 	},
-	"c": function(J){
+	"~c": function(J){
 		J.comp += "console.log(";
 		J.outted = true;
 		return 1;
@@ -391,6 +448,19 @@ var ops = {
 		return 1;
 	},
 	"p": function(J){
+		var x = "String[\"";
+		var chrTemp = J.code[++J.index];
+		x += chrTemp;
+		x += "\"](";
+		if(typeof Math[chrTemp]=="function"){
+			J.comp += x;
+			return Math[chrTemp].length;
+		} else {
+			J.comp += "(function(){return String[\""+chrTemp+"\"]})(";
+			return 0;
+		}
+	},
+	"~p": function(J){
 		J.comp += "stepRange(";
 		return 3;
 	},
@@ -443,6 +513,19 @@ var ops = {
 		J.comp += "unaryRange(";
 		return 1;
 	},
+	"Z": function(J){
+		var x = "Array[\"";
+		var chrTemp = J.code[++J.index];
+		x += chrTemp;
+		x += "\"](";
+		if(typeof Math[chrTemp]=="function"){
+			J.comp += x;
+			return Array[chrTemp].length;
+		} else {
+			J.comp += "(function(){return Array[\""+chrTemp+"\"]})(";
+			return 0;
+		}
+	}
 	"+": function(J){
 		J.comp += "add(";
 		return 2;
@@ -687,7 +770,7 @@ var mod = {
 
 // substitution characters
 var sbs = {
-	"#": function(J){
+	"~#": function(J){
 		return "()";
 	},
 	"N": function(J){
@@ -1120,7 +1203,11 @@ function silentEvalJolfObj(code,options){
 	}
 	
 	function toBinary(a){
-		return (a).toString(2);
+		if(typeof a==="number") return a.toString(2);
+		else if(typeof a==="string") return a.toUpperCase();
+		else if(Array.isArray(a)){
+			
+		}
 	}
 	
 	function square(x){
@@ -1238,7 +1325,7 @@ function silentEvalJolfObj(code,options){
 	}
 	
 	function toString(N,b){
-		return N.toString(b);
+		return N.toString(b||10);
 	}
 	
 	function getFirst(x){
@@ -1276,6 +1363,7 @@ function silentEvalJolfObj(code,options){
 	
 	function modulo(x,y){
 		if(arguments.length>2) return modulo(x,modulo.apply(window,Array.from(arguments).slice(1)));
+		if(typeof x==="string") return modulo(x.split(""),y).join("");
 		if(Array.isArray(x)) return x.filter(function(e){return e!==y})
 		return x%y;
 	}
@@ -1327,5 +1415,10 @@ function silentEvalJolfObj(code,options){
 		return Math.max(x,y);
 	}
 	
+	function toHex(x){
+		if(typeof x==="number") return x.toString(16);
+		else if(typeof x==="string") return x.toLowerCase();
+	}
+		
 	(function(N){var x=window[N];delete window[N];window[N]=function(num){return Array.isArray(num)?x(num.join("")):x(num);}})("Number");
 }
