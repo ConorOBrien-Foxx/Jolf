@@ -1341,9 +1341,9 @@ Jolf.prototype.step = function(){
 		break;
 		case 5:	// golfy array
 			if(chr=="\\")this.index++;
-			if(chr!="}"&&chr){
+			if(chr!="#"&&chr){
 				this.build += this.code[this.index];
-			} else if(chr=="}") {
+			} else if(chr=="#") {
 				// ensuring we don't have multiple var calls
 				var innerJolf = silentEvalJolfObj(this.build,{enc:this.enc});
 				// if any new var calls were made
