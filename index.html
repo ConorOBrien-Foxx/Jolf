@@ -59,7 +59,7 @@
 	}
 	
 	function onEdit(){
-		document.getElementById("code").value = document.getElementById("code").value.replace(/\\b/g,"\b").replace(/\\n/g,"\n").replace(/\\t/g,"\t");
+		document.getElementById("code").value = document.getElementById("code").value.replace(/\\b/g,"\b").replace(/\\n/g,"\n").replace(/\\t/g,"\t").replace(/\\x(..)/g,function(m,p1){return eval("\"\\x"+p1+"\"")});
 		updateByteCount();
 	}
 	
@@ -82,8 +82,8 @@
 		document.getElementById("run").addEventListener("click",function(){
 			var x = evalJolf(document.getElementById("code").value);
 			function validate(x){
-				if(x.index < x.code.length) setTimeout(validate,1,x);
-				else document.getElementById("outCode").innerHTML = x.total;
+				if(x.index <= x.code.length) setTimeout(validate,1,x);
+				else document.getElementById("outCode").innerHTML = (x.prec+x.comp).replace(/([;{])/g,"$1<br>");
 			}
 			validate(x);
 		});
