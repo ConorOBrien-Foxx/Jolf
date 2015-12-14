@@ -1127,6 +1127,9 @@ var sbs = {
 	},
 	"«": function(J){
 		return "--";
+	},
+	"o": function(J){
+		return J.code[++J.index]+"="
 	}
 }
 
@@ -1355,7 +1358,7 @@ Jolf.prototype.step = function(){
 				golfArr.pop();      // safety ~~~.
 				// composing the array           v
 				this.comp += "[" + golfArr.join(",") + "]";
-				// ensuring we don't run into the ) again
+				// ensuring we don't run into the # again
 				//this.index++;
 				// checking
 				this.check();
