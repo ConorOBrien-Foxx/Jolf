@@ -17,6 +17,7 @@ textarea, #output, #outCode {
 	min-width: 50ch;
 	max-width: 100%;
 	padding: 5px;
+	white-space: pre;
 }
 
 p + p {
