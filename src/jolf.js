@@ -12,6 +12,12 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 }
 
 {// functions
+	// from http://stackoverflow.com/a/29585751/4119004, minified
+	
+	function cartesianProduct(x,y){
+		return (function(r){var n=[],t=Array(r.length);return function u(a){if(a==r.length)return n.push(r.map(function(r,n){return r[t[n]]}));for(var e=0;e<r[a].length;++e)t[a]=e,u(a+1)}(0),n})(Array.from(arguments));
+	}
+	
 	function add(a,b){
 		if(arguments.length>2) return add(a,add.apply(window,Array.from(arguments).slice(1)));
 		if(Array.isArray(a)){
@@ -47,6 +53,8 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 				a.push(x);
 			}
 			return a;
+		} else if(Array.isArray(x)&&Array.isArray(y)){
+			return cartesianProduct(x,y);
 		}
 		return x*y;
 	}
@@ -210,7 +218,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		var iu = document.getElementById("output");
 		// on browser?
 		if(iu){
-			iu.innerHTML += x + "<br>";
+			iu.innerHTML += x.replace("\\n","<br>") + "<br>";
 		} else {
 			alert(x);
 		}
@@ -332,8 +340,22 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		if(typeof x==="number") return x.toString(16);
 		else if(typeof x==="string") return x.toLowerCase();
 	}
+	
+	function ternary(q,n,f){
+		return q?n:f;
+	}
 		
 	(function(N){var x=window[N];delete window[N];window[N]=function(num){return Array.isArray(num)?x(num.join("")):x(num);}})("Number");
+	
+	var pids=0;
+	(function(p){
+		window["old_"+p]=window[p];delete window[p];window[p]=function(msg){
+			var q=document.getElementById("input").value.split("\n\n")
+			var r=q.shift();
+			document.getElementById("input").value=q.join("\n\n");
+			return r
+		};
+	})("prompt");
 }
 
 // define various functions
@@ -417,8 +439,10 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	Array.prototype["`"] = Array.prototype.fill;
 	
+	String.prototype.s = String.prototype.search;
+	String.prototype.m = String.prototype.match;
 	String.prototype.r = String.prototype.trim;
-	String.prototype["`"] = 
+	String.prototype["`"] = String.prototype.charAt;
 	
 	Date.prototype.r   = Date.prototype.getTime;
 	//--
@@ -595,6 +619,21 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	// adding string stuff
 	String.A = String.fromCharCode
 	String.a = String.fromCodePoint;
+	String.c = function center(x){
+		x = x.split("\n");
+		// get max line length
+		var len = x.reduce(function(x,y){return Math.max(x,y.trim().length)},0);
+		return x.map(function(e){
+			var dif = len-e.length;
+			if(dif){
+				for(var i=0;i<dif;i++){
+					if(i%2)e=" "+e;
+					else e+=" ";
+				}
+			}
+			return e;
+		}).join("\n");
+	}
 	String.l = "abcdefghijklmnopqrstuvwxyz";
 	String.L = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
 	String.s = function unTextese(x){
@@ -608,6 +647,11 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	String.u = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	String.U = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
+	String[0] = "0123456789";
+	String[")"] = ["0","1","2","3","4","5","6","7","8","9"];
+	String[1] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+	String["!"] = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","0","1","2","3","4","5","6","7","8","9"];
+	
 	
 	Array.s = function(a){
 		// get the closest square number corresponding to the length
@@ -642,15 +686,6 @@ var ctl = {
 	"W": function(J){
 		J.comp += "while(";
 	},
-	"?": function(J){
-		J.comp += "if(";
-	},
-	"!": function(J){
-		J.comp += "} else if("
-	},
-	"]": function(J){
-		J.comp += "} else {"
-	},
 	")": function(J){
 		J.comp += "){";
 		J.comp = J.comp.replace(/(while|if|repeat)\((.*)\){.*$/,function(m,p1,p2){
@@ -664,6 +699,10 @@ var ops = {
 	"#": function(J){
 		J.comp += "toHex(";
 		return 1;
+	},
+	"?": function(J){
+		J.comp += "ternary(";
+		return 3;
 	},
 	" ": function(J){
 		J.comp += "prototypeFunc(";
@@ -1347,6 +1386,7 @@ Jolf.prototype.step = function(){
 			if(chr!="#"&&chr){
 				this.build += this.code[this.index];
 			} else if(chr=="#") {
+				this.mode = 0;
 				// ensuring we don't have multiple var calls
 				var innerJolf = silentEvalJolfObj(this.build,{enc:this.enc});
 				// if any new var calls were made
