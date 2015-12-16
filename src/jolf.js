@@ -143,6 +143,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	
 	function range(x,y){
+		if(Array.isArray(x)&&Array.isArray(y)){
+			return x.filter(function(e){return !y.has(e)})
+		}
 		var v = [];
 		var min = x;
 		var max = y;
@@ -214,11 +217,11 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return Number(x.toString().split("").map(Number).reduce(function(a,b){return a*b}))
 	}
 	
-	(function(f){window.alert=function(a,J){if(a==Infinity){f(Infinity)}else{f(JSON.stringify(a))};(J||{}).outted=true;}})(function(x){
+	(function(f){window.alert=function(a,J){a=a||"";if(a==Infinity){f(Infinity)}else{f(JSON.stringify(a))};(J||{}).outted=true;}})(function(x){
 		var iu = document.getElementById("output");
 		// on browser?
 		if(iu){
-			iu.innerHTML += x.replace(/\\n/g,"\n")+"\n";
+			iu.innerHTML += x.replace(/\\([nt])/g,function(a,b){return eval("\"\\"+b+"\"");})+"\n";
 			//iu.innerHTML += x.replace(/\\n/g,"<br>") + "<br>";
 		} else {
 			alert(x);
@@ -345,8 +348,38 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	function ternary(q,n,f){
 		return q?n:f;
 	}
-		
-	(function(N){var x=window[N];delete window[N];window[N]=function(num){return Array.isArray(num)?x(num.join("")):x(num);}})("Number");
+	
+	function undefChoose(x,y){
+		return typeof x==="undefined"?y:x;
+	}
+	
+	function join(x,y){
+		if(typeof x=="string") return join(x.split(""),y);
+		return x.join(y);
+	}
+	
+	function unique(x){
+		if(typeof x==="string") return unique(x.split("")).join("");
+		var r = [];
+		for(var i=0;i<x.length;i++){
+			if(!r.has(x[i]))r.push(x[i]);
+		}
+		return r;
+	}
+	
+	function divisors(x){
+		var r=[];
+		for(var i=1;i<=Math.sqrt(x);i++){
+			if(!(x%i))r.push(i,x/i);
+		}
+		return unique(r.sort(function(x,y){return 2*(x>y)-1}));
+	}
+	
+	function sigmaK(k,n){
+		return sum(divisors(n).map(function(x){return Math.pow(x,k)}));
+	}
+	
+	(function(N){var x=window[N];delete window[N];window[N]=function(num){return Array.isArray(num)?x(num.join("")):num==""?undefined:x(num);}})("Number");
 	
 	var pids=0;
 	(function(p){
@@ -817,9 +850,9 @@ var ops = {
 		var chrTemp = J.code[++J.index];
 		x += chrTemp;
 		x += "\"](";
-		if(typeof Math[chrTemp]=="function"){
+		if(typeof String[chrTemp]=="function"){
 			J.comp += x;
-			return Math[chrTemp].length;
+			return String[chrTemp].length;
 		} else {
 			J.comp += "(function(){return String[\""+chrTemp+"\"]})(";
 			return 0;
@@ -833,8 +866,12 @@ var ops = {
 		J.comp += "square(";
 		return 1;
 	},
-	"R": function(J){
+	"~R": function(J){
 		J.comp += "setTimeout(";
+		return 2;
+	},
+	"R": function(J){
+		J.comp += "join(";
 		return 2;
 	},
 	"r": function(J){
@@ -883,7 +920,7 @@ var ops = {
 		var chrTemp = J.code[++J.index];
 		x += chrTemp;
 		x += "\"](";
-		if(typeof Math[chrTemp]=="function"){
+		if(typeof Array[chrTemp]=="function"){
 			J.comp += x;
 			return Array[chrTemp].length;
 		} else {
@@ -977,8 +1014,27 @@ var ops = {
 	"\r": function(J){
 		J.comp += "max(";
 		return 2;
+	},
+	"~t": function(J){
+		J.comp += "typeof(";
+		return 1;
+	},
+	"\t": function(J){
+		J.comp += "undefChoose(";
+		return 2;
+	},
+	"ε": function(J){
+		J.comp += "eval(";
+		return 1;
+	},
+	"σ": function(J){
+		J.comp += "sigmaK(";
+		return 2;
+	},
+	"μ": function(J){
+		J.comp += "unique(";
+		return 1;
 	}
-	
 }
 
 // data/arguments
@@ -1130,7 +1186,7 @@ var mod = {
 		console.log("\u201c( terminates the program and kills your computer\u201d")
 		console.log("http://chat.stackexchange.com/transcript/message/25961158#25961158")
 		J.index = J.code.length + 1;
-	}
+	},
 }
 
 // substitution characters
@@ -1316,7 +1372,7 @@ Jolf.prototype.step = function(){
 				if(!arity){
 					this.comp += ")";
 					this.check();
-				} else this.func.push(arity);
+				} else { this.func.push(arity); }
 			} else if(inf[chr]){	// if the character is data
 				inf[chr](this);
 			} else if(isNum(chr)){	// if the character is a number
