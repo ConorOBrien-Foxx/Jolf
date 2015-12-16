@@ -218,7 +218,8 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		var iu = document.getElementById("output");
 		// on browser?
 		if(iu){
-			iu.innerHTML += x.replace(/\\n/g,"<br>") + "<br>";
+			iu.innerHTML += x.replace(/\\n/g,"\n")+"\n";
+			//iu.innerHTML += x.replace(/\\n/g,"<br>") + "<br>";
 		} else {
 			alert(x);
 		}
