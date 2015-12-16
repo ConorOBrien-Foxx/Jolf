@@ -3,8 +3,8 @@
 <head>
 	<title>Jolf</title>
 	<meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <meta name="description" content="Jolf : A golfier prefix version of JavaScript">
+	<meta http-equiv="X-UA-Compatible" content="chrome=1">
+	<meta name="description" content="Jolf : A golfier prefix version of JavaScript">
 	<link rel="stylesheet" href="bootstrap.css">
 	<script src="https://rawgit.com/mathiasbynens/utf8.js/master/utf8.js"></script>
 	<script src="Jolf.js"></script>
@@ -93,6 +93,7 @@
 		});
 		document.getElementById("transform").addEventListener("click",onEdit);
 		document.getElementById("clear").addEventListener("click",function(){document.getElementById("output").innerHTML = "";});
+		onEdit();
 	}
 	
 	window.addEventListener("load",load);
@@ -124,6 +125,7 @@
 	<textarea id="code" spellcheck="false"></textarea>
 	<button id="transform" class="btn btn-info">apply transformation of code</button>
 	<p>Input</p>
+	<p>Input is seperated by a double newline (<code>\n\n</code>).</p>
 	<textarea id="input" spellcheck="false"></textarea>
 	<button class="btn btn-block btn-primary sev" id="run">Step Run (executes commands until finished)</button>
 	<button class="btn btn-block btn-warning sev" id="runnn">Full Run (executes commands at once)</button>
