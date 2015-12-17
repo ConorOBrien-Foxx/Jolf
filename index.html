@@ -7,7 +7,7 @@
 	<meta name="description" content="Jolf : A golfier prefix version of JavaScript">
 	<link rel="stylesheet" href="bootstrap.css">
 	<script src="https://rawgit.com/mathiasbynens/utf8.js/master/utf8.js"></script>
-	<script src="https://rawgit.com/ConorOBrien-Foxx/Jolf/master/src/jolf.js"></script>
+	<script src="Jolf.js"></script>
 	<script>
 	// from tryitonline.net
 	function load(){
@@ -93,7 +93,7 @@
 		});
 		document.getElementById("transform").addEventListener("click",onEdit);
 		document.getElementById("clear").addEventListener("click",function(){document.getElementById("output").innerHTML = "";});
-		onEdit();
+		updateByteCount();
 	}
 	
 	window.addEventListener("load",load);
@@ -134,7 +134,10 @@
 	<button id="clear" class="btn btn-block btn-info sev">clear</button>
 	<p>Transpiled code</p>
 	<div id="outCode"></div>
-	<div id="options"><h2>Options</h2><input type="checkbox" id="altInput"> Take input from input box?<br><input type="checkbox" id="winOut"> Window is output source?<br><input type="checkbox"> Safety mode?</div>
+	<div id="options">
+		<h2>Options</h2>
+		<input type="checkbox" id="pom" checked=false> Pretty output mode?
+	</div>
 </div>
 </body>
 </html>
