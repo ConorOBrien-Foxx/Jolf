@@ -378,7 +378,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	function sigmaK(k,n){
 		return sum(divisors(n).map(function(x){return Math.pow(x,k)}));
 	}
-	
+		
 	(function(N){var x=window[N];delete window[N];window[N]=function(num){return Array.isArray(num)?x(num.join("")):num==""?undefined:x(num);}})("Number");
 	
 	var pids=0;
@@ -415,6 +415,14 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		if(n==0||n==1) return 1;
 		if(window.life.f[n]>0) return window.life.f[n];
 		return window.life.f[n]=factorial(n-1)*n;
+	}
+	
+	String.prototype.format = function(){
+		var string = this;
+		for(var i=0;i<arguments.length;i++){
+			string = string.replace(/%/,arguments[i]);
+		}
+		return string;
 	}
 }
 
@@ -668,8 +676,23 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			return e;
 		}).join("\n");
 	}
+	String.e = function left(x){
+		
+	}
+	String.j = function justify(x){
+		
+	}
 	String.l = "abcdefghijklmnopqrstuvwxyz";
 	String.L = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
+	String.p = function padLeft(x){
+		
+	}
+	String.P = function padRight(x){
+		
+	}
+	String.r = function right(x){
+		
+	}
 	String.s = function unTextese(x){
 		function replaceTextese(orig,textese,normal){
 			normal=normal.split("");
@@ -1240,6 +1263,7 @@ function Jolf(code){
 	this.mode   = 0;
 	this.func   = [];
 	this.end    = [];
+	this.repl   = 0;
 	this.total  = "";
 	this.build  = "";
 	this.bldChr = ""; 
@@ -1398,13 +1422,24 @@ Jolf.prototype.step = function(){
 			} else if(chr=="\""||typeof chr=="undefined"){
 				this.mode = 0;
 				this.comp += "\"";
-				this.check();
+				if(this.repl){
+					this.comp += ".format(";
+					this.func.push(this.repl);
+					this.repl = 0;
+				} else this.check();
 			} else if(chr=="'"){
 				this.comp += "\"";
-				this.check();
+				if(this.repl){
+					this.comp += ".format(";
+					this.func.push(this.repl);
+					this.repl = 0;
+				} else this.check();
 				this.comp += "\"";
 			} else if(chr==this.fin){	// escape currnet charater
 				this.comp += "\\" + chr;
+			} else if(chr=="%"){
+				this.comp += "%";
+				this.repl++;
 			} else {
 				this.comp += chr;
 			}
