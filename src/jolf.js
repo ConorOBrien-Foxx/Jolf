@@ -217,11 +217,15 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return Number(x.toString().split("").map(Number).reduce(function(a,b){return a*b}))
 	}
 	
-	(function(f){window.alert=function(a,J){a=a||"";if(a==Infinity){f(Infinity)}else{f(JSON.stringify(a))};(J||{}).outted=true;}})(function(x){
+	(function(f){window.alert=function(a,J){a=a||"";if(a==Infinity){f(Infinity)}else if((document.getElementById("pom").checked)){f(JSON.stringify(a))}else{f(a)};(J||{}).outted=true;}})(function(x){
 		var iu = document.getElementById("output");
 		// on browser?
 		if(iu){
-			iu.innerHTML += x.replace(/\\([nt])/g,function(a,b){return eval("\"\\"+b+"\"");})+"\n";
+			if(document.getElementById("pom").checked)
+				iu.innerHTML += (x||"").replace(/\\([nt])/g,function(a,b){return eval("\"\\"+b+"\"");})+"\n";
+			else
+				iu.innerHTML += x;
+				
 			//iu.innerHTML += x.replace(/\\n/g,"<br>") + "<br>";
 		} else {
 			alert(x);
@@ -431,6 +435,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	var ars = {
 		"\"":1,
 		"e":1,
+		"i":1,
 		"f":1,
 		"F":1,
 		"h":1,
@@ -454,6 +459,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Array.prototype.f = Array.prototype.filter;
 	Array.prototype.F = Array.prototype.forEach;
 	Array.prototype.h = Array.prototype.has;
+	Array.prototype.i = Array.prototype.indexOf;
 	Array.prototype.p = Array.prototype.pop;
 	Array.prototype.r = Array.prototype.getRandEl;
 	Array.prototype.s = Array.prototype.shift;
@@ -481,6 +487,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	Array.prototype["`"] = Array.prototype.fill;
 	
+	String.prototype.i = String.prototype.indexOf;
 	String.prototype.s = String.prototype.search;
 	String.prototype.m = String.prototype.match;
 	String.prototype.r = String.prototype.trim;
@@ -1148,6 +1155,9 @@ var inf = {
 	"~P": function(J){
 		J.comp += "(1+Math.sqrt(5))/2";
 	},
+	"~G": function(J){
+		J.comp += "Math.pow(Math.E,Math.PI)";
+	},
 	"~0": function(J){
 		J.comp += "0/1";
 	},
@@ -1163,6 +1173,9 @@ var inf = {
 	"~4": function(J){
 		J.comp += "100000";
 	},
+	"~5": function(J){
+		J.comp += "16";
+	}
 	"": function(){}
 }
 
@@ -1210,6 +1223,9 @@ var mod = {
 		console.log("http://chat.stackexchange.com/transcript/message/25961158#25961158")
 		J.index = J.code.length + 1;
 	},
+	"ς": function(J){
+		document.getElementById("output").innerHTML = "";
+	}
 }
 
 // substitution characters
@@ -1416,9 +1432,14 @@ Jolf.prototype.step = function(){
 			}
 		break;
 		case 1:	// string mode
-			if(chr=="\\"){	// escape next character
-				this.comp += this.code[this.index++];
-				this.comp += chr;
+			if(chr=="\\"){	// escape next character or apply control sequence
+				var x = this.code[++this.index];
+				if(eval("'\\"+x+"'")==x){
+					this.comp += chr;
+					this.comp += x;
+				} else {
+					this.comp += "\\"+x;
+				}
 			} else if(chr=="\""||typeof chr=="undefined"){
 				this.mode = 0;
 				this.comp += "\"";
@@ -1501,16 +1522,12 @@ Jolf.prototype.step = function(){
 			this.mode = 0;
 		break;
 		case 7:	// build predicate mode
-			this.bldPrd += chr;
+			this.bldPrd += this.code[this.index]||"";
 			// determine if we are done building
 			var testJolf = new Jolf(this.bldPrd);
 			testJolf.enc = this.enc;
 			while(testJolf.step());
-			console.log(testJolf.comp);
-			if(testJolf.total.endsWith(";")){	// this is an acceptable one-liner
-				this.prec += testJolf.prec;
-				this.comp += testJolf.comp+"}";
-			} // else, we're fine ^_^ carry on
+			try{eval(testJolf);this.prec+=testJolf.prec;this.comp+=testJolf.comp+"}";this.mode=0;}catch(e){}
 		break;
 		case 8:	// build function mode
 			this.bldFun += chr;
