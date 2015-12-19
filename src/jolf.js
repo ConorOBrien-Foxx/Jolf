@@ -1175,7 +1175,7 @@ var inf = {
 	},
 	"~5": function(J){
 		J.comp += "16";
-	}
+	},
 	"": function(){}
 }
 
