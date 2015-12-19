@@ -12,7 +12,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 }
 
 {// functions
-	// from http://stackoverflow.com/a/29585751/4119004, minified
+	// cart product: from http://stackoverflow.com/a/29585751/4119004, minified
 	
 	function cartesianProduct(x,y){
 		return (function(r){var n=[],t=Array(r.length);return function u(a){if(a==r.length)return n.push(r.map(function(r,n){return r[t[n]]}));for(var e=0;e<r[a].length;++e)t[a]=e,u(a+1)}(0),n})(Array.from(arguments));
@@ -397,7 +397,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 }
 
 // define various functions
-{ 
+{
+	Object.defineProperty(Array.prototype,"last",{get(){return this[this.length-1]},set(v){this[this.length-1]=v}});
+	
 	function isNum(x){
 		return x==parseInt(x);
 	}
@@ -489,6 +491,10 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	
 	String.prototype.i = String.prototype.indexOf;
 	String.prototype.s = String.prototype.search;
+	String.prototype.S = String.prototype.map = function map(f){
+		var copy = this.split("");
+		return copy.map(f).join("");
+	}
 	String.prototype.m = String.prototype.match;
 	String.prototype.r = String.prototype.trim;
 	String.prototype["`"] = String.prototype.charAt;
@@ -1298,13 +1304,61 @@ function Jolf(code){
 // in-progress readable format of jolf compiled code
 Jolf.prototype.readable = function(){
 	var read = this.comp;
-	read = read.replace(/Math\["(.)"\]/g,function(match,p1){
-		if(typeof Math[p1].name !== "undefined"){
-			return "Math."+Math[p1].name;
+	read = read.replace(/(Math|String|Array)\["(.)"\]/g,function(match,p1,p2){
+		if(typeof eval(p1)[p2].name !== "undefined"){
+			return p1+"."+eval(p1)[p2].name;
 		} else {
 			return match;
 		}
+	}).replace(/\(function\(\)\{return (Math|String|Array)\["(.)"\]\}\)\(\)/g,function(match,p1,p2){
+		var t=eval(p1)[p2];
+		if(typeof t=="number")return t;
+		return JSON.stringify(eval(p1)[p2]);
 	});
+	
+	// replace all instances of prototypeFunc with respective func
+	{
+		while(read.search(/prototypeFunc/)>=0){
+			var index = read.search(/prototypeFunc/)+13;
+			var depth = 1;
+			var stringMode = false;
+			// search for prototype name
+			var i = index;
+			while(depth&&++i<read.length){
+				if(read[i]=="\"") stringMode=!stringMode;
+				if(!stringMode){
+					if(read[i]==",") depth--;
+				}
+			}
+			var prop = read.slice(index+2,i-1);
+			// obtain object to which the prototype belongs
+			var depthArr = [1];
+			var arrayMode = false;
+			var j = i;
+			while(depthArr[0]&&++j<read.length){
+				if(read[j]=="\"") stringMode=!stringMode;
+				if(read[j]=="["||read[j]=="]") arrayMode=!arrayMode;
+				if(!(stringMode||arrayMode)){
+					if(read[j]=="(") depthArr.push(1);
+					if(read[j]==")") depthArr.pop();
+					if(read[j]==","&&depthArr.length==1) depthArr[0]--;
+				}
+			}
+			var obj = read.slice(i+1,j);
+			console.log(prop,obj);
+			read = read.slice(0,index-13)+obj+"."+(eval(obj).constructor.prototype[prop].name||prop)+"("+read.slice(j+1,read.length);
+		}
+	}
+	
+	// proper indentation
+	var tabLevel = 0;
+	for(var i=0;i<read.length;i++){
+		if("{".indexOf(read[i])>=0){
+			tabLevel++;
+			read=read.replace(RegExp.escape(read[i]),i)
+		}
+	}
+	
 	return this.prec+read;
 }
 
@@ -1574,3 +1628,7 @@ function silentEvalJolfObj(code,options){
 	while(x.step());
 	return x;
 }
+
+// test jolf
+var a = new Jolf(" e[1,2,3]DNhH}");
+a.run();
