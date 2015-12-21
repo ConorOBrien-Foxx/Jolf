@@ -399,6 +399,13 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 // define various functions
 {
 	Object.defineProperty(Array.prototype,"last",{get(){return this[this.length-1]},set(v){this[this.length-1]=v}});
+	Object.defineProperty(RegExp.prototype,"body",{get(){var s=this.toString();return s.slice(s.indexOf("//"),s.lastIndexOf("//"))},set(v){return new RegExp(v)}});
+	
+	function JolfRegExp(body,flags){
+		// perform class replacemenjts
+		body = body.replace(/\\p/g,"[A-Z]").replace(/\\P/g,"[^A-Z]").replace(/\k/g,"[a-z]").replace(/\K/g,"[^a-z]");
+		return new RegExp(body,flags);
+	}
 	
 	function isNum(x){
 		return x==parseInt(x);
@@ -721,6 +728,12 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	String[")"] = ["0","1","2","3","4","5","6","7","8","9"];
 	String[1] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 	String["!"] = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","0","1","2","3","4","5","6","7","8","9"];
+	String[2] = function shiftLeft(s,x){
+		return x==0?s:x>0?String[2](s.slice(1)+s[0],x-1):String[3](s,-x);
+	}
+	String[3] = function shiftRight(s,x){
+		return x==0?s:x>0?String[3](s.slice(-1)+s.slice(0,-1),x-1):String[3](s,-x);
+	}
 	
 	
 	Array.s = function(a){
@@ -1304,6 +1317,7 @@ function Jolf(code){
 // in-progress readable format of jolf compiled code
 Jolf.prototype.readable = function(){
 	var read = this.comp;
+	console.log(read);
 	read = read.replace(/(Math|String|Array)\["(.)"\]/g,function(match,p1,p2){
 		if(typeof eval(p1)[p2].name !== "undefined"){
 			return p1+"."+eval(p1)[p2].name;
@@ -1345,19 +1359,24 @@ Jolf.prototype.readable = function(){
 				}
 			}
 			var obj = read.slice(i+1,j);
-			console.log(prop,obj);
 			read = read.slice(0,index-13)+obj+"."+(eval(obj).constructor.prototype[prop].name||prop)+"("+read.slice(j+1,read.length);
 		}
 	}
 	
 	// proper indentation
 	var tabLevel = 0;
+	read = read.split("");
 	for(var i=0;i<read.length;i++){
-		if("{".indexOf(read[i])>=0){
-			tabLevel++;
-			read=read.replace(RegExp.escape(read[i]),i)
-		}
+		console.log(read[i]);
+		if("{".indexOf(read[i])>=0) 
+			read.splice(i,1,"{\n","\t".repeat(++tabLevel));
+		else if("}".indexOf(read[i])>=0){
+			read.splice(i,1,"\t".repeat(--tabLevel),"}"+(read[i+1]==")"?"":"\n"));
+			i+=tabLevel+1;
+		} else if(";".indexOf(read[i])>=0)
+			read.splice(i,1,";\n");
 	}
+	read = read.join("");
 	
 	return this.prec+read;
 }
