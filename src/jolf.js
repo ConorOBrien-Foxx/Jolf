@@ -451,6 +451,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		"m":1,
 		"p":1,
 		"r":0,
+		"R":0,
 		"s":1,
 		"S":1,
 		"`":1,
@@ -471,6 +472,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Array.prototype.i = Array.prototype.indexOf;
 	Array.prototype.p = Array.prototype.pop;
 	Array.prototype.r = Array.prototype.getRandEl;
+	Array.prototype.R = Array.prototype.reverse;
 	Array.prototype.s = Array.prototype.shift;
 	Array.prototype.S = Array.prototype.shuffle;
 	Array.prototype.m = function(f){
@@ -504,6 +506,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	String.prototype.m = String.prototype.match;
 	String.prototype.r = String.prototype.trim;
+	String.prototype.R = String.prototype.reverse = function(){
+		return this.split("").reverse().join("");
+	}
 	String.prototype["`"] = String.prototype.charAt;
 	
 	Date.prototype.r   = Date.prototype.getTime;
@@ -696,8 +701,11 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			return e;
 		}).join("\n");
 	}
-	String.e = function left(x){
-		
+	String.e = function strictPalindromeTest(x){
+		return x.reverse?x.reverse()==x:typeof x==="number"?String.e(x+""):false;
+	}
+	String.E = function loosePalindromeTest(x){
+		return x.replace?String.e(x.replace(/\s/g,"").toLowerCase()):x.filter?String.e(x.filter(function(e){return !(e.match(/\s/g).length);})):String.e(x);
 	}
 	String.j = function justify(x){
 		
@@ -1160,7 +1168,7 @@ var inf = {
 		J.comp += "X";
 	},
 	"q": function(J){
-		J.comp += "\""+J.code+"\"";
+		J.comp += "\""+J.code.replace(/"/g,"\\\"")+"\"";
 	},
 	"t": function(J){
 		J.comp += "10";
