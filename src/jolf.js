@@ -673,7 +673,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Math.$ = function Catalan(n){
 		return Math.K(2*n,n)/(n+1);
 	}
-	Math["~"] = function prompt(){return prompt()};
+	Math["~"] = function stasisPropmt(){
+		return prompt();
+	}
 	Math[";"] = function evalPrompt(){
 		return eval(prompt());
 	}
