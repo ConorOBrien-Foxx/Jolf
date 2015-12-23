@@ -7,7 +7,7 @@
 	<meta name="description" content="Jolf : A golfier prefix version of JavaScript">
 	<link rel="stylesheet" href="bootstrap.css">
 	<script src="https://rawgit.com/mathiasbynens/utf8.js/master/utf8.js"></script>
-	<script src="https://rawgit.com/ConorOBrien-Foxx/Jolf/master/src/jolf.js"></script>
+	<script src="Jolf.js"></script>
 	<script>
 	// from tryitonline.net
 	function load(){
@@ -83,7 +83,7 @@
 			var x = evalJolf(document.getElementById("code").value);
 			function validate(x){
 				if(x.index <= x.code.length) setTimeout(validate,1,x);
-				else document.getElementById("outCode").innerHTML = (x.prec+x.comp).replace(/([;{])/g,"$1<br>");
+				else document.getElementById("outCode").innerHTML = (x.readable())//.replace(/([;{])/g,"$1<br>");
 			}
 			validate(x);
 		});
@@ -136,7 +136,7 @@
 	<div id="outCode"></div>
 	<div id="options">
 		<h2>Options</h2>
-		<input type="checkbox" id="pom" checked=false> Pretty output mode?
+		<input type="checkbox" id="pom"> Pretty output mode?
 	</div>
 </div>
 </body>
