@@ -382,7 +382,11 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	function sigmaK(k,n){
 		return sum(divisors(n).map(function(x){return Math.pow(x,k)}));
 	}
-		
+	
+	function levenshtein(m,n){
+		return (new Levenshtein(m,n)).distance;
+	}
+	
 	(function(N){var x=window[N];delete window[N];window[N]=function(num){return Array.isArray(num)?x(num.join("")):num==""?undefined:x(num);}})("Number");
 	
 	var pids=0;
@@ -448,6 +452,8 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		"f":1,
 		"F":1,
 		"h":1,
+		"l":2,
+		"L":1,
 		"m":1,
 		"p":1,
 		"r":0,
@@ -475,6 +481,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Array.prototype.R = Array.prototype.reverse;
 	Array.prototype.s = Array.prototype.shift;
 	Array.prototype.S = Array.prototype.shuffle;
+	Array.prototype.l = Array.prototype.L = Array.prototype.slice;
 	Array.prototype.m = function(f){
 		if(typeof f=="function"){
 			return this.map(f);
@@ -504,6 +511,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		var copy = this.split("");
 		return copy.map(f).join("");
 	}
+	String.prototype.l = String.prototype.L = String.prototype.slice;
 	String.prototype.m = String.prototype.match;
 	String.prototype.r = String.prototype.trim;
 	String.prototype.R = String.prototype.reverse = function(){
@@ -512,6 +520,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	String.prototype["`"] = String.prototype.charAt;
 	
 	Date.prototype.r   = Date.prototype.getTime;
+	
+	Levenshtein.prototype.r = Levenshtein.prototype.inspect;
+	Levenshtein.prototype.R = Levenshtein.prototype.distance;
 	//--
 	Math.memoized = {};
 	Math._ = function negative(x){
@@ -686,8 +697,10 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return eval("["+prompt("comma seprated")+"]");
 	}
 	// adding string stuff
-	String.A = String.fromCharCode
+	String.A = String.fromCharCode;
 	String.a = String.fromCodePoint;
+	String.b = "\u1D00\u0299\u1D04\u1D05\u1D07\u0493\u0262\u029C\u026A\u1D0A\u1D0B\u029F\u1D0D\u0274\u1D0F\u1D18\u01EB\u0280s\u1D1B\u1D1C\u1D20\u1D21x\u028F\u1D22";
+	String.B = ["\u1D00","\u0299","\u1D04","\u1D05","\u1D07","\u0493","\u0262","\u029C","\u026A","\u1D0A","\u1D0B","\u029F","\u1D0D","\u0274","\u1D0F","\u1D18","\u01EB","\u0280","s","\u1D1B","\u1D1C","\u1D20","\u1D21","x","\u028F","\u1D22"];
 	String.c = function center(x){
 		x = x.split("\n");
 		// get max line length
@@ -709,9 +722,13 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	String.E = function loosePalindromeTest(x){
 		return x.replace?String.e(x.replace(/\s/g,"").toLowerCase()):x.filter?String.e(x.filter(function(e){return !(e.match(/\s/g).length);})):String.e(x);
 	}
+	String.h = "QWERTYUIOP\nASDFGHJKL\nZXCVBNM";
+	String.H = [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["Z","X","C","V","B","N","M"]];
 	String.j = function justify(x){
 		
 	}
+	String.k = "QWERTYUIOPASDFGHJKLZXCVBNM";
+	String.K = ["Q","W","E","R","T","Y","U","I","O","P","A","S","D","F","G","H","J","K","L","Z","X","C","V","B","N","M"];
 	String.l = "abcdefghijklmnopqrstuvwxyz";
 	String.L = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
 	String.p = function padLeft(x){
@@ -1093,6 +1110,14 @@ var ops = {
 	"μ": function(J){
 		J.comp += "unique(";
 		return 1;
+	},
+	"~L": function(J){
+		J.comp += "levenshtein(";
+		return 2;
+	},
+	"~l": function(J){
+		J.comp += "new Levenshtein(";
+		return 2;
 	}
 }
 
