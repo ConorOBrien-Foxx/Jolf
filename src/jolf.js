@@ -196,17 +196,36 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	
 	function equals(x,y){
-		if(arguments.length>2) return equals(x,less.apply(window,Array.from(arguments).slice(1)));
-		return x == y;
+		if(arguments.length>2) return equals(x,y)&&equals.apply(window,Array.from(arguments).slice(1));
+		if(Array.isArray(x)){
+			if(x.length !== y.length) return false;
+			x = x.sort(); y = y.sort();
+			for(var i=0;i<x.length;i++){
+				if(x[i]!=y[i]) return false;
+			}
+			return true;
+		} else return x == y;
+	}
+	
+	function strictEquals(x,y){
+		if(arguments.length>2) return strictEquals(x,y)&&strictEquals.apply(window,Array.from(arguments).slice(1));
+		if(typeof x!==typeof y) return false;
+		if(Array.isArray(x)){
+			if(x.length !== y.length) return false;
+			for(var i=0;i<x.length;i++){
+				if(x[i]!==y[i]) return false;
+			}
+			return true;
+		} else return x === y;
 	}
 	
 	function less(x,y){
-		if(arguments.length>2) return less(x,less.apply(window,Array.from(arguments).slice(1)));
+		if(arguments.length>2) return less(x,y)&&less.apply(window,Array.from(arguments).slice(1));
 		return x < y;
 	}
 	
 	function more(x,y){
-		if(arguments.length>2) return more(x,more.apply(window,Array.from(arguments).slice(1)));
+		if(arguments.length>2) return more(x,y)&&more.apply(window,Array.from(arguments).slice(1));
 		return y < x;
 	}
 	
@@ -448,6 +467,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	var ars = {
 		"\"":1,
 		"e":1,
+		"E":2,
 		"i":1,
 		"f":1,
 		"F":1,
@@ -505,6 +525,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	Array.prototype["`"] = Array.prototype.fill;
 	
+	String.prototype.E = String.prototype.replace;
 	String.prototype.i = String.prototype.indexOf;
 	String.prototype.s = String.prototype.search;
 	String.prototype.S = String.prototype.map = function map(f){
@@ -762,7 +783,6 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return x==0?s:x>0?String[3](s.slice(-1)+s.slice(0,-1),x-1):String[3](s,-x);
 	}
 	
-	
 	Array.s = function(a){
 		// get the closest square number corresponding to the length
 		var clLen = Math.ceil(Math.sqrt(a.length));
@@ -777,6 +797,34 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			}
 		}
 		return res.map(function(x){return x.join(" ");}).join("\n");
+	}
+	Array.j = function joinND(x){
+		
+	}
+	Array.J = function joinNDMin(x){
+		
+	}
+	Array.m = function maxDim(x){
+		if(x == []) return 0;
+		var a = [];
+		for(var i=0;i<x.length;i++){
+			a[i] = 0;
+			if(Array.isArray(x[i])) a[i] = 1+Array.m(x[i]);
+		}
+		return Math.max.apply(window,a);
+	}
+	Array.M = function minDim(x){
+		
+	}
+	Array.t = function take(n,x){
+		a=[];
+		for(var i=0;i<n;i++){
+			a[i]=[];
+			for(var j=i;j<x.length;j+=n){
+				if(typeof x[j]!=="undefined")a[i].push(x[j]);
+			}
+		}
+		return typeof x==="string"?a.map(function(e){return e.join("")}).join(""):a;
 	}
 	Array.w = function(a){
 		// [1,2,3,4,5,6,7,8,9]
@@ -900,10 +948,6 @@ var ops = {
 		J.comp += "prod(";
 		return 1;
 	},
-	"M": function(J){
-		J.end.push("");
-		return 3;
-	},
 	"m": function(J){
 		var x = "Math[\"";
 		var chrTemp = J.code[++J.index];
@@ -935,6 +979,10 @@ var ops = {
 		}
 	},
 	"~p": function(J){
+		J.comp += "stepRange(";
+		return 3;
+	},
+	"\u03c1": function(J){
 		J.comp += "stepRange(";
 		return 3;
 	},
@@ -1020,10 +1068,6 @@ var ops = {
 		J.comp += "pow(";
 		return 2;
 	},
-	";": function(J){
-		J.end.push("");
-		return 2;
-	},
 	"%": function(J){
 		J.comp += "modulo(";
 		return 2;
@@ -1051,6 +1095,10 @@ var ops = {
 	},
 	"=": function(J){
 		J.comp += "equals(";
+		return 2;
+	},
+	"~=": function(J){
+		J.comp += "strictEquals(";
 		return 2;
 	},
 	"<": function(J){
@@ -1279,6 +1327,18 @@ var mod = {
 	},
 	"ς": function(J){
 		document.getElementById("output").innerHTML = "";
+	},
+	"θ": function(J){
+		J.func.last+=3;
+	},
+	"M": function(J){
+		J.func.last+=2;
+	},
+	";": function(J){
+		J.func.last++;
+	},
+	"η": function(J){
+		J.func.last--;
 	}
 }
 
