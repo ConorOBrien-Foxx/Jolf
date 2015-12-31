@@ -1172,15 +1172,27 @@ var ops = {
 // data/arguments
 var inf = {
 	"E": function(J){
-		J.comp += "\"\"";
+		if(!J.enc.E){
+			J.prec += "var E=\"\";";
+			J.enc.E = true;
+		}
+		J.comp += "E";
 	},
 	"Y": function(J){
-		J.comp += "[]";
+		if(!J.enc.Y){
+			J.prec += "var Y=[];";
+			J.enc.Y = true;
+		}
+		J.comp += "Y";
 	},
 	"H": function(J){
 		J.comp += "H";
 	},
 	"S": function(J){
+		if(!J.enc.S){
+			J.prec += "var S=\"\n\";";
+			J.enc.S = true;
+		}
 		J.comp += "S";
 	},
 	"n": function(J){
@@ -1742,7 +1754,3 @@ function silentEvalJolfObj(code,options){
 	while(x.step());
 	return x;
 }
-
-// test jolf
-var a = new Jolf(" e[1,2,3]DNhH}");
-a.run();
