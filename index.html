@@ -6,8 +6,8 @@
 	<meta http-equiv="X-UA-Compatible" content="chrome=1">
 	<meta name="description" content="Jolf : A golfier prefix version of JavaScript">
 	<link rel="stylesheet" href="bootstrap.css">
-	<script src="https://rawgit.com/mathiasbynens/utf8.js/master/utf8.js"></script>
 	<script src="https://rawgit.com/gf3/Levenshtein/master/lib/levenshtein.js"></script>
+	<script src="https://rawgit.com/mathiasbynens/utf8.js/master/utf8.js"></script>
 -	<script src="https://rawgit.com/ConorOBrien-Foxx/Jolf/master/src/jolf.js"></script>
 	<script>
 	// from tryitonline.net
@@ -20,7 +20,7 @@
 			});
 		}
 	}
-	
+
 	function save(){
 		var a = document.getElementById("code").value;
 		var b = document.getElementById("input").value;
@@ -36,34 +36,34 @@
 	function decode(string) {
 		return decodeURIComponent(escape(atob(unescape(string).replace(/-/g, "+").replace(/_/g, "/"))));
 	}
-	
+
 	// end from tryitonline.net
-	
+
 	var progs = {
 		"Hello World (1)": "\"Hello, World!",
 		"Hello World (2)": "e.$nsp$`0\b4",
 		"Adding two inputs": "+Jj"
 	};
-	
+
 	var nsp = [];
 	var keyz = Object.keys(progs);
 	for(var i=0;i<keyz.length;i++){
 		nsp.push(progs[keyz[i]]);
 	}
-	
+
 	function run(ex){
 		document.getElementById("code").value = progs[ex];
 	}
-	
+
 	function updateByteCount(){
 		document.getElementById("bytes").innerHTML = utf8.encode(document.getElementById("code").value).length;
 	}
-	
+
 	function onEdit(){
 		document.getElementById("code").value = document.getElementById("code").value.replace(/\\b/g,"\b").replace(/\\n/g,"\n").replace(/\\t/g,"\t").replace(/\\x(..)/g,function(m,p1){return eval("\"\\x"+p1+"\"")});
 		updateByteCount();
 	}
-	
+
 	function addListeners(){
 		document.getElementById("code").addEventListener("change",updateByteCount);
 		document.getElementById("code").addEventListener("keydown",updateByteCount);
@@ -81,22 +81,38 @@
 			inner.style.height = inner.style.height!="auto"?"auto":"0px";
 		});
 		document.getElementById("run").addEventListener("click",function(){
-			var x = evalJolf(document.getElementById("code").value);
-			function validate(x){
-				if(x.index <= x.code.length) setTimeout(validate,1,x);
-				else document.getElementById("outCode").innerHTML = (x.readable())//.replace(/([;{])/g,"$1<br>");
+			var x = new Jolf(document.getElementById("code").value);
+			while(x.step());
+			x.exec();
+			var o;
+			try {
+				o = x.readable();
+			} catch(e){
+				o = x.total;
 			}
-			validate(x);
+			document.getElementById("outCode").innerHTML = o;
 		});
 		document.getElementById("runnn").addEventListener("click",function(){
-			var x = silentEvalJolf(document.getElementById("code").value);
-			alert(x);
+			var x = new Jolf(document.getElementById("code").value);
+			while(x.step());
+			var o;
+			try {
+				o = x.readable();
+			} catch(e){
+				o = x.total;
+			}
+			document.getElementById("outCode").innerHTML = o;
+			document.getElementById("input").value.split("\n\n").forEach(function(e,i){
+				document.getElementById("output").innerHTML += "--- TEST CASE "+i+": "+e+" ---<br>";
+				x.exec();
+				document.getElementById("output").innerHTML += "<br>";
+			});
 		});
 		document.getElementById("transform").addEventListener("click",onEdit);
 		document.getElementById("clear").addEventListener("click",function(){document.getElementById("output").innerHTML = "";});
 		updateByteCount();
 	}
-	
+
 	window.addEventListener("load",load);
 	window.addEventListener("load",addListeners);
 	</script>
