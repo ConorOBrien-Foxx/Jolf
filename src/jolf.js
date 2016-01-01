@@ -7,17 +7,17 @@
 */
 
 // polyfills from developer.mozilla.org
-{	
+{
 String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(null==this)throw new TypeError("can't convert "+this+" to object");var r=""+this;if(t=+t,t!=t&&(t=0),0>t)throw new RangeError("repeat count must be non-negative");if(t==1/0)throw new RangeError("repeat count must be less than infinity");if(t=Math.floor(t),0==r.length||0==t)return"";if(r.length*t>=1<<28)throw new RangeError("repeat count must not overflow maximum string size");for(var e="";1==(1&t)&&(e+=r),t>>>=1,0!=t;)r+=r;return e});Array.prototype.every||(Array.prototype.every=function(r,t){"use strict";var e,n;if(null==this)throw new TypeError("this is null or not defined");var o=Object(this),i=o.length>>>0;if("function"!=typeof r)throw new TypeError;for(arguments.length>1&&(e=t),n=0;i>n;){var f;if(n in o){f=o[n];var y=r.call(e,f,n,o);if(!y)return!1}n++}return!0});Math.clz32=Math.clz32||function(){"use strict";var t=[32,31,0,16,0,30,3,0,15,0,0,0,29,10,2,0,0,0,12,14,21,0,19,0,0,28,0,25,0,9,1,0,17,0,4,,0,0,11,0,13,22,20,0,26,0,0,18,5,0,0,23,0,27,0,6,0,24,7,0,8,0,0,0];return function(r){var u=Number(r)>>>0;return u|=u>>>1,u|=u>>>2,u|=u>>>4,u|=u>>>8,u|=u>>>16,u=t[Math.imul(u,116069625)>>>26]}}();Math.trunc=Math.trunc||function(t){return 0>t?Math.ceil(t):Math.floor(t)};Math.sign=Math.sign||function(n){return n=+n,0===n||isNaN(n)?n:n>0?1:-1};Math.imul=Math.imul||function(t,u){var a=t>>>16&65535,i=65535&t,n=u>>>16&65535,r=65535&u;return i*r+(a*r+i*n<<16>>>0)|0};!function(){function t(t,n,o){return"undefined"==typeof o||0===+o?Math[t](n):(n=+n,o=+o,isNaN(n)||"number"!=typeof o||o%1!==0?NaN:(n=n.toString().split("e"),n=Math[t](+(n[0]+"e"+(n[1]?+n[1]-o:-o))),n=n.toString().split("e"),+(n[0]+"e"+(n[1]?+n[1]+o:o))))}Math.round10||(Math.round10=function(n,o){return t("round",n,o)}),Math.floor10||(Math.floor10=function(n,o){return t("floor",n,o)}),Math.ceil10||(Math.ceil10=function(n,o){return t("ceil",n,o)})}();Math.cbrt=Math.cbrt||function(t){var a=Math.pow(Math.abs(t),1/3);return 0>t?-a:a};Math.expm1=Math.expm1||function(t){return Math.exp(t)-1};Math.fround=Math.fround||function(n){return function(r){return n[0]=r,n[0]}}(Float32Array(1));Math.log10=Math.log10||function(t){return Math.log(t)/Math.LN10};Math.log2=Math.log2||function(t){return Math.log(t)/Math.LN2};Array.prototype.every||(Array.prototype.every=function(r,t){"use strict";var e,n;if(null==this)throw new TypeError("this is null or not defined");var o=Object(this),i=o.length>>>0;if("function"!=typeof r)throw new TypeError;for(arguments.length>1&&(e=t),n=0;i>n;){var f;if(n in o){f=o[n];var y=r.call(e,f,n,o);if(!y)return!1}n++}return!0});Math.hypot=Math.hypot||function(){for(var t=0,r=arguments.length,n=0;r>n;n++){if(arguments[n]===1/0||arguments[n]===-(1/0))return 1/0;t+=arguments[n]*arguments[n]}return Math.sqrt(t)};Math.log10=Math.log10||function(t){return Math.log(t)/Math.LN10};String.fromCodePoint||!function(){var r=function(){try{var r={},n=Object.defineProperty,t=n(r,r,r)&&n}catch(e){}return t}(),n=String.fromCharCode,t=Math.floor,e=function(){var r,e,o=16384,i=[],a=-1,u=arguments.length;if(!u)return"";for(var f="";++a<u;){var g=Number(arguments[a]);if(!isFinite(g)||0>g||g>1114111||t(g)!=g)throw RangeError("Invalid code point: "+g);65535>=g?i.push(g):(g-=65536,r=(g>>10)+55296,e=g%1024+56320,i.push(r,e)),(a+1==u||i.length>o)&&(f+=n.apply(null,i),i.length=0)}return f};r?r(String,"fromCodePoint",{value:e,configurable:!0,writable:!0}):String.fromCodePoint=e}();Array.prototype.fill||(Array.prototype.fill=function(t){if(null==this)throw new TypeError("this is null or not defined");for(var r=Object(this),n=r.length>>>0,i=arguments[1],a=i>>0,e=0>a?Math.max(n+a,0):Math.min(a,n),o=arguments[2],h=void 0===o?n:o>>0,l=0>h?Math.max(n+h,0):Math.min(h,n);l>e;)r[e]=t,e++;return r});
 }
 
 {// functions
 	// cart product: from http://stackoverflow.com/a/29585751/4119004, minified
-	
+
 	function cartesianProduct(x,y){
 		return (function(r){var n=[],t=Array(r.length);return function u(a){if(a==r.length)return n.push(r.map(function(r,n){return r[t[n]]}));for(var e=0;e<r[a].length;++e)t[a]=e,u(a+1)}(0),n})(Array.from(arguments));
 	}
-	
+
 	function add(a,b){
 		if(arguments.length>2) return add(a,add.apply(window,Array.from(arguments).slice(1)));
 		if(Array.isArray(a)){
@@ -29,7 +29,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 		return a + b;
 	}
-	
+
 	function sub(a,b){
 		if(arguments.length>2) return sub(a,sub.apply(window,Array.from(arguments).slice(1)));
 		if(typeof a=="string") return a.replace(RegExp.escape(b),"");
@@ -40,7 +40,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 		return a - b;
 	}
-	
+
 	function mul(x,y){
 		if(arguments.length>2) return mul(x,mul.apply(window,Array.from(arguments).slice(1)));
 		if(typeof x=="string"&&typeof y=="number"){
@@ -58,7 +58,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 		return x*y;
 	}
-	
+
 	function div(x,y){
 		if(typeof x=="string"){
 			return x.replace(new RegExp(y,"g"),"");
@@ -70,11 +70,11 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 		return x/y;
 	}
-	
+
 	function getProp(a,b){
 		return a[b]||window[a][b]||42;
 	}
-	
+
 	function neg(a){
 		if(typeof a=="string"){
 			return a.split("").reverse().join("");
@@ -86,7 +86,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			return a;
 		}
 	}
-	
+
 	function quote(x){
 		if(sbs[x]){
 			x = sbs[x];
@@ -95,42 +95,42 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 		return "\""+x+"\"";
 	}
-	
+
 	function assign(name,value){
 		return window[name] = value;
 	}
-	
+
 	function getVar(name){
 		if(typeof name=="number") return name % 2 ? "odd" : "even";
 		return window[name];
 	}
-	
+
 	function apply(f,a){
 		return f.apply(window,a);
 	}
-	
+
 	function charCodeAt(x){
 		return x.charCodeAt();
 	}
-	
+
 	function pow(x,y){
 		if(arguments.length>2) return pow(x,pow.apply(window,Array.from(arguments).slice(1)));
 		return Math.pow(x,y);
 	}
-	
+
 	function logBASE(a,b){
 		if(arguments.length>2) return logBASE(x,logBASE.apply(window,Array.from(arguments).slice(1)));
 		return Math.log(a)/Math.log(b);
 	}
-	
+
 	function toBinary(a){
 		if(typeof a==="number") return a.toString(2);
 		else if(typeof a==="string") return a.toUpperCase();
 		else if(Array.isArray(a)){
-			
+
 		}
 	}
-	
+
 	function square(x){
 		if(Array.isArray(x)){
 			var a = [];
@@ -141,7 +141,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 		return x*x;
 	}
-	
+
 	function range(x,y){
 		if(Array.isArray(x)&&Array.isArray(y)){
 			return x.filter(function(e){return !y.has(e)})
@@ -158,7 +158,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 		return v;
 	}
-	
+
 	function rangeInclusive(x,y){
 		var v = [];
 		var min = x;
@@ -172,11 +172,11 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 		return v;
 	}
-	
+
 	function unaryRange(x){
 		return range(1,x+1)||[1];
 	}
-	
+
 	function stepRange(x,y,s){
 		if(typeof x=="number"){
 			var v = [];
@@ -194,7 +194,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			return x.replace(new RegExp(y,"g"),s);
 		}
 	}
-	
+
 	function equals(x,y){
 		if(arguments.length>2) return equals(x,y)&&equals.apply(window,Array.from(arguments).slice(1));
 		if(Array.isArray(x)){
@@ -206,7 +206,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			return true;
 		} else return x == y;
 	}
-	
+
 	function strictEquals(x,y){
 		if(arguments.length>2) return strictEquals(x,y)&&strictEquals.apply(window,Array.from(arguments).slice(1));
 		if(typeof x!==typeof y) return false;
@@ -218,24 +218,24 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			return true;
 		} else return x === y;
 	}
-	
+
 	function less(x,y){
 		if(arguments.length>2) return less(x,y)&&less.apply(window,Array.from(arguments).slice(1));
 		return x < y;
 	}
-	
+
 	function more(x,y){
 		if(arguments.length>2) return more(x,y)&&more.apply(window,Array.from(arguments).slice(1));
 		return y < x;
 	}
-	
+
 	function prod(x){
 		if(Array.isArray(x)){
 			return x.reduce(function(a,b){return a*b});
 		}
 		return Number(x.toString().split("").map(Number).reduce(function(a,b){return a*b}))
 	}
-	
+
 	(function(f){window.alert=function(a,J){a=a||"";if(a==Infinity){f(Infinity)}else if((document.getElementById("pom").checked)){f(JSON.stringify(a))}else{f(a)};(J||{}).outted=true;}})(function(x){
 		var iu = document.getElementById("output");
 		// on browser?
@@ -244,13 +244,13 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 				iu.innerHTML += (x||"").replace(/\\([nt])/g,function(a,b){return eval("\"\\"+b+"\"");})+"\n";
 			else
 				iu.innerHTML += x;
-				
+
 			//iu.innerHTML += x.replace(/\\n/g,"<br>") + "<br>";
 		} else {
 			alert(x);
 		}
 	});
-	
+
 	function sqrt(x){
 		if(typeof x==="string"){
 			// add more!
@@ -258,7 +258,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 		return Math.sqrt(x);
 	}
-	
+
 	function dictRepl(x,y,z){
 		if(typeof y=="number") y+="";
 		if(typeof z=="number") z+="";
@@ -271,51 +271,51 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 		return x;
 	}
-	
+
 	function toString(N,b){
 		return N.toString(b||10);
 	}
-	
+
 	function getFirst(x){
 		return x[0];
 	}
-	
+
 	function getLast(x){
 		return x[x.length-1];
 	}
-	
+
 	function split(x,y){
 		return x.toString().split(y);
 	}
-	
+
 	function head(x){
 		return x+1;
 	}
-	
+
 	function decrement(x){
 		return x-1;
 	}
-	
+
 	function length(x){
 		if(typeof x==="number") return Math.abs(x).toString().length;
 		return x.length;
 	}
-	
+
 	function doubleNeg(x){
 		return !!x;
 	}
-	
+
 	function booleanNegation(x){
 		return !x;
 	}
-	
+
 	function modulo(x,y){
 		if(arguments.length>2) return modulo(x,modulo.apply(window,Array.from(arguments).slice(1)));
 		if(typeof x==="string") return modulo(x.split(""),y).join("");
 		if(Array.isArray(x)) return x.filter(function(e){return e!==y})
 		return x%y;
 	}
-	
+
 	function and(x,y){
 		if(arguments.length>2) return and(x,and.apply(window,Array.from(arguments).slice(1)));
 		if(Array.isArray(x)&&Array.isArray(y)){
@@ -325,25 +325,25 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 		return x&&y;
 	}
-	
+
 	function or(x,y){
 		if(arguments.length>2) return or(x,or.apply(window,Array.from(arguments).slice(1)));
 		if(Array.isArray(x)&&Array.isArray(x)) return x.concat(y);
 		return x||y;
 	}
-	
+
 	function sum(x){
 		if(typeof x==="string") return sum(x.split(""))
 		else if(typeof x==="number") return sum(x.toString(10).split(""))
 		return add.apply(window,x);
 	}
-	
+
 	function aSum(x){
 		if(typeof x==="string") return aSum(x.split(""))
 		else if(typeof x==="number") return aSum(x.toString(10).split(""))
 		return sub.apply(window,x);
 	}
-	
+
 	function prototypeFunc(chr,func){
 		var otherArgs = Array.from(arguments).slice(2);
 		console.log(func,chr,func[chr],otherArgs,otherArgs.length);
@@ -352,35 +352,35 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		else
 			return func[chr].apply(func,otherArgs);
 	}
-	
+
 	function min(x,y){
 		if(arguments.length>2) return min(x,min.apply(window,Array.from(arguments).slice(1)));
 		return Math.min(x,y);
 	}
-	
+
 	function max(x,y){
 		if(arguments.length>2) return max(x,max.apply(window,Array.from(arguments).slice(1)));
 		return Math.max(x,y);
 	}
-	
+
 	function toHex(x){
 		if(typeof x==="number") return x.toString(16);
 		else if(typeof x==="string") return x.toLowerCase();
 	}
-	
+
 	function ternary(q,n,f){
 		return q?n:f;
 	}
-	
+
 	function undefChoose(x,y){
 		return typeof x==="undefined"?y:x;
 	}
-	
+
 	function join(x,y){
 		if(typeof x=="string") return join(x.split(""),y);
 		return x.join(y);
 	}
-	
+
 	function unique(x){
 		if(typeof x==="string") return unique(x.split("")).join("");
 		var r = [];
@@ -389,7 +389,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 		return r;
 	}
-	
+
 	function divisors(x){
 		var r=[];
 		for(var i=1;i<=Math.sqrt(x);i++){
@@ -397,17 +397,17 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 		return unique(r.sort(function(x,y){return 2*(x>y)-1}));
 	}
-	
+
 	function sigmaK(k,n){
 		return sum(divisors(n).map(function(x){return Math.pow(x,k)}));
 	}
-	
+
 	function levenshtein(m,n){
 		return (new Levenshtein(m,n)).distance;
 	}
-	
+
 	(function(N){var x=window[N];delete window[N];window[N]=function(num){return Array.isArray(num)?x(num.join("")):num==""?undefined:x(num);}})("Number");
-	
+
 	var pids=0;
 	(function(p){
 		window["old_"+p]=window[p];delete window[p];window[p]=function(msg){
@@ -423,13 +423,13 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 {
 	Object.defineProperty(Array.prototype,"last",{get(){return this[this.length-1]},set(v){this[this.length-1]=v}});
 	Object.defineProperty(RegExp.prototype,"body",{get(){var s=this.toString();return s.slice(s.indexOf("//"),s.lastIndexOf("//"))},set(v){return new RegExp(v)}});
-	
+
 	function JolfRegExp(body,flags){
 		// perform class replacemenjts
 		body = body.replace(/\\p/g,"[A-Z]").replace(/\\P/g,"[^A-Z]").replace(/\k/g,"[a-z]").replace(/\K/g,"[^a-z]");
 		return new RegExp(body,flags);
 	}
-	
+
 	function isNum(x){
 		return x==parseInt(x);
 	}
@@ -443,7 +443,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	function isAvailable(cmd){
 		return !(ctl[cmd]||ops[cmd]||inf[cmd]||mod[cmd]||sbs[cmd]);
 	}
-	
+
 	// factorial
 	window.life = {};
 	window.life.f = [];
@@ -452,7 +452,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		if(window.life.f[n]>0) return window.life.f[n];
 		return window.life.f[n]=factorial(n-1)*n;
 	}
-	
+
 	String.prototype.format = function(){
 		var string = this;
 		for(var i=0;i<arguments.length;i++){
@@ -490,7 +490,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	// from http://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#comment54935095_10142256
 	Array.prototype.shuffle=function(){var t,h,r=this.length;if(0==r)return this;for(;--r;)t=Math.floor(Math.random()*(r+1)),h=this[r],this[r]=this[t],this[t]=h;return this};
-	
+
 	Array.prototype.e = Array.prototype.every;
 	Array.prototype.f = Array.prototype.filter;
 	Array.prototype.F = Array.prototype.forEach;
@@ -524,7 +524,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 	}
 	Array.prototype["`"] = Array.prototype.fill;
-	
+
 	String.prototype.E = String.prototype.replace;
 	String.prototype.i = String.prototype.indexOf;
 	String.prototype.s = String.prototype.search;
@@ -539,9 +539,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return this.split("").reverse().join("");
 	}
 	String.prototype["`"] = String.prototype.charAt;
-	
+
 	Date.prototype.r   = Date.prototype.getTime;
-	
+
 	Levenshtein.prototype.r = Levenshtein.prototype.inspect;
 	Levenshtein.prototype.R = Levenshtein.prototype.distance;
 	//--
@@ -557,7 +557,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Math["("] = function leastFactor(r){if(isNaN(r)||!isFinite(r))return NaN;if(0==r)return 0;if(r%1||2>r*r)return 1;if(r%2==0)return 2;if(r%3==0)return 3;if(r%5==0)return 5;for(var t=Math.sqrt(r),i=7;t>=i;i+=30){if(r%i==0)return i;if(r%(i+4)==0)return i+4;if(r%(i+6)==0)return i+6;if(r%(i+10)==0)return i+10;if(r%(i+12)==0)return i+12;if(r%(i+16)==0)return i+16;if(r%(i+22)==0)return i+22;if(r%(i+24)==0)return i+24}return r};
 	Math[")"] = function factor(t){if(isNaN(t)||!isFinite(t)||t%1!=0||0==t)return[t];if(0>t)return[-(D=factor(-t)).shift()].concat(D);var r=Math["("](t);return t==r?[t]:[r].concat(factor(t/r))}
 	Math["{"] = function isPrime(n){
-		if(isNaN(n)||!isFinite(n)||n%1||n<2)return false; 
+		if(isNaN(n)||!isFinite(n)||n%1||n<2)return false;
 		if(n==Math["("](n))return true;
 		return false;
 	}
@@ -746,26 +746,30 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	String.h = "QWERTYUIOP\nASDFGHJKL\nZXCVBNM";
 	String.H = [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["Z","X","C","V","B","N","M"]];
 	String.j = function justify(x){
-		
+
 	}
 	String.k = "QWERTYUIOPASDFGHJKLZXCVBNM";
 	String.K = ["Q","W","E","R","T","Y","U","I","O","P","A","S","D","F","G","H","J","K","L","Z","X","C","V","B","N","M"];
 	String.l = "abcdefghijklmnopqrstuvwxyz";
 	String.L = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
 	String.p = function padLeft(x){
-		
+
 	}
 	String.P = function padRight(x){
-		
+
+	}
+	String.q = function pad(str,len,symb){
+		if(str.length>=len) return str;
+		else return String.q((typeof symb==="undefined"?" ":symb)+str,len,symb);
 	}
 	String.r = function right(x){
-		
+
 	}
 	String.s = function unTextese(x){
 		function replaceTextese(orig,textese,normal){
 			normal=normal.split("");
 			return orig.replace(textese,function(a,...matches){
-				
+
 			});
 		}
 		return x.replace(/(l)(o)(l)/gi,"$1aughing $2ut $3oud").replace(/(b)(r)(b)/gi,"$1e $2ight $3ack");
@@ -782,7 +786,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	String[3] = function shiftRight(s,x){
 		return x==0?s:x>0?String[3](s.slice(-1)+s.slice(0,-1),x-1):String[3](s,-x);
 	}
-	
+
 	Array.s = function(a){
 		// get the closest square number corresponding to the length
 		var clLen = Math.ceil(Math.sqrt(a.length));
@@ -799,10 +803,10 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return res.map(function(x){return x.join(" ");}).join("\n");
 	}
 	Array.j = function joinND(x){
-		
+
 	}
 	Array.J = function joinNDMin(x){
-		
+
 	}
 	Array.m = function maxDim(x){
 		if(x == []) return 0;
@@ -814,7 +818,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return Math.max.apply(window,a);
 	}
 	Array.M = function minDim(x){
-		
+
 	}
 	Array.t = function take(n,x){
 		a=[];
@@ -1408,7 +1412,7 @@ function Jolf(code){
 	this.repl   = 0;
 	this.total  = "";
 	this.build  = "";
-	this.bldChr = ""; 
+	this.bldChr = "";
 	this.bldPrd = "";
 	this.bldFun = "";
 	this.checkQ = true;
@@ -1436,7 +1440,7 @@ Jolf.prototype.readable = function(){
 		if(typeof t=="number")return t;
 		return JSON.stringify(eval(p1)[p2]);
 	});
-	
+
 	// replace all instances of prototypeFunc with respective func
 	{
 		while(read.search(/prototypeFunc/)>=0){
@@ -1469,13 +1473,13 @@ Jolf.prototype.readable = function(){
 			read = read.slice(0,index-13)+obj+"."+(eval(obj).constructor.prototype[prop].name||prop)+"("+read.slice(j+1,read.length);
 		}
 	}
-	
+
 	// proper indentation
 	var tabLevel = 0;
 	read = read.split("");
 	for(var i=0;i<read.length;i++){
 		console.log(read[i]);
-		if("{".indexOf(read[i])>=0) 
+		if("{".indexOf(read[i])>=0)
 			read.splice(i,1,"{\n","\t".repeat(++tabLevel));
 		else if("}".indexOf(read[i])>=0){
 			read.splice(i,1,"\t".repeat(--tabLevel),"}"+(read[i+1]==")"?"":"\n"));
@@ -1484,7 +1488,7 @@ Jolf.prototype.readable = function(){
 			read.splice(i,1,";\n");
 	}
 	read = read.join("");
-	
+
 	return this.prec+read;
 }
 
@@ -1564,7 +1568,7 @@ Jolf.prototype.step = function(){
 	}
 	// var for char
 	var chr = this.code[this.index];
-	
+
 	console.log(this.bldChr[0]=="~",this.bldChr,chr);
 	// extended functions
 	if(this.bldChr.length<2&&this.bldChr[0]=="~"){
@@ -1577,7 +1581,7 @@ Jolf.prototype.step = function(){
 		this.index++;
 		return this;
 	}
-	
+
 	switch(this.mode){
 		case 0:
 			// read the character and get its type
@@ -1684,7 +1688,7 @@ Jolf.prototype.step = function(){
 				var innerJolf = silentEvalJolfObj(this.build,{enc:this.enc});
 				// if any new var calls were made
 				this.prec += innerJolf.prec;
-				
+
 				// the comp contains (hopefully) a series of entries split by semicolons
 				var golfArr = innerJolf.comp.split(";");
 				// removing the trailing semicolon
@@ -1754,3 +1758,7 @@ function silentEvalJolfObj(code,options){
 	while(x.step());
 	return x;
 }
+
+// test jolf
+//var a = new Jolf(" e[1,2,3]DNhH}");
+//a.run();
