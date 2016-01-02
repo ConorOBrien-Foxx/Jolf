@@ -757,6 +757,13 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			return e;
 		}).join("\n");
 	}
+	String.d = function applyTag(a,x){
+		return "<"+a+">"+x+"</"+a+">";
+	}
+	String.D = function removeTag(a,x){
+		if(a==null||typeof a==="undefined") x.replace(/<(.+?)>.+?<\/\1>/g,"");
+		else return x.replace(RegExp("<"+RegExp.escape(a)+">.+?</"+RegExp.escape(a)+">"),"");
+	}
 	String.e = function strictPalindromeTest(x){
 		return x.reverse?x.reverse()==x:typeof x==="number"?String.e(x+""):false;
 	}
@@ -1379,6 +1386,9 @@ var inf = {
 	},
 	"~5": function(J){
 		J.comp += "16";
+	},
+	"ν": function(J){
+		J.comp += "null";
 	},
 	"": function(){}
 }
