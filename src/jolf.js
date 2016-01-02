@@ -239,7 +239,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return Number(x.toString().split("").map(Number).reduce(function(a,b){return a*b}))
 	}
 
-	(function(f){window.alert=function(a,J){a=a||"";if(a==Infinity){f(Infinity)}else if((document.getElementById("pom").checked)){f(JSON.stringify(a))}else{f(a)};(J||{}).outted=true;}})(function(x){
+	(function(f){window.alert=function(a,J){a=typeof a==="undefined"?"":a;if(a==Infinity){f(Infinity)}else if((document.getElementById("pom").checked)){f(JSON.stringify(a))}else{f(a)};(J||{}).outted=true;}})(function(x){
 		var iu = document.getElementById("output");
 		// on browser?
 		if(iu){
