@@ -482,6 +482,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		"l":2,
 		"L":1,
 		"m":1,
+		"M":1,
 		"p":1,
 		"r":0,
 		"R":0,
@@ -540,7 +541,12 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return copy.map(f).join("");
 	}
 	String.prototype.l = String.prototype.L = String.prototype.slice;
-	String.prototype.m = String.prototype.match;
+	String.prototype.m = function matchStrReg(m,o){
+		return this.match(new RegExp(m,o||"g"));
+	}
+	String.prototype.M = function matchStrRegFlags(m,o){
+		return this.match(new RegExp(m,o));
+	}
 	String.prototype.r = String.prototype.trim;
 	String.prototype.R = String.prototype.reverse = function(){
 		return this.split("").reverse().join("");
