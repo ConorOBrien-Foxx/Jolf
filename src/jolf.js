@@ -494,6 +494,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return this[Math.floor(Math.random()*this.length)];
 	}
 	Array.prototype.has = function(x){
+		if(arguments.length>1) return this.has(x)&&this.has.apply(this,Array.from(arguments).slice(1));
 		return !!(this.indexOf(x)+1);
 	}
 	// from http://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#comment54935095_10142256
@@ -534,6 +535,10 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Array.prototype["`"] = Array.prototype.fill;
 
 	String.prototype.E = String.prototype.replace;
+	String.prototype.h = String.prototype.has = function(x){
+		if(arguments.length>1) return this.has(x)&&this.has.apply(this,Array.from(arguments).slice(1));
+		return !!(1+this.search(new RegExp(x,"g")));
+	}
 	String.prototype.i = String.prototype.indexOf;
 	String.prototype.s = String.prototype.search;
 	String.prototype.S = String.prototype.map = function map(f){
@@ -743,6 +748,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Math["`"] = function numericPrompt(){
 		return eval("["+prompt("comma seprated")+"]");
 	}
+	Math["'"] = function parseFloat(n,base){
+		return eval(parseInt(n*1e14,base)+"/"+Math.pow(base,14));
+	}
 	// adding string stuff
 	String.A = String.fromCharCode;
 	String.a = String.fromCodePoint;
@@ -809,6 +817,12 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	String.u = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	String.U = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
+	String.v = function groupByNumbers(x){
+		return x.match(/[\d.]+|./g);
+	}
+	String.V = function groupByIntegers(x){
+		return x.match(/\d+|./g);
+	}
 	String.z = function fromGreek(x){
 		return {Α:"Alpha", α:"alpha", Β:"Beta", β:"beta", Γ:"Gamma", γ:"gamma", Δ:"Delta", δ:"delta", Ε:"Epsilon", ε:"epsilon", Ζ:"Zeta", ζ:"zeta", Η:"Eta", η:"eta", Θ:"Theta", θ:"theta", Ι:"Iota", ι:"iota", Κ:"Kappa", κ:"kappa", Λ:"Lambda", λ:"lambda", Μ:"Mu", μ:"mu", Ν:"Nu", ν:"nu", Ξ:"Xi", ξ:"xi", Ο:"Omicron", ο:"omicron", Π:"Pi", π:"pi", Ρ:"Rho", ρ:"rho", Σ:"Sigma", σ:"sigma", Τ:"Tau", τ:"tau", Υ:"Upsilon", υ:"upsilon", Φ:"Phi", φ:"phi", Χ:"Chi", χ:"chi", Ψ:"Psi", ψ:"psi", Ω:"Omega", ω:"omega"}[x]||x;
 	}
@@ -1734,7 +1748,7 @@ Jolf.prototype.check = function(){
 		}
 	} else {
 		this.comp += ";";
-		return 1
+		return 1;
 	}
 }
 
