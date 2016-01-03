@@ -918,6 +918,65 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		Date[names[i]] = window[funcs[i]+"Now"];}catch(e){};
 		Date[names[i].toUpperCase()] = window[funcs[i]+"Input"];}catch(e){};
 	}
+	// canvas object
+	var can = {
+		"b":function(){
+			J.comp += "y.begin(";
+			return 0;
+		},
+		"B":function(){
+			J.comp += "y.back(";
+			return 1;
+		},
+		"c": function(){
+			J.comp += "y.close(";
+			return 0;
+		},
+		"d":function(){
+			J.comp += "y.draw(";
+			return 0;
+		},
+		"e":function(){
+			J.comp += "y.pensize(";
+			return 1;
+		},
+		"f":function(){
+			J.comp += "y.font(";
+			return 1;
+		},
+		"F":function(){
+			J.comp += "y.fillstyle(";
+			return 1;
+		},
+		"g":function(){
+			J.comp += "y.go(";
+			return 1;
+		},
+		"G":function(){
+			J.comp += "y.goto(";
+			return 2;
+		},
+		"j":function(){
+			J.comp += "y.jump(";
+			return 2;
+		},
+		"t":function(){
+			J.comp += "y.turn(";
+			return 1;
+		},
+		"p":function(){
+			J.comp += "y.penup(";
+			return 0;
+		},
+		"P":function(){
+			J.comp += "y.pendown(";
+			return 0;
+		},
+		"T":function(){
+			J.comp += "y.text(";
+			return 1;
+		},
+	}
 }
 
 var ctl = {
@@ -983,6 +1042,10 @@ var ops = {
 		J.comp += "console.log(";
 		J.outted = true;
 		return 1;
+	},
+	"d": function(J){
+		J.comp += "function(H,S,n){return ";
+		return [1,"}"];
 	},
 	"~D": function(J){
 		J.comp += "new Date(";
@@ -1124,9 +1187,27 @@ var ops = {
 		J.comp += "decrement(";
 		return 1;
 	},
-	"y": function(J){
+	"~y": function(J){
 		J.comp += "silentEvalJolf(";
 		return 1;
+	},
+	"y": function(J){
+		// get operation
+		if(!J.enc.y){
+			J.prec += "var y=new Pen(\"draw\");";
+			J.enc.y = true;
+		}
+		var op = J.code[++J.index];
+		var canvas = document.getElementById("draw");
+		var ctx = canvas.getContext("2d");
+		if(op=="\""){
+			var todo = "";
+			do {
+				todo += J.code[++J.index];
+			} while(J.code[J.index]!=="\"");
+			todo = todo.slice(0,-1);
+
+		}
 	},
 	"z": function(J){
 		J.comp += "unaryRange(";
@@ -1263,7 +1344,11 @@ var ops = {
 	"Ρ": function(J){
 		J.comp += "singleReplace(";
 		return 3;
-	}
+	},
+	"Ω": function(J){
+		J.comp += "\"";
+		return [1,"\""];
+	},
 }
 
 // data/arguments
@@ -1360,7 +1445,7 @@ var inf = {
 	"~p": function(J){
 		J.comp += "Math.PI"
 	},
-	"~e": function(J){
+	"~E": function(J){
 		J.comp += "Math.E"
 	},
 	"~P": function(J){
@@ -1414,13 +1499,6 @@ var mod = {
 	},
 	"{": function(J){
 		J.mode = 5;
-	},
-	"d": function(J){
-		J.mode = 7;
-		// work it
-		// J.comp += "(H,S,n)=>";
-		// equivalent, for non-ES6:
-		J.comp += "function(H,S,n){return ";
 	},
 	"D": function(J){
 		J.mode = 8;
@@ -1524,7 +1602,7 @@ function Jolf(code){
 // in-progress readable format of jolf compiled code
 Jolf.prototype.readable = function(){
 	var read = this.comp;
-	console.log(read);
+	//console.log(read);
 	read = read.replace(/(Math|String|Array|Date)\["(.)"\]/g,function(match,p1,p2){
 		if(typeof eval(p1)[p2].name !== "undefined"){
 			return p1+"."+eval(p1)[p2].name;
@@ -1574,7 +1652,7 @@ Jolf.prototype.readable = function(){
 	var tabLevel = 0;
 	read = read.split("");
 	for(var i=0;i<read.length;i++){
-		console.log(read[i]);
+		//console.log(read[i]);
 		if("{".indexOf(read[i])>=0)
 			read.splice(i,1,"{\n","\t".repeat(++tabLevel));
 		else if("}".indexOf(read[i])>=0){
@@ -1617,11 +1695,11 @@ Jolf.prototype.exec = function(){
 Jolf.prototype.check = function(){
 	if(!this.checkQ) return;
 	if(this.prevCk) return prevCk = false;
-	var consump = this.func.pop();
-	if(typeof consump!=="undefined"){
+	var funcRes = this.func.pop();
+	if(typeof funcRes!=="undefined"){
+		var consump = funcRes.shift();
+		var ending = funcRes.shift();
 		if(!consump){
-			var ending = this.end.pop();
-			if(typeof ending==="undefined") ending = ")";
 			this.comp += ending;
 			x = this.check();
 			if(x>0){
@@ -1634,8 +1712,6 @@ Jolf.prototype.check = function(){
 		}
 		consump--;
 		if(!consump){
-			var ending = this.end.pop();
-			if(typeof ending==="undefined") ending = ")";
 			this.comp += ending;
 			x = this.check();
 			if(x>0){
@@ -1647,7 +1723,7 @@ Jolf.prototype.check = function(){
 			return 0;
 		} else {
 			this.comp += ",";
-			this.func.push(consump);
+			this.func.push([consump,ending]);
 			return 0.5;
 		}
 	} else {
@@ -1658,27 +1734,14 @@ Jolf.prototype.check = function(){
 
 Jolf.prototype.step = function(){
 	// checking index bounds / func stack
-	console.log(this.prec,this.comp);
+	//console.log(this.prec,this.comp);
 	if(this.index > this.code.length){
 		this.total = this.prec+this.comp;
 		return false;
 	}
 	// var for char
 	var chr = this.code[this.index];
-
-	//console.log(this.bldChr[0]=="~",this.bldChr,chr);
-	// extended functions
-	if(this.bldChr.length<2&&this.bldChr[0]=="~"){
-		this.bldChr += chr;
-		chr = this.bldChr;
-	} else if(this.bldChr.length>=2){
-		this.bldChr = "";
-	} else if(chr=="~"){
-		this.bldChr = "~";
-		this.index++;
-		return this;
-	}
-
+	if(chr=="~") chr+=this.code[++this.index];
 	switch(this.mode){
 		case 0:
 			// read the character and get its type
@@ -1690,10 +1753,18 @@ Jolf.prototype.step = function(){
 				this.comp += sbs[chr](this);
 			} else if(ops[chr]){ // if the character is an operator
 				var arity = ops[chr](this);
+				var close = ")";
+				if(Array.isArray(arity)){
+					close = arity.pop();
+					arity = arity.pop();
+				}
 				if(!arity){
+					console.log(arity,!arity);
 					this.comp += ")";
 					this.check();
-				} else { this.func.push(arity); }
+				} else {
+					this.func.push([arity,close]);
+				}
 			} else if(inf[chr]){	// if the character is data
 				inf[chr](this);
 			} else if(isNum(chr)){	// if the character is a number
@@ -1726,14 +1797,14 @@ Jolf.prototype.step = function(){
 				this.comp += "\"";
 				if(this.repl){
 					this.comp += ".format(";
-					this.func.push(this.repl);
+					this.func.push([this.repl,")"]);
 					this.repl = 0;
 				} else this.check();
 			} else if(chr=="'"){
 				this.comp += "\"";
 				if(this.repl){
 					this.comp += ".format(";
-					this.func.push(this.repl);
+					this.func.push([this.repl,")"]);
 					this.repl = 0;
 				} else this.check();
 				this.comp += "\"";
