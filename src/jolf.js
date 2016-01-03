@@ -8,7 +8,7 @@
 
 // polyfills from developer.mozilla.org
 {
-String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(null==this)throw new TypeError("can't convert "+this+" to object");var r=""+this;if(t=+t,t!=t&&(t=0),0>t)throw new RangeError("repeat count must be non-negative");if(t==1/0)throw new RangeError("repeat count must be less than infinity");if(t=Math.floor(t),0==r.length||0==t)return"";if(r.length*t>=1<<28)throw new RangeError("repeat count must not overflow maximum string size");for(var e="";1==(1&t)&&(e+=r),t>>>=1,0!=t;)r+=r;return e});Array.prototype.every||(Array.prototype.every=function(r,t){"use strict";var e,n;if(null==this)throw new TypeError("this is null or not defined");var o=Object(this),i=o.length>>>0;if("function"!=typeof r)throw new TypeError;for(arguments.length>1&&(e=t),n=0;i>n;){var f;if(n in o){f=o[n];var y=r.call(e,f,n,o);if(!y)return!1}n++}return!0});Math.clz32=Math.clz32||function(){"use strict";var t=[32,31,0,16,0,30,3,0,15,0,0,0,29,10,2,0,0,0,12,14,21,0,19,0,0,28,0,25,0,9,1,0,17,0,4,,0,0,11,0,13,22,20,0,26,0,0,18,5,0,0,23,0,27,0,6,0,24,7,0,8,0,0,0];return function(r){var u=Number(r)>>>0;return u|=u>>>1,u|=u>>>2,u|=u>>>4,u|=u>>>8,u|=u>>>16,u=t[Math.imul(u,116069625)>>>26]}}();Math.trunc=Math.trunc||function(t){return 0>t?Math.ceil(t):Math.floor(t)};Math.sign=Math.sign||function(n){return n=+n,0===n||isNaN(n)?n:n>0?1:-1};Math.imul=Math.imul||function(t,u){var a=t>>>16&65535,i=65535&t,n=u>>>16&65535,r=65535&u;return i*r+(a*r+i*n<<16>>>0)|0};!function(){function t(t,n,o){return"undefined"==typeof o||0===+o?Math[t](n):(n=+n,o=+o,isNaN(n)||"number"!=typeof o||o%1!==0?NaN:(n=n.toString().split("e"),n=Math[t](+(n[0]+"e"+(n[1]?+n[1]-o:-o))),n=n.toString().split("e"),+(n[0]+"e"+(n[1]?+n[1]+o:o))))}Math.round10||(Math.round10=function(n,o){return t("round",n,o)}),Math.floor10||(Math.floor10=function(n,o){return t("floor",n,o)}),Math.ceil10||(Math.ceil10=function(n,o){return t("ceil",n,o)})}();Math.cbrt=Math.cbrt||function(t){var a=Math.pow(Math.abs(t),1/3);return 0>t?-a:a};Math.expm1=Math.expm1||function(t){return Math.exp(t)-1};Math.fround=Math.fround||function(n){return function(r){return n[0]=r,n[0]}}(Float32Array(1));Math.log10=Math.log10||function(t){return Math.log(t)/Math.LN10};Math.log2=Math.log2||function(t){return Math.log(t)/Math.LN2};Array.prototype.every||(Array.prototype.every=function(r,t){"use strict";var e,n;if(null==this)throw new TypeError("this is null or not defined");var o=Object(this),i=o.length>>>0;if("function"!=typeof r)throw new TypeError;for(arguments.length>1&&(e=t),n=0;i>n;){var f;if(n in o){f=o[n];var y=r.call(e,f,n,o);if(!y)return!1}n++}return!0});Math.hypot=Math.hypot||function(){for(var t=0,r=arguments.length,n=0;r>n;n++){if(arguments[n]===1/0||arguments[n]===-(1/0))return 1/0;t+=arguments[n]*arguments[n]}return Math.sqrt(t)};Math.log10=Math.log10||function(t){return Math.log(t)/Math.LN10};String.fromCodePoint||!function(){var r=function(){try{var r={},n=Object.defineProperty,t=n(r,r,r)&&n}catch(e){}return t}(),n=String.fromCharCode,t=Math.floor,e=function(){var r,e,o=16384,i=[],a=-1,u=arguments.length;if(!u)return"";for(var f="";++a<u;){var g=Number(arguments[a]);if(!isFinite(g)||0>g||g>1114111||t(g)!=g)throw RangeError("Invalid code point: "+g);65535>=g?i.push(g):(g-=65536,r=(g>>10)+55296,e=g%1024+56320,i.push(r,e)),(a+1==u||i.length>o)&&(f+=n.apply(null,i),i.length=0)}return f};r?r(String,"fromCodePoint",{value:e,configurable:!0,writable:!0}):String.fromCodePoint=e}();Array.prototype.fill||(Array.prototype.fill=function(t){if(null==this)throw new TypeError("this is null or not defined");for(var r=Object(this),n=r.length>>>0,i=arguments[1],a=i>>0,e=0>a?Math.max(n+a,0):Math.min(a,n),o=arguments[2],h=void 0===o?n:o>>0,l=0>h?Math.max(n+h,0):Math.min(h,n);l>e;)r[e]=t,e++;return r});
+String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(null==this)throw new TypeError("can't convert "+this+" to object");var r=""+this;if(t=+t,t!=t&&(t=0),0>t)throw new RangeError("repeat count must be non-negative");if(t==1/0)throw new RangeError("repeat count must be less than infinity");if(t=Math.floor(t),0==r.length||0==t)return"";if(r.length*t>=1<<28)throw new RangeError("repeat count must not overflow maximum string size");for(var e="";1==(1&t)&&(e+=r),t>>>=1,0!=t;)r+=r;return e});Array.prototype.every||(Array.prototype.every=function(r,t){"use strict";var e,n;if(null==this)throw new TypeError("this is null or not defined");var o=Object(this),i=o.length>>>0;if("function"!=typeof r)throw new TypeError;for(arguments.length>1&&(e=t),n=0;i>n;){var f;if(n in o){f=o[n];var y=r.call(e,f,n,o);if(!y)return!1}n++}return!0});Math.clz32=Math.clz32||function(J){"use strict";var t=[32,31,0,16,0,30,3,0,15,0,0,0,29,10,2,0,0,0,12,14,21,0,19,0,0,28,0,25,0,9,1,0,17,0,4,,0,0,11,0,13,22,20,0,26,0,0,18,5,0,0,23,0,27,0,6,0,24,7,0,8,0,0,0];return function(r){var u=Number(r)>>>0;return u|=u>>>1,u|=u>>>2,u|=u>>>4,u|=u>>>8,u|=u>>>16,u=t[Math.imul(u,116069625)>>>26]}}();Math.trunc=Math.trunc||function(t){return 0>t?Math.ceil(t):Math.floor(t)};Math.sign=Math.sign||function(n){return n=+n,0===n||isNaN(n)?n:n>0?1:-1};Math.imul=Math.imul||function(t,u){var a=t>>>16&65535,i=65535&t,n=u>>>16&65535,r=65535&u;return i*r+(a*r+i*n<<16>>>0)|0};!function(J){function t(t,n,o){return"undefined"==typeof o||0===+o?Math[t](n):(n=+n,o=+o,isNaN(n)||"number"!=typeof o||o%1!==0?NaN:(n=n.toString().split("e"),n=Math[t](+(n[0]+"e"+(n[1]?+n[1]-o:-o))),n=n.toString().split("e"),+(n[0]+"e"+(n[1]?+n[1]+o:o))))}Math.round10||(Math.round10=function(n,o){return t("round",n,o)}),Math.floor10||(Math.floor10=function(n,o){return t("floor",n,o)}),Math.ceil10||(Math.ceil10=function(n,o){return t("ceil",n,o)})}();Math.cbrt=Math.cbrt||function(t){var a=Math.pow(Math.abs(t),1/3);return 0>t?-a:a};Math.expm1=Math.expm1||function(t){return Math.exp(t)-1};Math.fround=Math.fround||function(n){return function(r){return n[0]=r,n[0]}}(Float32Array(1));Math.log10=Math.log10||function(t){return Math.log(t)/Math.LN10};Math.log2=Math.log2||function(t){return Math.log(t)/Math.LN2};Array.prototype.every||(Array.prototype.every=function(r,t){"use strict";var e,n;if(null==this)throw new TypeError("this is null or not defined");var o=Object(this),i=o.length>>>0;if("function"!=typeof r)throw new TypeError;for(arguments.length>1&&(e=t),n=0;i>n;){var f;if(n in o){f=o[n];var y=r.call(e,f,n,o);if(!y)return!1}n++}return!0});Math.hypot=Math.hypot||function(J){for(var t=0,r=arguments.length,n=0;r>n;n++){if(arguments[n]===1/0||arguments[n]===-(1/0))return 1/0;t+=arguments[n]*arguments[n]}return Math.sqrt(t)};Math.log10=Math.log10||function(t){return Math.log(t)/Math.LN10};String.fromCodePoint||!function(J){var r=function(J){try{var r={},n=Object.defineProperty,t=n(r,r,r)&&n}catch(e){}return t}(),n=String.fromCharCode,t=Math.floor,e=function(J){var r,e,o=16384,i=[],a=-1,u=arguments.length;if(!u)return"";for(var f="";++a<u;){var g=Number(arguments[a]);if(!isFinite(g)||0>g||g>1114111||t(g)!=g)throw RangeError("Invalid code point: "+g);65535>=g?i.push(g):(g-=65536,r=(g>>10)+55296,e=g%1024+56320,i.push(r,e)),(a+1==u||i.length>o)&&(f+=n.apply(null,i),i.length=0)}return f};r?r(String,"fromCodePoint",{value:e,configurable:!0,writable:!0}):String.fromCodePoint=e}();Array.prototype.fill||(Array.prototype.fill=function(t){if(null==this)throw new TypeError("this is null or not defined");for(var r=Object(this),n=r.length>>>0,i=arguments[1],a=i>>0,e=0>a?Math.max(n+a,0):Math.min(a,n),o=arguments[2],h=void 0===o?n:o>>0,l=0>h?Math.max(n+h,0):Math.min(h,n);l>e;)r[e]=t,e++;return r});
 }
 
 {// functions
@@ -481,7 +481,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return window.life.f[n]=factorial(n-1)*n;
 	}
 
-	String.prototype.format = function(){
+	String.prototype.format = function(J){
 		var string = this;
 		for(var i=0;i<arguments.length;i++){
 			string = string.replace(/%/,arguments[i]);
@@ -511,7 +511,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		"S":1,
 		"`":1,
 	}
-	Array.prototype.getRandEl = function(){
+	Array.prototype.getRandEl = function(J){
 		return this[Math.floor(Math.random()*this.length)];
 	}
 	Array.prototype.has = function(x){
@@ -519,7 +519,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return !!(this.indexOf(x)+1);
 	}
 	// from http://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#comment54935095_10142256
-	Array.prototype.shuffle=function(){var t,h,r=this.length;if(0==r)return this;for(;--r;)t=Math.floor(Math.random()*(r+1)),h=this[r],this[r]=this[t],this[t]=h;return this};
+	Array.prototype.shuffle=function(J){var t,h,r=this.length;if(0==r)return this;for(;--r;)t=Math.floor(Math.random()*(r+1)),h=this[r],this[r]=this[t],this[t]=h;return this};
 
 	Array.prototype.e = Array.prototype.every;
 	Array.prototype.f = Array.prototype.filter;
@@ -574,7 +574,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return this.match(new RegExp(m,o));
 	}
 	String.prototype.r = String.prototype.trim;
-	String.prototype.R = String.prototype.reverse = function(){
+	String.prototype.R = String.prototype.reverse = function(J){
 		return this.split("").reverse().join("");
 	}
 	String.prototype["`"] = String.prototype.charAt;
@@ -978,59 +978,59 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	// canvas object
 	var can = {
-		"b":function(){
+		"b":function(J){
 			J.comp += "y.begin(";
 			return 0;
 		},
-		"B":function(){
+		"B":function(J){
 			J.comp += "y.back(";
 			return 1;
 		},
-		"c": function(){
+		"c": function(J){
 			J.comp += "y.close(";
 			return 0;
 		},
-		"d":function(){
+		"d":function(J){
 			J.comp += "y.draw(";
 			return 0;
 		},
-		"e":function(){
+		"e":function(J){
 			J.comp += "y.pensize(";
 			return 1;
 		},
-		"f":function(){
+		"f":function(J){
 			J.comp += "y.font(";
 			return 1;
 		},
-		"F":function(){
+		"F":function(J){
 			J.comp += "y.fillstyle(";
 			return 1;
 		},
-		"g":function(){
+		"g":function(J){
 			J.comp += "y.go(";
 			return 1;
 		},
-		"G":function(){
+		"G":function(J){
 			J.comp += "y.goto(";
 			return 2;
 		},
-		"j":function(){
+		"j":function(J){
 			J.comp += "y.jump(";
 			return 2;
 		},
-		"t":function(){
+		"t":function(J){
 			J.comp += "y.turn(";
 			return 1;
 		},
-		"p":function(){
+		"p":function(J){
 			J.comp += "y.penup(";
 			return 0;
 		},
-		"P":function(){
+		"P":function(J){
 			J.comp += "y.pendown(";
 			return 0;
 		},
-		"T":function(){
+		"T":function(J){
 			J.comp += "y.text(";
 			return 1;
 		},
@@ -1134,7 +1134,7 @@ var ops = {
 				J.comp += x;
 				return Date[chrTemp].length;
 			} else {
-				J.comp += "(function(){return Date[\""+chrTemp+"\"]})(";
+				J.comp += "(function(J){return Date[\""+chrTemp+"\"]})(";
 				return 0;
 			}
 	},
@@ -1179,7 +1179,7 @@ var ops = {
 			J.comp += x;
 			return Math[chrTemp].length;
 		} else {
-			J.comp += "(function(){return Math[\""+chrTemp+"\"]})(";
+			J.comp += "(function(J){return Math[\""+chrTemp+"\"]})(";
 			return 0;
 		}
 	},
@@ -1196,7 +1196,7 @@ var ops = {
 			J.comp += x;
 			return String[chrTemp].length;
 		} else {
-			J.comp += "(function(){return String[\""+chrTemp+"\"]})(";
+			J.comp += "(function(J){return String[\""+chrTemp+"\"]})(";
 			return 0;
 		}
 	},
@@ -1272,7 +1272,8 @@ var ops = {
 				todo += J.code[++J.index];
 			} while(J.code[J.index]!=="\"");
 			todo = todo.slice(0,-1);
-
+		} else if(can[op]){
+			return can[op](J);
 		}
 	},
 	"z": function(J){
@@ -1288,7 +1289,7 @@ var ops = {
 			J.comp += x;
 			return Array[chrTemp].length;
 		} else {
-			J.comp += "(function(){return Array[\""+chrTemp+"\"]})(";
+			J.comp += "(function(J){return Array[\""+chrTemp+"\"]})(";
 			return 0;
 		}
 	},
@@ -1541,7 +1542,7 @@ var inf = {
 	"ν": function(J){
 		J.comp += "null";
 	},
-	"": function(){}
+	"": function(J){}
 }
 
 // zero-arity functions
@@ -1666,7 +1667,7 @@ function Jolf(code){
 }
 
 // in-progress readable format of jolf compiled code
-Jolf.prototype.readable = function(){
+Jolf.prototype.readable = function(J){
 	var read = this.comp;
 	//console.log(read);
 	read = read.replace(/(Math|String|Array|Date)\["(.)"\]/g,function(match,p1,p2){
@@ -1732,25 +1733,25 @@ Jolf.prototype.readable = function(){
 	return this.prec+read;
 }
 
-Jolf.prototype.haltChecking = function(){
+Jolf.prototype.haltChecking = function(J){
 	this.checkQ = false;
 }
 
-Jolf.prototype.resumeChecking = function(){
+Jolf.prototype.resumeChecking = function(J){
 	this.checkQ = true;
 }
 
-Jolf.prototype.run = function(){
+Jolf.prototype.run = function(J){
 	if(this.step()) setTimeout(function(J){J.run()},1,this);
 	return this;
 }
 
-Jolf.prototype.runUnpaused = function(){
+Jolf.prototype.runUnpaused = function(J){
 	while(this.step());
 	return this;
 }
 
-Jolf.prototype.exec = function(){
+Jolf.prototype.exec = function(J){
 	if(this.step()) setTimeout(function(J){J.exec()},1,this);
 	else {
 		var ret = this.total?this.total:this.prec+this.comp;
@@ -1758,7 +1759,7 @@ Jolf.prototype.exec = function(){
 	}
 }
 
-Jolf.prototype.check = function(){
+Jolf.prototype.check = function(J){
 	if(!this.checkQ) return;
 	if(this.prevCk) return prevCk = false;
 	var funcRes = this.func.pop();
@@ -1798,9 +1799,9 @@ Jolf.prototype.check = function(){
 	}
 }
 
-Jolf.prototype.step = function(){
+Jolf.prototype.step = function(J){
 	// checking index bounds / func stack
-	//console.log(this.prec,this.comp);
+	console.log(this.prec,this.comp);
 	if(this.index > this.code.length){
 		this.total = this.prec+this.comp;
 		return false;
@@ -1979,7 +1980,7 @@ function silentEvalJolf(code){
 	var x = new Jolf(code);
 	x.outted = true;
 	while(x.step());
-	x.total = "(function(){return "+x.total+"})();";
+	x.total = "(function(J){return "+x.total+"})();";
 	return eval(x.total);
 }
 
