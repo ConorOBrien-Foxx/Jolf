@@ -275,6 +275,18 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return x;
 	}
 
+	function simulDictRepl(x,y,z){
+		if(typeof y=="number") y+="";
+		if(typeof z=="number") z+="";
+		y=typeof y=="string"?y.split(""):y;
+		z=typeof z=="string"?z.split(""):z;
+		x=x.split("");
+		for(var i=0;i<x.length;i++){
+			if(y.indexOf(x[i])+1) x[i] = z[y.indexOf(x[i])] || x[i];
+		}
+		return x.join("");
+	}
+
 	function toString(N,b){
 		return N.toString(b||10);
 	}
@@ -411,6 +423,15 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 
 	function singleReplace(a,b,c){
 		return a.replace(RegExp(RegExp.escape(b)),c);
+	}
+
+	function goodLuck(){
+		var n = "";
+		for(var i=0;i<arguments.length;i++){
+			var arg = arguments[i];
+			n += arg.constructor.name[i%arg.constructor.name.length];
+		}
+		return n;
 	}
 
 	(function(N){var x=window[N];delete window[N];window[N]=function(num){return Array.isArray(num)?x(num.join("")):num==""?undefined:x(num);}})("Number");
@@ -771,6 +792,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			return e;
 		}).join("\n");
 	}
+	String.C = function trimLines(x){
+		return x.split("\n").map(function(e){return e.trim()});
+	}
 	String.d = function applyTag(a,x){
 		return "<"+a+">"+x+"</"+a+">";
 	}
@@ -784,6 +808,8 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	String.E = function loosePalindromeTest(x){
 		return x.replace?String.e(x.replace(/\s/g,"").toLowerCase()):x.filter?String.e(x.filter(function(e){return !(e.match(/\s/g).length);})):String.e(x);
 	}
+	String.f = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	String.F = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
 	String.h = "QWERTYUIOP\nASDFGHJKL\nZXCVBNM";
 	String.H = [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["Z","X","C","V","B","N","M"]];
 	String.j = function justify(x){
@@ -822,6 +848,18 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	String.V = function groupByIntegers(x){
 		return x.match(/\d+|./g);
+	}
+	String.w = function upperAndLower(x){
+		return x.toUpperCase()+x.toLowerCase();
+	}
+	String.W = function lowerAndUpper(x){
+		return x.toLowerCase()+x.toUpperCase();
+	}
+	String.y = function upperN(x,n){
+		return x.slice(0,n)+x[n].toUpperCase()+x.slice(n+1,x.length);
+	}
+	String.Y = function upperN(x,n){
+		return x.slice(0,n)+x[n].toLowerCase()+x.slice(n+1,x.length);
 	}
 	String.z = function fromGreek(x){
 		return {Α:"Alpha", α:"alpha", Β:"Beta", β:"beta", Γ:"Gamma", γ:"gamma", Δ:"Delta", δ:"delta", Ε:"Epsilon", ε:"epsilon", Ζ:"Zeta", ζ:"zeta", Η:"Eta", η:"eta", Θ:"Theta", θ:"theta", Ι:"Iota", ι:"iota", Κ:"Kappa", κ:"kappa", Λ:"Lambda", λ:"lambda", Μ:"Mu", μ:"mu", Ν:"Nu", ν:"nu", Ξ:"Xi", ξ:"xi", Ο:"Omicron", ο:"omicron", Π:"Pi", π:"pi", Ρ:"Rho", ρ:"rho", Σ:"Sigma", σ:"sigma", Τ:"Tau", τ:"tau", Υ:"Upsilon", υ:"upsilon", Φ:"Phi", φ:"phi", Χ:"Chi", χ:"chi", Ψ:"Psi", ψ:"psi", Ω:"Omega", ω:"omega"}[x]||x;
@@ -1042,6 +1080,10 @@ var ops = {
 		J.comp += "dictRepl(";
 		return 3;
 	},
+	"~A": function(J){
+		J.comp += "simulDictRepl(";
+		return 3;
+	},
 	"B": function(J){
 		J.comp += "toBinary(";
 		return 1;
@@ -1107,6 +1149,10 @@ var ops = {
 	"G": function(J){
 		J.comp += "split(";
 		return 2;
+	},
+	"~G": function(J){
+		J.comp += "goodLuck(";
+		return J.func.length;
 	},
 	"h": function(J){
 		J.comp += "head(";
@@ -1563,7 +1609,7 @@ var sbs = {
 	"~N": function(J){
 		return "Number";
 	},
-	"~A": function(J){
+	"~a": function(J){
 		return "Array";
 	},
 	"~o": function(J){
