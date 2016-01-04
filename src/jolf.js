@@ -75,7 +75,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 
 	function getProp(a,b){
-		return a[b]||window[a][b]||42;
+		return a[b]||(window[a]||[])[b]||42;
 	}
 
 	function neg(a){
@@ -142,6 +142,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			}
 			return x;
 		}
+		if(typeof x==="string") return mul(2,x);
 		return x*x;
 	}
 
@@ -348,7 +349,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 
 	function sum(x){
-		if(typeof x==="string") return sum(x.split(""))
+		if(typeof x==="string") return sum(x.split("").map(function(e){return e.charCodeAt()}));
 		else if(typeof x==="number") return sum(x.toString(10).split(""))
 		return add.apply(window,x);
 	}
@@ -976,8 +977,16 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		Date[names[i]] = window[funcs[i]+"Now"];}catch(e){};
 		Date[names[i].toUpperCase()] = window[funcs[i]+"Input"];}catch(e){};
 	}
+
+	Pen.prototype.customFunc = function(char,func){
+		Pen.prototype[char] = func;
+	}
 	// canvas object
 	var can = {
+		"a":function(J){
+			J.comp += "y.angle(";
+			return 1;
+		},
 		"b":function(J){
 			J.comp += "y.begin(";
 			return 0;
@@ -1006,6 +1015,17 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			J.comp += "y.fillstyle(";
 			return 1;
 		},
+		"h":function(j){
+			J.comp += "y.set(";
+			return 0;
+		},
+		"H":function(J){
+			J.comp += "y.home(";
+			return 0;
+		},
+		"i":function(J){
+			J.comp += "y.fill(";
+		},
 		"g":function(J){
 			J.comp += "y.go(";
 			return 1;
@@ -1018,9 +1038,13 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			J.comp += "y.jump(";
 			return 2;
 		},
-		"t":function(J){
-			J.comp += "y.turn(";
-			return 1;
+		"o":function(J){
+			J.comp += "y.origin(";
+			return 0;
+		},
+		"O":function(J){
+			J.comp += "y.polar(";
+			return 2;
 		},
 		"p":function(J){
 			J.comp += "y.penup(";
@@ -1029,6 +1053,24 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		"P":function(J){
 			J.comp += "y.pendown(";
 			return 0;
+		},
+		"q":function(J){
+			J.comp += "y.customFunc(\""+J.code[++J.index]+"\",";
+			return 1;
+		},
+		"Q":function(J){
+			var newChr = J.code[++J.index];
+			console.log(newChr);
+			J.comp += "y["+newChr+"](";
+			return Pen.prototype[newChr].length||0;
+		},
+		"s":function(J){
+			J.comp += "y.stroke(";
+			return 0;
+		},
+		"t":function(J){
+			J.comp += "y.turn(";
+			return 1;
 		},
 		"T":function(J){
 			J.comp += "y.text(";
@@ -1415,6 +1457,18 @@ var ops = {
 	"Ω": function(J){
 		J.comp += "\"";
 		return [1,"\""];
+	},
+	"~T": function(J){
+		J.comp += "(";
+		return [1,").charCodeAt().toString(16);"]
+	},
+	"\u03A8": function(J){
+		J.comp += "(H,S,n)=>";
+		return [1,""];
+	},
+	"\u03C6": function(J){
+		J.comp += "function(H,S){";
+		return [1,"}"]
 	},
 }
 
