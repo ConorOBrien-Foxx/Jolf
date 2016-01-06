@@ -27,6 +27,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 				a.push(b);
 			}
 		}
+		if(typeof a==="string"&&Array.isArray(b)) return a + b.join("");
 		return a + b;
 	}
 
@@ -435,6 +436,14 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return n;
 	}
 
+	function joinByNothing(x){
+		return Array.isArray(x)?x.join(""):typeof x==="number"?x*10:typeof x==="string"?x.split(""):"";
+	}
+
+	function singleton(x){
+		return Array.isArray(x)?x.join("").split(""):typeof x==="string"?x.split("").join(""):typeof x==="number"?(x+"").split("").map(Number).sort(function(a,b){return a-b;}):"";
+	}
+
 	(function(N){var x=window[N];delete window[N];window[N]=function(num){return Array.isArray(num)?x(num.join("")):num==""?undefined:x(num);}})("Number");
 
 	var pids=0;
@@ -465,7 +474,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 
 	// why you no have RegExp.escape regularly, JavaScript?!
 	RegExp.escape = function(s){
-		return s.replace(/[-\/\\^$*+?.()|[\]{}]/g,"\\$&");
+		return (Array.isArray(s)?s.join(""):s+"").replace(/[-\/\\^$*+?.()|[\]{}]/g,"\\$&");
 	}
 
 	// dev tool for detection of existant commands
@@ -588,6 +597,14 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Math.memoized = {};
 	Math["%"] = function absMod(a,b){
 		return Math.abs(a%b);
+	}
+	Math["\u03a6"] = function customFib(n,s1,s2){
+		life[[s1,s2]] = life[[s1,s2]]||[s1,s2];
+		if(typeof life[[s1,s2]][n]!=="undefined"){
+			return life[[s1,s2]][n];
+		} else {
+			return Math["\u03a6"](n-1,s1,s2)+Math["\u03a6"](n-2,s1,s2);
+		}
 	}
 	Math[5] = function floorDiv(a,b){
 		return Math.floor(a/b);
@@ -939,7 +956,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return Array.F(res,c-1);
 	}
 	Array.o = function maxLength(x){
-		return x.
+		return Math.max.apply(this,x.map(function(e){return e.length}));
 	}
 	Array.m = function maxDim(x){
 		if(x == []) return 0;
@@ -1555,8 +1572,14 @@ var ops = {
 	},
 	"\x0B": function(J){
 		J.comp += "...";
-		J.func.pop();
-		J.end.push("");
+		return [1,""];
+	},
+	"\x10":function(J){
+		J.comp += "joinByNothing(";
+		return 1;
+	},
+	"\x11":function(J){
+		J.comp += "singleton(";
 		return 1;
 	},
 	"\f": function(J){
