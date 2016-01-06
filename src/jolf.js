@@ -758,6 +758,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Math.$ = function Catalan(n){
 		return Math.K(2*n,n)/(n+1);
 	}
+	Math["/"] = Infinity;
 	Math["~"] = function stasisPropmt(){
 		return prompt();
 	}
@@ -811,15 +812,48 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	String.f = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	String.F = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
+	String.g = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~";
+	String.G = [" ","!","\"","#","$","%","&","'","(",")","*","+",",","-",".","/","0","1","2","3","4","5","6","7","8","9",":",";","<","=",">","?","@","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z","[","\\","]","^","_","`","a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z","{","|","}","~"];
 	String.h = "QWERTYUIOP\nASDFGHJKL\nZXCVBNM";
 	String.H = [["Q","W","E","R","T","Y","U","I","O","P"],["A","S","D","F","G","H","J","K","L"],["Z","X","C","V","B","N","M"]];
+	String.i = function repeatVertically(x,n){
+		return (x+"\n").repeat(n);
+	}
+	String.I = function put(s,v,x,y){
+		s=String.m(s);
+		v=String.m(v);
+		for(var i=y;i<y+v.length;i++){
+			for(var j=x;j<x+v[0].length;j++){
+				console.log(i,y,i-y,v);
+				s[i][j]=v[i-y][j-x];
+			}
+		}
+		return String.M(s);
+	}
 	String.j = function justify(x){
+
+	}
+	String.J = function rotate(x){
 
 	}
 	String.k = "QWERTYUIOPASDFGHJKLZXCVBNM";
 	String.K = ["Q","W","E","R","T","Y","U","I","O","P","A","S","D","F","G","H","J","K","L","Z","X","C","V","B","N","M"];
 	String.l = "abcdefghijklmnopqrstuvwxyz";
 	String.L = ["a","b","c","d","e","f","g","h","i","j","k","l","m","n","o","p","q","r","s","t","u","v","w","x","y","z"];
+	String.m = function splitToArrayGrid(x){
+		return x.split("\n").map(function(e){return e.split("")});
+	}
+	String.M = function joinArrayGrid(x){
+		return x.map(function(e){return e.join("")}).join("\n");
+	}
+	String.n = function joinSideBySide(x,y){
+		var mLx = Math.max.apply(this,x.map(function(e){return e.length}));
+		var mLy = Math.max.apply(this,y.map(function(e){return e.length}));
+		return String.I(x,y,mLx,0);
+	}
+	String.N = function joinSideBySideBottom(x,y){
+
+	}
 	String.p = function padLeft(x){
 
 	}
@@ -904,6 +938,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 		return Array.F(res,c-1);
 	}
+	Array.o = function maxLength(x){
+		return x.
+	}
 	Array.m = function maxDim(x){
 		if(x == []) return 0;
 		var a = [];
@@ -921,6 +958,17 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			if(Array.isArray(x[i])) a[i] = 1+Array.m(x[i]);
 		}
 		return Math.min.apply(window,a);
+	}
+	Array.p = function swap(a){
+		var len = Math.max.apply(Math,a.map(function(e){return e.length}));
+		var res = [];
+		for(var i=0;i<len;i++){
+			res[i] = [];
+			for(var j=0;j<a.length;j++){
+				res[i].push(a[j][i]);
+			}
+		}
+		return res;
 	}
 	Array.s = function squareString(a){
 		return Array.S(a).map(function(x){return x.join(" ");}).join("\n");
@@ -949,6 +997,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			}
 		}
 		return typeof x==="string"?a.map(function(e){return e.join("")}).join(""):a;
+	}
+	Array.T = function trim(x){
+		return x.map(function(e){return e.trim();})
 	}
 	Array.w = function(a){
 		// [1,2,3,4,5,6,7,8,9]
@@ -1142,6 +1193,22 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			return 1;
 		},
 	}
+	var Crypto = {};
+	Crypto.rot13 = function(s){
+		return s.replace(/[A-Z]/g,function(m){
+			return String[2](String.u,13)[String.u.indexOf(m)];
+		}).replace(/[a-z]/g,function(m){
+			return String[2](String.u,13)[String.u.indexOf(m)];
+		});
+	}
+	Crypto.rot13Rev = function(s){
+		return s.replace(/[A-Z]/g,function(m){
+			return String[3](String.u,13)[String.u.indexOf(m)];
+		}).replace(/[a-z]/g,function(m){
+			return String[3](String.u,13)[String.u.indexOf(m)];
+		});
+	}
+	Crypto.rotN = function(s,n){}
 }
 
 var ctl = {
@@ -1547,6 +1614,9 @@ var ops = {
 	"\u03C6": function(J){
 		J.comp += "function(H,S){";
 		return [1,"}"]
+	},
+	"\u03C7": function(J){
+
 	},
 }
 
