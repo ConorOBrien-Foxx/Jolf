@@ -1690,7 +1690,7 @@ var ops = {
 	},
 	"~T": function(J){
 		J.comp += "(";
-		return [1,").charCodeAt().toString(16);"]
+		return [1,").charCodeAt().toString(16)"]
 	},
 	"\u03A8": function(J){
 		J.comp += "(H,S,n)=>";
@@ -1712,6 +1712,14 @@ var ops = {
 		J.comp += "(";
 		return [1,").pop()"];
 	},
+	"\u14ba": function(J){
+		J.comp += "location = ";
+		return [1,""];
+	},
+	"\u122b": function(J){
+		J.comp += "location = ";
+		return [1,".tryitonline.net"];
+	}
 }
 
 // data/arguments
@@ -1838,6 +1846,24 @@ var inf = {
 	"ν": function(J){
 		J.comp += "null";
 	},
+	"\u1592": function(J){
+		J.comp += "\"Jolf\"";
+	},
+	"\u151b": function(J){
+		J.comp += "\"Seriously\"";
+	},
+	"\u143b": function(J){
+		J.comp += "\"Vitsy\"";
+	},
+	"\u1553": function(J){
+		J.comp += "\"When I have a child, I will name them Vitsy, and they shall appreciate their namesake.\"";
+	},
+	"\u15f0": function(J){
+		J.comp += "\"Minkolang\"";
+	},
+	"\xb6": function(J){
+		J.comp += "\"pl\""
+	},
 	"": function(J){}
 }
 
@@ -1882,17 +1908,20 @@ var mod = {
 		document.getElementById("output").innerHTML = "";
 	},
 	"θ": function(J){
-		J.func.last+=3;
+		J.func.last[0]+=3;
 	},
 	"M": function(J){
-		J.func.last+=2;
+		J.func.last[0]+=2;
 	},
 	";": function(J){
-		J.func.last++;
+		J.func.last[0]++;
 	},
 	"η": function(J){
-		J.func.last--;
-	}
+		J.func.last[0]--;
+	},
+	"\u01a6": function(J){
+		location = "jolf.html";
+	},
 }
 
 // substitution characters
@@ -2102,7 +2131,7 @@ Jolf.prototype.check = function(J){
 
 Jolf.prototype.step = function(J){
 	// checking index bounds / func stack
-	//console.log(this.prec,this.comp);
+	console.log(this.prec,this.comp);
 	if(this.index > this.code.length){
 		this.total = this.prec+this.comp;
 		return false;
@@ -2295,20 +2324,20 @@ function silentEvalJolfObj(code,options){
 	return x;
 }
 
-try {
-function jolf(code,...args){
+function jolf(code){
+	args = Array.from(arguments).slice(1);
 	var a = new Jolf(code);
 	a.args = args;
 	a.inf.i = function(J){
 		if(!J.enc.i){
-			J.prec += "var i="+JSON.stringify(J.args.shift())+";";
+			J.prec += "var i=String("+JSON.stringify(J.args.shift())+");";
 			J.enc.i = true;
 		}
 		J.comp += "i";
 	}
 	a.inf.I = function(J){
 		if(!J.enc.I){
-			J.prec += "var I="+JSON.stringify(J.args.shift())+";";
+			J.prec += "var I=String("+JSON.stringify(J.args.shift())+");";
 			J.enc.I = true;
 		}
 		J.comp += "I";
@@ -2359,4 +2388,3 @@ function jolf(code,...args){
 	a.comp=a.comp.replace(/alert/g,"return");
 	return (new Function(a.prec+a.comp))()||(new Function(a.prec+"return "+a.comp))();
 }
-} catch(e){};
