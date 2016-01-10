@@ -6,6 +6,7 @@
   By ~ Conor ~ O'Brien
 */
 
+var debug = false;
 // polyfills from developer.mozilla.org
 {
 String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(null==this)throw new TypeError("can't convert "+this+" to object");var r=""+this;if(t=+t,t!=t&&(t=0),0>t)throw new RangeError("repeat count must be non-negative");if(t==1/0)throw new RangeError("repeat count must be less than infinity");if(t=Math.floor(t),0==r.length||0==t)return"";if(r.length*t>=1<<28)throw new RangeError("repeat count must not overflow maximum string size");for(var e="";1==(1&t)&&(e+=r),t>>>=1,0!=t;)r+=r;return e});Array.prototype.every||(Array.prototype.every=function(r,t){"use strict";var e,n;if(null==this)throw new TypeError("this is null or not defined");var o=Object(this),i=o.length>>>0;if("function"!=typeof r)throw new TypeError;for(arguments.length>1&&(e=t),n=0;i>n;){var f;if(n in o){f=o[n];var y=r.call(e,f,n,o);if(!y)return!1}n++}return!0});Math.clz32=Math.clz32||function(J){"use strict";var t=[32,31,0,16,0,30,3,0,15,0,0,0,29,10,2,0,0,0,12,14,21,0,19,0,0,28,0,25,0,9,1,0,17,0,4,,0,0,11,0,13,22,20,0,26,0,0,18,5,0,0,23,0,27,0,6,0,24,7,0,8,0,0,0];return function(r){var u=Number(r)>>>0;return u|=u>>>1,u|=u>>>2,u|=u>>>4,u|=u>>>8,u|=u>>>16,u=t[Math.imul(u,116069625)>>>26]}}();Math.trunc=Math.trunc||function(t){return 0>t?Math.ceil(t):Math.floor(t)};Math.sign=Math.sign||function(n){return n=+n,0===n||isNaN(n)?n:n>0?1:-1};Math.imul=Math.imul||function(t,u){var a=t>>>16&65535,i=65535&t,n=u>>>16&65535,r=65535&u;return i*r+(a*r+i*n<<16>>>0)|0};!function(J){function t(t,n,o){return"undefined"==typeof o||0===+o?Math[t](n):(n=+n,o=+o,isNaN(n)||"number"!=typeof o||o%1!==0?NaN:(n=n.toString().split("e"),n=Math[t](+(n[0]+"e"+(n[1]?+n[1]-o:-o))),n=n.toString().split("e"),+(n[0]+"e"+(n[1]?+n[1]+o:o))))}Math.round10||(Math.round10=function(n,o){return t("round",n,o)}),Math.floor10||(Math.floor10=function(n,o){return t("floor",n,o)}),Math.ceil10||(Math.ceil10=function(n,o){return t("ceil",n,o)})}();Math.cbrt=Math.cbrt||function(t){var a=Math.pow(Math.abs(t),1/3);return 0>t?-a:a};Math.expm1=Math.expm1||function(t){return Math.exp(t)-1};Math.fround=Math.fround||function(n){return function(r){return n[0]=r,n[0]}}(Float32Array(1));Math.log10=Math.log10||function(t){return Math.log(t)/Math.LN10};Math.log2=Math.log2||function(t){return Math.log(t)/Math.LN2};Array.prototype.every||(Array.prototype.every=function(r,t){"use strict";var e,n;if(null==this)throw new TypeError("this is null or not defined");var o=Object(this),i=o.length>>>0;if("function"!=typeof r)throw new TypeError;for(arguments.length>1&&(e=t),n=0;i>n;){var f;if(n in o){f=o[n];var y=r.call(e,f,n,o);if(!y)return!1}n++}return!0});Math.hypot=Math.hypot||function(J){for(var t=0,r=arguments.length,n=0;r>n;n++){if(arguments[n]===1/0||arguments[n]===-(1/0))return 1/0;t+=arguments[n]*arguments[n]}return Math.sqrt(t)};Math.log10=Math.log10||function(t){return Math.log(t)/Math.LN10};String.fromCodePoint||!function(J){var r=function(J){try{var r={},n=Object.defineProperty,t=n(r,r,r)&&n}catch(e){}return t}(),n=String.fromCharCode,t=Math.floor,e=function(J){var r,e,o=16384,i=[],a=-1,u=arguments.length;if(!u)return"";for(var f="";++a<u;){var g=Number(arguments[a]);if(!isFinite(g)||0>g||g>1114111||t(g)!=g)throw RangeError("Invalid code point: "+g);65535>=g?i.push(g):(g-=65536,r=(g>>10)+55296,e=g%1024+56320,i.push(r,e)),(a+1==u||i.length>o)&&(f+=n.apply(null,i),i.length=0)}return f};r?r(String,"fromCodePoint",{value:e,configurable:!0,writable:!0}):String.fromCodePoint=e}();Array.prototype.fill||(Array.prototype.fill=function(t){if(null==this)throw new TypeError("this is null or not defined");for(var r=Object(this),n=r.length>>>0,i=arguments[1],a=i>>0,e=0>a?Math.max(n+a,0):Math.min(a,n),o=arguments[2],h=void 0===o?n:o>>0,l=0>h?Math.max(n+h,0):Math.min(h,n);l>e;)r[e]=t,e++;return r});
@@ -33,7 +34,13 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 
 	function sub(a,b){
 		if(arguments.length>2) return sub(a,sub.apply(window,Array.from(arguments).slice(1)));
-		if(typeof a=="string") return a.replace(RegExp.escape(b),"");
+		if(typeof a=="string"){
+			if(Array.isArray(b)){
+				b.forEach(function(e){a=a.replace(RegExp(RegExp.escape(e),"g"),"")});
+				return a;
+			}
+			return a.replace(RegExp.escape(b),"");
+		}
 		else if(Array.isArray(a)) return a.filter(function(x){return x!=b});
 		else if(a instanceof Set){
 			a.delete(b);
@@ -444,6 +451,21 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return Array.isArray(x)?x.join("").split(""):typeof x==="string"?x.split("").join(""):typeof x==="number"?(x+"").split("").map(Number).sort(function(a,b){return a-b;}):"";
 	}
 
+	function firstN(max,com){
+		var ind = 0;
+		var off = 0;
+		var res = [];
+		while(ind<max+off){
+			if(com(ind)){
+				res.push(ind);
+			} else {
+				off++;
+			}
+			ind++;
+		}
+		return res;
+	}
+
 	// from http://stackoverflow.com/a/728694/4119004
 	function clone(e){var n;if(null==e||"object"!=typeof e)return e;if(e instanceof Date)return n=new Date,n.setTime(e.getTime()),n;if(e instanceof Array){n=[];for(var t=0,r=e.length;r>t;t++)n[t]=clone(e[t]);return n}if(e instanceof Object){n={};for(var o in e)e.hasOwnProperty(o)&&(n[o]=clone(e[o]));return n}throw new Error("Unable to copy obj! Its type isn't supported.")}
 
@@ -645,6 +667,10 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 		return Math.memoized["}"][n];
 	}
+	Math["\t"] = function firstNPrimes(n){
+		Math["}"](n);
+		return Math.memoized["}"].slice(0,n);
+	}
 	Math.memoized[","] = [[1]];
 	Math[","] = function partitions(n){
 		if(Math.memoized[","][n]) return Math.memoized[","][n];
@@ -794,6 +820,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Math["'"] = function parseFloat(n,base){
 		return eval(parseInt(n*1e14,base)+"/"+Math.pow(base,14));
 	}
+	for(i in Math){Math[Math[i].name]=Math[i]};
 	// adding string stuff
 	String.A = String.fromCharCode;
 	String.a = String.fromCodePoint;
@@ -1719,6 +1746,13 @@ var ops = {
 	"\u122b": function(J){
 		J.comp += "location = ";
 		return [1,".tryitonline.net"];
+	},
+	"\u03b3": function(J){
+
+	},
+	"~F": function(J){
+		J.comp += "firstN(";
+		return 2;
 	}
 }
 
@@ -1863,6 +1897,17 @@ var inf = {
 	},
 	"\xb6": function(J){
 		J.comp += "\"pl\""
+	},
+	"\u03bb": function(J){
+		var next = J.code[++J.index];
+		var par = J.ops;
+		if("mpZ,".search(next)+1){
+			par="m"==next?"Math":"p"==next?"String":"Z"==next?"Array":"Misc";
+			next = J.code[++J.index];
+		}
+		var q = par[next];
+		var func = par==J.ops?(q+"").replace(/[\s\S]+"(.+?)\("[\s\S]+/gm,"$1"):par+"."+window[par][next].name;
+		J.comp += func;
 	},
 	"": function(J){}
 }
@@ -2131,7 +2176,7 @@ Jolf.prototype.check = function(J){
 
 Jolf.prototype.step = function(J){
 	// checking index bounds / func stack
-	console.log(this.prec,this.comp);
+	if(debug)console.log(this.prec,this.comp);
 	if(this.index > this.code.length){
 		this.total = this.prec+this.comp;
 		return false;
@@ -2210,13 +2255,15 @@ Jolf.prototype.step = function(J){
 			} else if(chr=="%"){
 				this.comp += "%";
 				this.repl++;
+			} else if(chr=="\n"){
+				this.comp += "\\n";
 			} else {
 				this.comp += chr;
 			}
 		break;
 		case 2:
 			this.comp += "\"";
-			this.comp += chr;
+			this.comp += chr=="\n"?"\\n":chr;
 			this.comp += "\"";
 			this.check();
 			this.mode = 0;
