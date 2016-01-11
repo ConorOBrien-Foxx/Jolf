@@ -960,12 +960,23 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return x==0?s:x>0?String[3](s.slice(-1)+s.slice(0,-1),x-1):String[3](s,-x);
 	}
 
+	for(i in String){String[String[i].name]=String[i]};
+
 	Array.c = function chop(x,c){
 		var res=[];
 		for(var i=0;i<x.length;i+=c){
 			res.push(x.slice(i,i+c));
 		}
 		return res;
+	}
+	Array.C = function cumSum(x){
+		return x.reduce(function(a,i){return a+x.slice(i+1).reduce(function(a,b){return a+b},0)});
+	}
+	Array.d = function deltaList(x){
+		var y=clone(x);y.pop();
+		return y.map(function(e,i){
+			return x[i+1]-x[i];
+		});
 	}
 	Array.e = function ofLength(x,l){
 		return x.filter(function(e){return e.length===l});
@@ -1140,6 +1151,12 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		if(x.search(s)>=0) return RegExp.i(x,x.replace(s,r),r,y);
 		else return x;
 	}
+	RegExp.j = function replaceFirst(a,b,c){
+		return a.replace(b,c);
+	}
+	RegExp.J = function replaceMultilineGlobal(a,b,c){
+		return a.replace(RegExp(b,"gm"),c);
+	}
 
 	Pen.prototype.customFunc = function(char,func){
 		Pen.prototype[char] = func;
@@ -1269,12 +1286,21 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 
 	var Misc = {};
+	Misc.a = function drawBox(w,h,o){
+		o = o.split("");
+		var corner = o[0];
+		var horiz  = o[1];
+		var vert   = o[2];
+		var inner  = o[3];
+		return corner+horiz.repeat(w-2)+corner+"\n"+
+		String.repeatVertically(vert+inner.repeat(w-2)+vert,h-2)+corner+horiz.repeat(w-2)+corner;
+	}
 	Misc.b = bAW;
 	Misc.B = drawBoxPlot;
 	Misc.d = function boundBox(x){
-		Array.o(String.m(x))
+		Array.o(String.m(x));
 	}
-	Misc.r = function(s){
+	Misc.r = function rot13(s){
 		return s.replace(/[A-Z]/g,function(m){
 			return String[2](String.u,13)[String.u.indexOf(m)];
 		}).replace(/[a-z]/g,function(m){
