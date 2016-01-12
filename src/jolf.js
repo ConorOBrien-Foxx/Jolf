@@ -27,7 +27,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			} else {
 				a.push(b);
 			}
-		}
+		} 
 		if(typeof a==="string"&&Array.isArray(b)) return a + b.join("");
 		return a + b;
 	}
