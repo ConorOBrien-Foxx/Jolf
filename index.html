@@ -9,7 +9,9 @@
 	<script src="https://rawgit.com/gf3/Levenshtein/master/lib/levenshtein.js"></script>
 	<script src="https://rawgit.com/mathiasbynens/utf8.js/master/utf8.js"></script>
 	<script src="https://rawgit.com/davebalmer/turtlewax/master/pen.js"></script>
--	<script src="https://rawgit.com/ConorOBrien-Foxx/Jolf/master/src/jolf.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/2.5.0/math.min.js"></script>
+-	<!--script src="https://rawgit.com/ConorOBrien-Foxx/Jolf/master/src/jolf.js"></script-->
+	<script src="Jolf.js"></script>
 	<script>
 	// from tryitonline.net
 	function load(){
@@ -57,7 +59,9 @@
 	}
 
 	function updateByteCount(){
-		document.getElementById("bytes").innerHTML = utf8.encode(document.getElementById("code").value).length;
+		var a = utf8.encode(document.getElementById("code").value).length;
+		var b = utf8.encode(document.getElementById("prec").value).length
+		document.getElementById("bytes").innerHTML = b+" + "+a+(a&&b?" + 1":"")+" = "+(a+b+(a&&b));
 	}
 
 	function onEdit(){
@@ -69,6 +73,9 @@
 		document.getElementById("code").addEventListener("change",updateByteCount);
 		document.getElementById("code").addEventListener("keydown",updateByteCount);
 		document.getElementById("code").addEventListener("keyup",updateByteCount);
+		document.getElementById("prec").addEventListener("change",updateByteCount);
+		document.getElementById("prec").addEventListener("keydown",updateByteCount);
+		document.getElementById("prec").addEventListener("keyup",updateByteCount);
 		var qS = document.querySelectorAll("#openMenu + div#inner button");
 		for(var i=0;i<qS.length;i++){
 			qS[i].addEventListener("click",function(){
@@ -139,22 +146,30 @@
 		</div>
 		<a href="explanation.html">explanation</a>
 	</header>
-	<p>Code (bytes: <span id="bytes">0</span>)</p>
-	<textarea id="code" spellcheck="false"></textarea>
-	<button id="transform" class="btn btn-info">apply transformation of code</button>
-	<p>Input</p>
-	<p>Input is seperated by a double newline (<code>\n\n</code>).</p>
-	<textarea id="input" spellcheck="false"></textarea>
-	<button class="btn btn-block btn-primary sev" id="run">Run (runs the program once)</button>
-	<button class="btn btn-block btn-warning sev" id="runnn">Full Run (runs the program once for each input)</button>
-	<p>Output</p>
-	<div id="output"></div>
-	<button id="clear" class="btn btn-block btn-info sev">clear</button>
-	<p>Transpiled code</p>
-	<div id="outCode"></div>
-	<p>Canvas output</p>
-	<canvas id="draw"><b>Sorry! It seems that your browser does not support canvs. :( Maybe try <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a>? <sub>better than IE and Chrome</sub></b></canvas>
-	<div id="options">
+	<div id="main">
+		<button class="btn btn-block btn-primary sev" id="run">
+			Run (runs the program once)
+		</button>
+		<table>
+			<tr><td class="lrg" colspan="2">(bytes: <span id="bytes">0</span>)</td><td></td></tr>
+			<tr><td>Precompile</td><td>Code</td></tr>
+			<tr><td><textarea id="prec" spellcheck="false"></textarea></td><td><textarea id="code" spellcheck="false"></textarea></td></tr>
+			<tr><td colspan="2"></td></tr>
+			<tr><td colspan="2"></td></tr>
+		</table>
+		<button id="transform" class="btn btn-info sev">apply transformation of code</button>
+		<p>Input</p>
+		<p>Input is seperated by a double newline (<code>\n\n</code>).</p>
+		<textarea id="input" spellcheck="false"></textarea>
+		<button class="btn btn-block btn-warning sev" id="runnn">Full Run (runs the program once for each input)</button>
+		<p>Output</p>
+		<div id="output"></div>
+		<button id="clear" class="btn btn-block btn-info sev">clear</button>
+		<p>Transpiled code</p>
+		<div id="outCode"></div>
+		<p>Canvas output</p>
+		<canvas id="draw"><b>Sorry! It seems that your browser does not support canvs. :( Maybe try <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a>? <sub>better than IE and Chrome</sub></b></canvas>
+	</div><div id="options">
 		<h2>Options</h2>
 		<input type="checkbox" id="pom"> Pretty output mode?
 	</div>
