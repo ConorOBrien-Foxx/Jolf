@@ -11,13 +11,41 @@ p {
 	line-height: 26px;
 }
 
+.lrg {
+	font-size: 20px;
+}
+
+table tr td[colspan^="2"] {
+	text-align: center;
+}
+
+td {
+	padding: 0 15px;
+}
+
 textarea, #output, #outCode {
 	font-family: "Consolas", monospace;
-	min-height: 2.25em;
+	min-height: 2em;
 	min-width: 50ch;
 	max-width: 100%;
 	padding: 5px;
 	white-space: pre;
+	line-height: 1.2em;
+	resize: vertical;
+}
+
+#prec textarea {
+	width: 100%;
+	min-width: 100%;
+}
+
+#prec {
+	width: 20%;
+	float: left;
+}
+
+#main {
+	width: 60%;
 }
 
 p + p {
@@ -33,7 +61,7 @@ p + p {
 	background: white;
 }
 
-#options, textarea, #output, #outCode {
+#options, textarea, #output, #outCode, canvas {
 	border: 1px solid #AAA;
 	border-radius: 5px;
 }
