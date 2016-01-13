@@ -13,8 +13,23 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 }
 
 {// functions
-	// cart product: from http://stackoverflow.com/a/29585751/4119004, minified
+	// from http://stackoverflow.com/a/2499647/4119004
+	function getJSONP(url, success) {
+    var ud = '_' + +new Date,
+        script = document.createElement('script'),
+        head = document.getElementsByTagName('head')[0]
+               || document.documentElement;
 
+	    window[ud] = function(data) {
+	        head.removeChild(script);
+	        success && success(data);
+	    };
+
+	    script.src = url.replace('callback=?', 'callback=' + ud);
+	    head.appendChild(script);
+	}
+
+	// cart product: from http://stackoverflow.com/a/29585751/4119004, minified
 	function cartesianProduct(x,y){
 		return (function(r){var n=[],t=Array(r.length);return function u(a){if(a==r.length)return n.push(r.map(function(r,n){return r[t[n]]}));for(var e=0;e<r[a].length;++e)t[a]=e,u(a+1)}(0),n})(Array.from(arguments));
 	}
@@ -27,7 +42,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			} else {
 				a.push(b);
 			}
-		} 
+		}
 		if(typeof a==="string"&&Array.isArray(b)) return a + b.join("");
 		return a + b;
 	}
@@ -567,7 +582,10 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Array.prototype.l = Array.prototype.L = Array.prototype.slice;
 	Array.prototype.m = function(f){
 		if(typeof f=="function"){
-			return this.map(f);
+			return this.map(function(el,index,arr){
+				var a = Array.from(arguments);
+				return f.apply(window,a.slice(0,f.length));
+			});
 		} else {
 			try {
 				silentEvalJolf(f);
@@ -631,6 +649,12 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	Math[5] = function floorDiv(a,b){
 		return Math.floor(a/b);
+	}
+	Math[6] = function toFixed(a,b){
+		return a.toFixed(b);
+	}
+	Math[7] = function toExponential(a,b){
+		return a.toExponetial(b);
 	}
 	Math[8] = Math.lcm = function lcm(a,b){
 		return (a*b)/Math[9](a,b);
@@ -1190,8 +1214,17 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return a.replace(RegExp(b,"gm"),c);
 	}
 
-	math.e = math.eval;
-
+	math.config({number:"bignumber",precision:300});
+	mathC = clone(math);
+	"abs0acos0acosh0acot0acoth0acsc0acsch0add0and0arg0asec0asech0asin0asinh0atan0atan20atanh0bellNumbers0bignumber0bitAnd0bitNot0bitOr0bitXor0boolean0catalan0cbrt0ceil0chain0clone0combinations0compare0compile0complex0composition0concat0conj0cos0cosh0cot0coth0cross0csc0csch0cube0deepEqual0det0diag0distance0divide0dot0dotDivide0dotMultiply0dotPow0equal0eval0exp0eye0factorial0filter0fix0flatten0floor0forEach0format0fraction0gamma0gcd0help0hypot0im0index0intersect0inv0isInteger0isNegative0isNumeric0isPositive0isZero0kldivergence0larger0largerEq0lcm0leftShift0log0log100lsolve0lup0lusolve0map0matrix0max0mean0median0min0mod0mode0multinomial0multiply0norm0not0nthRoot0number0ones0or0parse0parser0partitionSelect0permutations0pickRandom0pow0print0prod0quantileSeq0random0randomInt0range0re0resize0rightArithShift0rightLogShift0round0sec0sech0sign0sin0sinh0size0slu0smaller0smallerEq0sort0sparse0sqrt0square0squeeze0std0stirlingS20string0subset0subtract0sum0tan0tanh0to0trace0transpose0typeof0unaryMinus0unaryPlus0unequal0unit0usolve0var0xgcd0xor0zeros".split(0).forEach(function(e,i){mathC[String.fromCharCode(i+1)]=mathC[e]=math[e]});
+	mathC[6] = function eval(exp){
+		var scope = {};
+		jolf("\x10+plpu").forEach(function(e,i){
+			scope[e]=i;
+		});
+		var res = math.eval(exp,scope);
+		return res.entries?res.entries.length==1?res.entries[0]:res.entries:res;
+	}
 	Pen.prototype.customFunc = function(char,func){
 		Pen.prototype[char] = func;
 	}
@@ -1810,18 +1843,18 @@ var ops = {
 		return 2;
 	},
 	"!": function(J){
-		var x = "math[\"";
+		var x = "mathC[\"";
 		var chrTemp = J.code[++J.index];
 		x += chrTemp;
 		x += "\"](";
-		if(typeof math[chrTemp]=="function"){
+		if(typeof mathC[chrTemp]=="function"){
 			J.comp += x;
-			return math[chrTemp].length;
+			return mathC[chrTemp].length;
 		} else {
-			J.comp += "(function(J){return math[\""+chrTemp+"\"]})(";
+			J.comp += "(function(J){return mathC[\""+chrTemp+"\"]})(";
 			return 0;
 		}
-	}
+	},
 }
 
 // data/arguments
@@ -1832,6 +1865,13 @@ var inf = {
 			J.enc.E = true;
 		}
 		J.comp += "E";
+	},
+	"\u03c4": function(J){
+		if(!J.enc.tau){
+			J.prec += "var \u03c4=2*Math.PI;";
+			J.enc.tau = true;
+		}
+		J.comp += "\u03c4";
 	},
 	"@": function(J){
 		J.comp += J.code[++J.index].charCodeAt();
@@ -1977,8 +2017,8 @@ var inf = {
 	"\u03bb": function(J){
 		var next = J.code[++J.index];
 		var par = J.ops;
-		if("mpZ,".search(next)+1){
-			par="m"==next?"Math":"p"==next?"String":"Z"==next?"Array":"Misc";
+		if("mpZ!,".search(next)+1){
+			par="!"==next?"mathC":"m"==next?"Math":"p"==next?"String":"Z"==next?"Array":"Misc";
 			next = J.code[++J.index];
 		}
 		var q = par[next];
@@ -2119,7 +2159,11 @@ function Jolf(code){
 
 // in-progress readable format of jolf compiled code
 Jolf.prototype.readable = function(J){
-	var read = this.comp;
+	var read = this.comp.replace(/./g,function(e){
+		r=e.charCodeAt();
+		if((r<32||r>126)&&r<256)return "\\x"+String.pad(r+"",2,0);
+		return e;
+	});
 	//console.log(read);
 	read = read.replace(/(Math|String|Array|Date)\["(.)"\]/g,function(match,p1,p2){
 		if(typeof eval(p1)[p2].name !== "undefined"){
@@ -2206,7 +2250,19 @@ Jolf.prototype.exec = function(J){
 	if(this.step()) setTimeout(function(J){J.exec()},1,this);
 	else {
 		var ret = this.total?this.total:this.prec+this.comp;
-		return (this.outted?function(f){return f}:alert)(eval(ret));
+		var res;
+		try {
+			res = eval(ret);
+		} catch(e){
+			if(e.message=="function statement requires a name"){
+				this.unnamedFuncs = 0;
+				//console.log(this.total,this.total.replace(/function\s*\((.+?)\)/,"function anonymous"+this.unnamedFuncs+"($1)"));
+				this.total = this.total.replace(/function\s*\((.+?)\)/,"function anonymous"+this.unnamedFuncs+"($1)");
+				console.log(this.total);
+				eval(this.total);
+			}
+		}
+		return (this.outted?function(f){return f}:alert)(res);
 	}
 }
 
@@ -2513,5 +2569,12 @@ function jolf(code){
 	}
 	while(a.index<a.code.length)a.step();
 	a.comp=a.comp.replace(/alert/g,"return");
-	return (new Function(a.prec+a.comp))()||(new Function(a.prec+"return "+a.comp))();
+	var res;
+	try {
+		res = (new Function(a.prec+a.comp))();
+		if(typeof res==="undefined") throw new Error("lazy programming");
+	} catch(e){
+		res = (new Function(a.prec+"return "+a.comp))()
+	}
+	return res;
 }
