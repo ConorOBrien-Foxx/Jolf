@@ -1,6 +1,19 @@
 # Golfing
 It is often the case that many tasks have multiple solutions. Of course, some solutions will be shorter in length than others. Sometimes, it is the task of the user to form the shortest possible code that brings about a particular end. In this case, there are some helpful tips that one can use to considerably shorten up their programs.
 
+## Useful functions
+Whether or not you read the command index, here are some especially useful commands:
+
+ * `Q` - square a number, double a string, or create a 2D array whose N members are the original array, with N being the length of the array.
+ * `h` - increment a number, i.e. add 1.
+ * `w` - decrement a number, i.e. subtract 1.
+ * `!6` - evaluate an infix expression (using `mathjs`).
+ * `z` - creates a range from 1 to a number, inclusive.
+ * `O` - digit product or array product.
+ * `u` - digit sum or array sum.
+ * `a` - output.
+ * ` m` - array map.
+
 ## Constants
 Constant generation can be done in one of three, general ways. The most common (and efficient) is using a variable that represents this constant. Such variables exist for the digits 0-9 (represnted by the digits), 10 (`t`), and 42 (`mQ`). If your constant is not one of those, you may intuitively generate the constant, by using operators. For two bytes, you can generate 11 as `ht` ("increment ten by 1") and for two bytes you can generate 16 as `Q4` ("four squared").
 
@@ -15,4 +28,4 @@ Finally, you can use `@<char>` to generate a number whose value is the character
 | 0-9      | 0-9                 | Digit               |
 | 10       | t                   | Constant            |
 | 11       | ht                  | Increment Constant  |
-(This table is incomplete/suboptimal. You may make a request for a constant by [pinging me in the Nineteenth byte (@CᴏɴᴏʀO'Bʀɪᴇɴ)](http://chat.stackexchange.com/rooms/240/the-nineteenth-byte), opening up an issue here, or by dropping an email to `+"%or'Con' O%rien4god@%.com'\'B'gmail"`)
+(This table is incomplete/suboptimal. You may make a request for a constant by [pinging me in the Nineteenth byte (@CᴏɴᴏʀO'Bʀɪᴇɴ)](http://chat.stackexchange.com/rooms/240/the-nineteenth-byte), opening up an issue here, or by dropping an email to `+"%or'Con' O%rien4god@%.com'B'gmail"`. It's Jolf code, if you didn't notice.)
