@@ -12,7 +12,7 @@ Whether or not you read the command index, here are some especially useful comma
  * `O` - digit product or array product.
  * `u` - digit sum or array sum.
  * `a` - output.
- * ` m` - array map.
+ * `<space>m` - array map.
 
 ## Constants
 Constant generation can be done in one of three, general ways. The most common (and efficient) is using a variable that represents this constant. Such variables exist for the digits 0-9 (represnted by the digits), 10 (`t`), and 42 (`mQ`). If your constant is not one of those, you may intuitively generate the constant, by using operators. For two bytes, you can generate 11 as `ht` ("increment ten by 1") and for two bytes you can generate 16 as `Q4` ("four squared").
