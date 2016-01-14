@@ -493,6 +493,10 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			return r
 		};
 	})("prompt");
+	function redirect(x,y){
+		if(y) location = x+"."+y;
+		else location = x;
+	}
 }
 
 // define various functions
@@ -1828,12 +1832,12 @@ var ops = {
 		return [1,").pop()"];
 	},
 	"\u14ba": function(J){
-		J.comp += "location = ";
-		return [1,""];
+		J.comp += "redirect(";
+		return 1;
 	},
 	"\u122b": function(J){
-		J.comp += "location = ";
-		return [1,".tryitonline.net"];
+		J.comp += "redirect(\"tryitonline.net\"";
+		return 1;
 	},
 	"\u03b3": function(J){
 
