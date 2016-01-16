@@ -58,8 +58,9 @@
 	}
 
 	function updateByteCount(){
-		var a = utf8.encode(document.getElementById("code").value).length;
-		var b = utf8.encode(document.getElementById("prec").value).length
+		var modul = isValidISO88597(document.getElementById("code").value)&&isValidISO88597(document.getElementById("prec").value)?{encode:function(x){return x}}:utf8;
+		var a = modul.encode(document.getElementById("code").value).length;
+		var b = modul.encode(document.getElementById("prec").value).length
 		document.getElementById("bytes").innerHTML = b+" + "+a+(a&&b?" + 1":"")+" = "+(a+b+(a&&b));
 	}
 
@@ -75,6 +76,10 @@
 		document.getElementById("prec").addEventListener("change",updateByteCount);
 		document.getElementById("prec").addEventListener("keydown",updateByteCount);
 		document.getElementById("prec").addEventListener("keyup",updateByteCount);
+		document.getElementById("uploadISOGREEK").addEventListener("click",function(){
+			var fr=new FileReader();fr.onload=function(){document.getElementById("code").value=convertFrom1to7(fr.result)};fr.readAsBinaryString(document.getElementById("isogreek").files[0]);
+			updateByteCount();
+		});
 		var qS = document.querySelectorAll("#openMenu + div#inner button");
 		for(var i=0;i<qS.length;i++){
 			qS[i].addEventListener("click",function(){
@@ -168,6 +173,7 @@
 		<div id="outCode"></div>
 		<p>Canvas output</p>
 		<canvas id="draw"><b>Sorry! It seems that your browser does not support canvs. :( Maybe try <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a>? <sub>better than IE and Chrome</sub></b></canvas>
+		<br><button id="uploadISOGREEK">Upload as an ISO 8859-7-encoded file</button><input type="file" id="isogreek">
 	</div><div id="options">
 		<h2>Options</h2>
 		<input type="checkbox" id="pom"> Pretty output mode?
