@@ -29,6 +29,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	    head.appendChild(script);
 	}
 
+	// from http://stackoverflow.com/a/34800836/4119004
+	function convertFrom1to7(r){for(var o="!‘’!€₯!!!!.!!!!―!!!!...!...!.!....................!............................................!",t="",e="",a=0;a<r.length;a++){var n=r[a];e=n,n.charCodeAt(0)>=160&&(e=o[n.charCodeAt(0)-160],"!"===e&&(e=n),"."===e&&(e=String.fromCharCode(n.charCodeAt(0)+720))),t+=e}return t}function isValidISO88597(u){for(var A=/[\u0000-\u00A0\u2018\u2019\u00A3\u20AC\u20AF\u00A6-\u00A9\u037A\u00AB-\u00AD\u2015\u00B0-\u00B3\u0384-\u0386\u00B7\u0388-\u038A\u00BB\u038C\u00BD\u038E-\u03CE]/,B=!0,t=0;t<u.length;t++)B=B&&A.test(u[t]);return B}
+
 	// cart product: from http://stackoverflow.com/a/29585751/4119004, minified
 	function cartesianProduct(x,y){
 		return (function(r){var n=[],t=Array(r.length);return function u(a){if(a==r.length)return n.push(r.map(function(r,n){return r[t[n]]}));for(var e=0;e<r[a].length;++e)t[a]=e,u(a+1)}(0),n})(Array.from(arguments));
@@ -479,6 +482,10 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return res;
 	}
 
+	function plusMinus(x,y){
+		return [add(x,y),sub(x,y)];
+	}
+
 	// from http://stackoverflow.com/a/728694/4119004
 	function clone(e){var n;if(null==e||"object"!=typeof e)return e;if(e instanceof Date)return n=new Date,n.setTime(e.getTime()),n;if(e instanceof Array){n=[];for(var t=0,r=e.length;r>t;t++)n[t]=clone(e[t]);return n}if(e instanceof Object){n={};for(var o in e)e.hasOwnProperty(o)&&(n[o]=clone(e[o]));return n}throw new Error("Unable to copy obj! Its type isn't supported.")}
 
@@ -493,10 +500,6 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			return r
 		};
 	})("prompt");
-	function redirect(x,y){
-		if(y) location = x+"."+y;
-		else location = x;
-	}
 }
 
 // define various functions
@@ -522,6 +525,12 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	// dev tool for detection of existant commands
 	function isAvailable(cmd){
 		return !(ctl[cmd]||ops[cmd]||inf[cmd]||mod[cmd]||sbs[cmd]);
+	}
+
+	function span(array,condition){
+		var res=[];
+		for(var i=0;i<array.length;i++){res.push(i);if(!condition(array[i],i,array))break;}
+		return res;
 	}
 
 	// factorial
@@ -643,12 +652,12 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Math["%"] = function absMod(a,b){
 		return Math.abs(a%b);
 	}
-	Math["\u03a6"] = function customFib(n,s1,s2){
+	Math["Φ"] = function customFib(n,s1,s2){
 		life[[s1,s2]] = life[[s1,s2]]||[s1,s2];
 		if(typeof life[[s1,s2]][n]!=="undefined"){
 			return life[[s1,s2]][n];
 		} else {
-			return Math["\u03a6"](n-1,s1,s2)+Math["\u03a6"](n-2,s1,s2);
+			return Math["Φ"](n-1,s1,s2)+Math["Φ"](n-2,s1,s2);
 		}
 	}
 	Math[5] = function floorDiv(a,b){
@@ -927,6 +936,12 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	String.N = function joinSideBySideBottom(x,y){
 
 	}
+	String.o = function flip(x){
+		return x.split("\n").reverse().join("\n");
+	}
+	String.O = function mirror(x){
+		return x.split("\n").map(function(e){return e.split("").reverse().join("")}).join("\n");
+	}
 	String.p = function padLeft(x){
 
 	}
@@ -973,8 +988,12 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return {Α:"Alpha", α:"alpha", Β:"Beta", β:"beta", Γ:"Gamma", γ:"gamma", Δ:"Delta", δ:"delta", Ε:"Epsilon", ε:"epsilon", Ζ:"Zeta", ζ:"zeta", Η:"Eta", η:"eta", Θ:"Theta", θ:"theta", Ι:"Iota", ι:"iota", Κ:"Kappa", κ:"kappa", Λ:"Lambda", λ:"lambda", Μ:"Mu", μ:"mu", Ν:"Nu", ν:"nu", Ξ:"Xi", ξ:"xi", Ο:"Omicron", ο:"omicron", Π:"Pi", π:"pi", Ρ:"Rho", ρ:"rho", Σ:"Sigma", σ:"sigma", Τ:"Tau", τ:"tau", Υ:"Upsilon", υ:"upsilon", Φ:"Phi", φ:"phi", Χ:"Chi", χ:"chi", Ψ:"Psi", ψ:"psi", Ω:"Omega", ω:"omega"}[x]||x;
 	}
 	String.Z = function toGreek(x){
-		return {Alpha:"\u0391", alpha:"\u03B1", Beta:"\u0392", beta:"\u03B2", Gamma:"\u0393", gamma:"\u03B3", Delta:"\u0394", delta:"\u03B4", Epsilon:"\u0395", epsilon:"\u03B5", Zeta:"\u0396", zeta:"\u03B6", Eta:"\u0397", eta:"\u03B7", Theta:"\u0398", theta:"\u03B8", Iota:"\u0399", iota:"\u03B9", Kappa:"\u039A", kappa:"\u03BA", Lambda:"\u039B", lambda:"\u03BB", Mu:"\u039C", mu:"\u03BC", Nu:"\u039D", nu:"\u03BD", Xi:"\u039E", xi:"\u03BE", Omicron:"\u039F", omicron:"\u03BF", Pi:"\u03A0", pi:"\u03C0", Rho:"\u03A1", rho:"\u03C1", Sigma:"\u03A3", sigma:"\u03C3", Tau:"\u03A4", tau:"\u03C4", Upsilon:"\u03A5", upsilon:"\u03C5", Phi:"\u03A6", phi:"\u03C6", Chi:"\u03A7", chi:"\u03C7", Psi:"\u03A8", psi:"\u03C8", Omega:"\u03A9", omega:"\u03C9"}[x];
+		return {Alpha:"Α",alpha:"α",Beta:"Β",beta:"β",Gamma:"Γ",gamma:"γ",Delta:"Δ",delta:"δ",Epsilon:"Ε",epsilon:"ε",Zeta:"Ζ",zeta:"ζ",Eta:"Η",eta:"η",Theta:"Θ",theta:"θ",Iota:"Ι",iota:"ι",Kappa:"Κ",kappa:"κ",Lambda:"Λ",lambda:"λ",Mu:"Μ",mu:"μ",Nu:"Ν",nu:"ν",Xi:"Ξ",xi:"ξ",Omicron:"Ο",omicron:"ο",Pi:"Π",pi:"π",Rho:"Ρ",rho:"ρ",Sigma:"Σ",sigma:"σ",Tau:"Τ",tau:"τ",Upsilon:"Υ",upsilon:"υ",Phi:"Φ",phi:"φ",Chi:"Χ",chi:"χ",Psi:"Ψ",psi:"ψ",Omega:"Ω",omega:"ω"}[x];
 	}
+	String.α = "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ";
+	String.Α = ["Α","Β","Γ","Δ","Ε","Ζ","Η","Θ","Ι","Κ","Λ","Μ","Ν","Ξ","Ο","Π","Ρ","Σ","Τ","Υ","Φ","Χ","Ψ","Ω"];
+	String.β = "αβγδεζηθικλμνξοπρστυφχψω";
+	String.Β = ["α","β","γ","δ","ε","ζ","η","θ","ι","κ","λ","μ","ν","ξ","ο","π","ρ","σ","τ","υ","φ","χ","ψ","ω"];
 	String[0] = "0123456789";
 	String[")"] = ["0","1","2","3","4","5","6","7","8","9"];
 	String[1] = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -1031,6 +1050,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			return x[i+1]-x[i];
 		});
 	}
+	Array.D = function number(x){
+		return x.split("").map(Number);
+	}
 	Array.e = function ofLength(x,l){
 		return x.filter(function(e){return e.length===l});
 	}
@@ -1070,6 +1092,12 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 		return Math.min.apply(window,a);
 	}
+	Array.n = function min(x){
+		return Math.min.apply(Math,x);
+	}
+	Array.N = function max(x){
+		return Math.maax.apply(Math,x);
+	}
 	Array.p = function swap(a){
 		var len = Math.max.apply(Math,a.map(function(e){return e.length}));
 		var res = [];
@@ -1080,6 +1108,34 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			}
 		}
 		return res;
+	}
+	Array.P = function transpose(x){
+		var res=[];
+		for(var n=0;n<x[0].length;){}
+	}
+	Array.q = function sort(x){
+		return x.sort();
+	}
+	Array.Q = function sortNumbers(x){
+		return x.sort(function(x,y){return 2*(y<x)-1});
+	}
+	Array.r = function rotate(x){
+		var rotated = clone(x);
+		var n=x.length;
+		for(var i=0;i<n;i++){
+			for(var j=0;j<n;j++){
+				rotated[i][j]=x[n-j-1,i];
+			}
+		}
+	}
+	Array.R = function rotateNeg90(x){
+		var rotated = clone(x);
+		var n=x.length;
+		for(var i=0;i<n;i++){
+			for(var j=0;j<n;j++){
+				rotated[i][j]=x[n-j-1,i];
+			}
+		}
 	}
 	Array.s = function squareString(a){
 		return Array.S(a).map(function(x){return x.join(" ");}).join("\n");
@@ -1210,6 +1266,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		var y = x+""||arguments[3];
 		if(x.search(s)>=0) return RegExp.i(x,x.replace(s,r),r,y);
 		else return x;
+	}
+	RegExp.I = function replaceGlobal(a,b,c){
+		return a.replace(RegExp(b,"g"),c)
 	}
 	RegExp.j = function replaceFirst(a,b,c){
 		return a.replace(b,c);
@@ -1581,7 +1640,7 @@ var ops = {
 		J.comp += "stepRange(";
 		return 3;
 	},
-	"\u03c1": function(J){
+	"ρ": function(J){
 		J.comp += "stepRange(";
 		return 3;
 	},
@@ -1755,6 +1814,9 @@ var ops = {
 		J.comp += "...";
 		return [1,""];
 	},
+	"\x03":function(J){
+		return ~~(a%2);
+	},
 	"\x10":function(J){
 		J.comp += "joinByNothing(";
 		return 1;
@@ -1811,36 +1873,37 @@ var ops = {
 		J.comp += "(";
 		return [1,").charCodeAt().toString(16)"]
 	},
-	"\u03A8": function(J){
+	"Ψ": function(J){
 		J.comp += "(H,S,n)=>";
 		return [1,""];
 	},
-	"\u03C6": function(J){
+	"φ": function(J){
 		J.comp += "function(H,S){";
 		return [1,"}"]
 	},
-	"\u03C7": function(J){
+	"χ": function(J){
 		J.comp += "(";
 		return [1,").shift()"];
 	},
-	"\u0391":function(J){
+	"Α":function(J){
 		J.comp += "isAvailable(";
 		return 1;
 	},
-	"\u03a7":function(J){
+	"Χ":function(J){
 		J.comp += "(";
 		return [1,").pop()"];
 	},
 	"\u14ba": function(J){
-		J.comp += "redirect(";
-		return 1;
+		J.comp += "location = ";
+		return [1,""];
 	},
 	"\u122b": function(J){
-		J.comp += "redirect(\"tryitonline.net\"";
-		return 1;
+		J.comp += "location = ";
+		return [1,".tryitonline.net"];
 	},
-	"\u03b3": function(J){
-
+	"\xb1":function(J){
+		J.comp += "plusMinus(";
+		return 2;
 	},
 	"~F": function(J){
 		J.comp += "firstN(";
@@ -1870,12 +1933,12 @@ var inf = {
 		}
 		J.comp += "E";
 	},
-	"\u03c4": function(J){
+	"τ": function(J){
 		if(!J.enc.tau){
-			J.prec += "var \u03c4=2*Math.PI;";
+			J.prec += "var τ=2*Math.PI;";
 			J.enc.tau = true;
 		}
-		J.comp += "\u03c4";
+		J.comp += "τ";
 	},
 	"@": function(J){
 		J.comp += J.code[++J.index].charCodeAt();
@@ -2029,6 +2092,13 @@ var inf = {
 		var func = par==J.ops?(q+"").replace(/[\s\S]+"(.+?)\("[\s\S]+/gm,"$1"):par+"."+window[par][next].name;
 		J.comp += func;
 	},
+	"\u03b9":function(J){
+		J.comp += J.index;
+	},
+	"\u03ba":function(J){
+		J.comp += "span(";
+		return 2;
+	},
 	"": function(J){}
 }
 
@@ -2037,6 +2107,20 @@ var mod = {
 	"\"": function(J){
 		J.comp += "\"";
 		J.mode = 1;
+	},
+	"«": function(J){
+		J.comp += "`";
+		J.mode = 7;
+	},
+	"γ": function(J){
+		if(!J.enc.γ){
+			J.comp += "γ=";
+			J.enc.γ = true;
+			J.func.push([1,""]);
+		} else {
+			J.comp += "γ";
+			J.check();
+		}
 	},
 	"'": function(J){
 		J.mode = 2;
@@ -2118,12 +2202,6 @@ var sbs = {
 	"}": function(J){
 		return "}";
 	},
-	"»": function(J){
-		return "++";
-	},
-	"«": function(J){
-		return "--";
-	},
 	"o": function(J){
 		return J.code[++J.index]+"="
 	}
@@ -2131,7 +2209,10 @@ var sbs = {
 
 // jolf constructor
 function Jolf(code){
-	this.code   = code.replace(/\/\/.+$/gm,"");
+	if(code.has("This. Is. Jolf!")){
+
+	}
+	this.code   = code.replace(/\s*\/\/.+\n/g,"");
 	this.ctl    = clone(ctl);
 	this.ops    = clone(ops);
 	this.inf    = clone(inf);
@@ -2457,13 +2538,11 @@ Jolf.prototype.step = function(J){
 			this.comp += this.code[this.index];
 			this.mode = 0;
 		break;
-		case 7:	// build predicate mode
-			this.bldPrd += this.code[this.index]||"";
-			// determine if we are done building
-			var testJolf = new Jolf(this.bldPrd);
-			testJolf.enc = this.enc;
-			while(testJolf.step());
-			try{eval(testJolf);this.prec+=testJolf.prec;this.comp+=testJolf.comp+"}";this.mode=0;}catch(e){}
+		case 7:
+			if(chr=="»"){
+				this.mode = 0;
+				this.comp += "`";
+			} else this.comp += this.code[this.index];
 		break;
 		case 8:	// build function mode
 			this.bldFun += chr;
