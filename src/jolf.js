@@ -129,7 +129,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			return x.replace(new RegExp(y,"g"),"");
 		} else if(Array.isArray(x)){
 			if(Array.isArray(y)){
-				return x.filter(function(e){return y.indexOf(e)<0;})
+				return x.filter(function(e){return y.indexOf(e)>=0;});
 			}
 			return x.filter(function(a,b){return b%y});
 		}
@@ -1080,8 +1080,12 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		});
 		return Array.m(res)?Array.b(res):res;
 	}
-	Array.B = function intersection(x,y){
-		return x.filter(function(e){return y.indexOf(e)>=0});
+	Array.B = function bigIntersection(x){
+		var res = Array.b(x);
+		x.forEach(function(e){
+			res=div(res,e);
+		});
+		return Array.m(res)?Array.B(res):res;
 	}
 	Array.c = function chop(x,c){
 		var res=[];
@@ -1119,6 +1123,13 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			else res.push(x[i]);
 		}
 		return Array.F(res,c-1);
+	}
+	Array.g = function cumProd(x){
+		return x.reduce(function(a,i){return a+x.slice(i+1).reduce(function(a,b){return a*b},1)});
+	}
+	Array.G = function cumFunc(x,func){
+		i = arguments[3]||0;
+		return x.reduce(function(a,i){return a+x.slice(i+1).reduce(func,i)});
 	}
 	Array.o = function maxLength(x){
 		return Math.max.apply(this,x.map(function(e){return e.length}));
