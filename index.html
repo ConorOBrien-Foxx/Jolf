@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<title>Jolf</title>
 	<meta charset="UTF-8">
+	<title>Jolf</title>
 	<meta http-equiv="X-UA-Compatible" content="chrome=1">
 	<meta name="description" content="Jolf : A golfier prefix version of JavaScript">
 	<link rel="stylesheet" href="bootstrap.css">
@@ -10,7 +10,7 @@
 	<script src="https://rawgit.com/mathiasbynens/utf8.js/master/utf8.js"></script>
 	<script src="https://rawgit.com/davebalmer/turtlewax/master/pen.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/2.5.0/math.min.js"></script>
--	<script src="https://rawgit.com/ConorOBrien-Foxx/Jolf/master/src/jolf.js"></script>
+	<script src="https://rawgit.com/ConorOBrien-Foxx/Jolf/master/src/jolf.js"></script>
 	<script>
 	// from tryitonline.net
 	function load(){
@@ -65,7 +65,7 @@
 	}
 
 	function onEdit(){
-		document.getElementById("code").value = document.getElementById("code").value.replace(/\\b/g,"\b").replace(/\\n/g,"\n").replace(/\\t/g,"\t").replace(/\\x(..)/g,function(m,p1){return eval("\"\\x"+p1+"\"")}).replace(/\\u(.{4})/g,function(m,p1){return eval("\"\\u"+p1+"\"")});
+		document.getElementById("code").value = document.getElementById("code").value.replace(/\\b/g,"\b").replace(/\\n/g,"\n").replace(/\\f/g,"\f").replace(/\\r/g,"\r").replace(/\\t/g,"\t").replace(/\\x(..)/g,function(m,p1){return eval("\"\\x"+p1+"\"")}).replace(/\\u(.{4})/g,function(m,p1){return eval("\"\\u"+p1+"\"")});
 		updateByteCount();
 	}
 
@@ -101,6 +101,7 @@
 			} catch(e){
 				o = x.total;
 			}
+			o+="<hr>"+x.explanation("  ");
 			document.getElementById("outCode").innerHTML = o;
 			x.exec();
 		});
@@ -113,6 +114,7 @@
 			} catch(e){
 				o = x.total;
 			}
+			o+="<hr>"+x.explanation("  ");
 			document.getElementById("outCode").innerHTML = o;
 			document.getElementById("input").value.split("\n\n").forEach(function(e,i){
 				document.getElementById("output").innerHTML += "--- TEST CASE "+i+": "+e+" ---<br>";
@@ -121,6 +123,30 @@
 			});
 		});
 		document.getElementById("transform").addEventListener("click",onEdit);
+		document.getElementById("insert").addEventListener("click",function(){
+			var toIns = document.getElementById("toIns");
+			toIns.style.display = toIns.style.display==="block"?"none":"block";
+			if(!toIns.innerHTML.has("button")){
+				toIns.innerHTML = "";
+				jolf("~ ").replace(/\xad/,"$&\xaeQ!").replace(/ώ/,"$&\xffQ!").match(/.Q!|[\s\S]/g).forEach(function(e,i){
+					var c = jolf("@"+e);
+					var bu = document.createElement("button");
+					bu.className = "insertChar";
+					bu.appendChild(document.createTextNode(visible(e[0],/Q!/.test(e))));
+					bu.addEventListener("click",function(){
+						var x = document.getElementById("code").value.split("");
+						x.splice(code.selectionStart, code.selectionEnd - code.selectionStart, this.innerHTML.replace(/\\b/g,"\b").replace(/\\n/g,"\n").replace(/\\f/g,"\f").replace(/\\r/g,"\r").replace(/\\t/g,"\t").replace(/\\x(..)/g,function(m,p1){return eval("\"\\x"+p1+"\"")}).replace(/\\u(.{4})/g,function(m,p1){return eval("\"\\u"+p1+"\"")}));
+						document.getElementById("code").value = x.join("");
+						updateByteCount();
+					});
+
+					if(c%16===0&&c)
+					{toIns.appendChild(document.createElement("br"));
+				console.log(c)}
+					toIns.appendChild(bu)
+				});
+			}
+		});
 		document.getElementById("clear").addEventListener("click",function(){document.getElementById("output").innerHTML = "";});
 		updateByteCount();
 	}
@@ -148,9 +174,11 @@
 				</ul>
 			</div>
 		</div>
-		<a href="explanation.html">explanation</a>
+		<button class="btn btn-danger" id="insert">insert character</button>
+		<a target="_blank" href="http://github.com/ConorOBrien-Foxx/Jolf/">github</a> || <a href="explanation.html">explanation</a> || <a href="command.html">command line</a>
 	</header>
 	<div id="main">
+		<div id="toIns">If you see this, something has gone wrong.</div>
 		<button class="btn btn-block btn-primary sev" id="run">
 			Run (runs the program once)
 		</button>
@@ -172,7 +200,7 @@
 		<p>Transpiled code</p>
 		<div id="outCode"></div>
 		<p>Canvas output</p>
-		<canvas id="draw"><b>Sorry! It seems that your browser does not support canvs. :( Maybe try <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a>? <sub>better than IE and Chrome</sub></b></canvas>
+		<canvas id="draw"><b>Sorry! It seems that your browser does not support canvas. :( Maybe try <a href="https://www.mozilla.org/en-US/firefox/new/">Firefox</a>? <sub>better than IE and Chrome</sub></b></canvas>
 		<br><button id="uploadISOGREEK">Upload as an ISO 8859-7-encoded file</button><input type="file" id="isogreek">
 	</div><div id="options">
 		<h2>Options</h2>
