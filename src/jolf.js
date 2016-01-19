@@ -30,11 +30,49 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 
 	// from http://stackoverflow.com/a/34800836/4119004
-	function convertFrom1to7(r){for(var o="!‘’!€₯!!!!.!!!!―!!!!...!...!.!....................!............................................!",t="",e="",a=0;a<r.length;a++){var n=r[a];e=n,n.charCodeAt(0)>=160&&(e=o[n.charCodeAt(0)-160],"!"===e&&(e=n),"."===e&&(e=String.fromCharCode(n.charCodeAt(0)+720))),t+=e}return t}function isValidISO88597(u){for(var A=/[\u0000-\u00A0\u2018\u2019\u00A3\u20AC\u20AF\u00A6-\u00A9\u037A\u00AB-\u00AD\u2015\u00B0-\u00B3\u0384-\u0386\u00B7\u0388-\u038A\u00BB\u038C\u00BD\u038E-\u03CE]/,B=!0,t=0;t<u.length;t++)B=B&&A.test(u[t]);return B}
+	function convertFrom1to7(r){for(var o="!‘’!€₯!!!!.!!!!―!!!!...!...!.!....................!............................................!",t="",e="",a=0;a<r.length;a++){var n=r[a];e=n,n.charCodeAt(0)>=160&&(e=o[n.charCodeAt(0)-160],"!"===e&&(e=n),"."===e&&(e=String.fromCharCode(n.charCodeAt(0)+720))),t+=e}return t}
+	function isValidISO88597(u){for(var A=/[\u0000-\u00A0\u2018\u2019\u00A3\u20AC\u20AF\u00A6-\u00A9\u037A\u00AB-\u00AD\u2015\u00B0-\u00B3\u0384-\u0386\u00B7\u0388-\u038A\u00BB\u038C\u00BD\u038E-\u03CE]/,B=!0,t=0;t<u.length;t++)B=B&&A.test(u[t]);return B}
 
 	// cart product: from http://stackoverflow.com/a/29585751/4119004, minified
 	function cartesianProduct(x,y){
 		return (function(r){var n=[],t=Array(r.length);return function u(a){if(a==r.length)return n.push(r.map(function(r,n){return r[t[n]]}));for(var e=0;e<r[a].length;++e)t[a]=e,u(a+1)}(0),n})(Array.from(arguments));
+	}
+
+	function capitalLambda(n,q){
+		var l = jolf("ZAj",n-1);
+		l.push(1);
+		if(q<n) return l[q];
+		while(q>=l.length){
+			for(var k=s=0;k<n;s+=l[l.length-++k]);l.push(s);
+		}
+		return l[q];
+	}
+
+	function summation(func,start,end){
+		var step = typeof arguments[3]==="undefined"?1:arguments[3];
+		var s = 0;
+		for(var H=start;H<=end;H+=step){
+			s += func(H,start,end);
+		}
+		return s;
+	}
+
+	function product(func,start,end){
+		var step = typeof arguments[3]==="undefined"?1:arguments[3];
+		var s = 0;
+		for(var H=start;H<=end;H+=step){
+			s *= func(H,start,end);
+		}
+		return s;
+	}
+
+	function spreadOp(funcA,funcB,start,end){
+		var step = typeof arguments[3]==="undefined"?1:arguments[3];
+		var s = 0;
+		for(var H=start;H<=end;H+=step){
+			s= funcA(s,funcB(H,start,end));
+		}
+		return s;
 	}
 
 	function add(a,b){
@@ -156,6 +194,14 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		else if(Array.isArray(a)){
 
 		}
+	}
+
+	function visible(x,Q){
+		var c = x.charCodeAt();
+		var r = JSON.stringify(x).slice(1,-1);
+		if(x=="\\"||x=="\"") return x;
+		if(Q||(0<=c&&c<=31&&r.length>2)||(127<=c&&c<=160)) return "\\x"+String.pad(c.toString(16),2,0);
+		return r;
 	}
 
 	function square(x){
@@ -601,9 +647,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			});
 		} else {
 			try {
-				silentEvalJolf(f);
+				jolf(f,0,0,[]);
 				return this.map(function(a,b,c){
-					silentEvalJolf(f);
+					jolf(f,a,b,c);
 				});
 			} catch(e){
 				try {
@@ -857,6 +903,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	for(i in Math){Math[Math[i].name]=Math[i]};
 	// adding string stuff
+	String[5] = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\xA0‘’£€₯¦§¨©ͺ«¬\\xad­―°±²³΄΅Ά·ΈΉΊ»Ό½ΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώ";
 	String.A = String.fromCharCode;
 	String.a = String.fromCodePoint;
 	String.b = "\u1D00\u0299\u1D04\u1D05\u1D07\u0493\u0262\u029C\u026A\u1D0A\u1D0B\u029F\u1D0D\u0274\u1D0F\u1D18\u01EB\u0280s\u1D1B\u1D1C\u1D20\u1D21x\u028F\u1D22";
@@ -1015,7 +1062,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 		return res;
 	}
-
+	String[6] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+	String["^"] = ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
+	String[7] = "";
 	for(i in String){String[String[i].name]=String[i]};
 
 	Array.a = function makeArray(x,y){
@@ -1276,6 +1325,25 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	RegExp.J = function replaceMultilineGlobal(a,b,c){
 		return a.replace(RegExp(b,"gm"),c);
 	}
+	RegExp.q = function expandRange(r){
+		r=r.match(/.-.|./g);
+		var res=[];
+		r.forEach(function(e){
+			var ret,s,t;
+			if(e.has("-")){
+				ret = [];
+				e=e.split("-");
+				s=e[0];t=e[1];
+				console.log(s,t,e);
+				for(var i=s.charCodeAt();i<=t.charCodeAt();i++){
+					ret.push(String.fromCharCode(i));
+				}
+			} else ret = [e];
+			res=res.concat(ret);
+			return;
+		});
+		return res;
+	}
 
 	math.config({number:"bignumber",precision:300});
 	mathC = clone(math);
@@ -1530,6 +1598,10 @@ var ops = {
 	},
 	"d": function(J){
 		J.comp += "function(H,S,n){return ";
+		return [1,"}"];
+	},
+	"Φ": function(J){
+		J.comp += "function(H,S,n,ά,έ,ή,ί){return ";
 		return [1,"}"];
 	},
 	"~D": function(J){
@@ -1922,6 +1994,21 @@ var ops = {
 			return 0;
 		}
 	},
+	"°": function(J){
+
+	},
+	"Λ": function(J){
+		J.comp += "capitalLambda(";
+		return 2;
+	},
+	"Σ": function(J){
+		J.comp += "summation(";
+		return 3;
+	},
+	"Σ": function(J){	// this be the function of my birth
+		J.comp += "product(";
+		return 3;
+	}
 }
 
 // data/arguments
@@ -1932,6 +2019,9 @@ var inf = {
 			J.enc.E = true;
 		}
 		J.comp += "E";
+	},
+	"~ ": function(J){
+		J.comp += "\"\\x00\\x01\\x02\\x03\\x04\\x05\\x06\\x07\\x08\\x09\\x0a\\x0b\\x0c\\x0d\\x0e\\x0f\\x10\\x11\\x12\\x13\\x14\\x15\\x16\\x17\\x18\\x19\\x1a\\x1b\\x1c\\x1d\\x1e\\x1f !\\\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\\x7f\\x80\\x81\\x82\\x83\\x84\\x85\\x86\\x87\\x88\\x89\\x8a\\x8b\\x8c\\x8d\\x8e\\x8f\\x90\\x91\\x92\\x93\\x94\\x95\\x96\\x97\\x98\\x99\\x9a\\x9b\\x9c\\x9d\\x9e\\x9f ‘’£€₯¦§¨©ͺ«¬­―°±²³΄΅Ά·ΈΉΊ»Ό½ΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώ\"";
 	},
 	"τ": function(J){
 		if(!J.enc.tau){
@@ -1956,7 +2046,7 @@ var inf = {
 	},
 	"S": function(J){
 		if(!J.enc.S){
-			J.prec += "var S=\"\\n\";";
+			J.prec += "var S=\"\n\";";
 			J.enc.S = true;
 		}
 		J.comp += "S";
@@ -1988,6 +2078,34 @@ var inf = {
 			J.enc.j = true;
 		}
 		J.comp += "j";
+	},
+	"ά": function(J){
+		if(!J.enc.ά){
+			J.prec += "var ά=16;";
+			J.enc.ά = true;
+		}
+		J.comp += "ά";
+	},
+	"έ": function(J){
+		if(!J.enc.έ){
+			J.prec += "var έ=\"\t\";";
+			J.enc.έ = true;
+		}
+		J.comp += "έ";
+	},
+	"ή": function(J){
+		if(!J.enc.ή){
+			J.prec += "var ή=\"\t\";";
+			J.enc.ή = true;
+		}
+		J.comp += "έ";
+	},
+	"ί": function(J){
+		if(!J.enc.ή){
+			J.prec += "var ί=math.i;";
+			J.enc.ή = true;
+		}
+		J.comp += "ί";
 	},
 	"J": function(J){
 		if(!J.enc.J){
@@ -2031,6 +2149,9 @@ var inf = {
 		J.comp += "10";
 	},
 	"~p": function(J){
+		J.comp += "Math.PI";
+	},
+	"π": function(J){
 		J.comp += "Math.PI";
 	},
 	"~E": function(J){
@@ -2210,7 +2331,8 @@ var sbs = {
 // jolf constructor
 function Jolf(code){
 	if(code.has("This. Is. Jolf!")){
-
+		alert("-[--->+<]>-.[---->+++++<]>-.+.++++++++++.+[++>---<]>.++[--->++<]>.++++[->++<]>+.+[->+++++<]>+.+[++>---<]>.++[--->++<]>.+++++[->++<]>.[-->+++<]>.---.------.[--->+<]>-.");
+		return;
 	}
 	this.code   = code.replace(/\s*\/\/.+\n/g,"");
 	this.ctl    = clone(ctl);
@@ -2313,6 +2435,27 @@ Jolf.prototype.readable = function(J){
 	return this.prec+read;
 }
 
+Jolf.prototype.explanation = function(s){
+	try {
+		var r = this.comp.match(/\w+?\([^,(]+?\)|[)(,]|\w+/g);
+		var res="";var t=0;var del=undefChoose(s,"\t");
+		var prev = "";
+		r.forEach(function(e,i){
+			del = " ".repeat(prev.length+1);
+			console.log(prev);
+			switch(e){
+				case"(":res+=e+"\n"+del.repeat(++t);prev=r[i-1];break;
+				case",":res+=e+"\n"+del.repeat(t);break;
+				case")":res+="\n"+del.repeat(--t)+e;break;
+				default:res+=e;break;
+			}
+		});
+		return this.prec+"\n"+res;
+	} catch(e){
+		return "Something has gone wrong. I'll look into it later. Perhaps post an issue?";
+	}
+}
+
 Jolf.prototype.haltChecking = function(J){
 	this.checkQ = false;
 }
@@ -2400,7 +2543,7 @@ Jolf.prototype.step = function(J){
 	}
 	// var for char
 	var chr = this.code[this.index];
-	if(chr=="~") chr+=this.code[++this.index];
+	if(chr=="~"&&this.mode==0) chr+=this.code[++this.index];
 	switch(this.mode){
 		case 0:
 			// read the character and get its type
