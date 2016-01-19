@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Jolf</title>
+    <link rel="stylesheet" href="jolf2.css">
+	<script src="https://rawgit.com/gf3/Levenshtein/master/lib/levenshtein.js"></script>
+	<script src="https://rawgit.com/mathiasbynens/utf8.js/master/utf8.js"></script>
+	<script src="https://rawgit.com/davebalmer/turtlewax/master/pen.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/2.5.0/math.min.js"></script>
+	<script src="https://rawgit.com/ConorOBrien-Foxx/Jolf/master/src/jolf.js"></script>
+	<script>
+	var output = "";
+    alert = function(e){
+		output += e;
+		return output;
+	}
+	var line = 0;
+	function listen(){
+		var next = document.createElement("input");
+		next.className = "cmd in";
+		next.id = "cmd"+line;
+		document.body.appendChild(next);
+		next.addEventListener("keydown",function(e){
+			if(e.key==="Enter"){
+				e.preventDefault();
+				var j = new Jolf(this.value);
+				j.mod["ς"]=function(J){
+					output = "";
+				}
+				for(;j.index<j.code.length;j.step());j.step();
+				var n=[];
+				for(met in j.enc){
+					if(j.enc[met]&&"iIjJkKxX".has(met)){
+						n.push(met);
+						console.log(met,j.enc[met]);
+					}
+				}
+				j.prec = "";
+				function o(j){
+					console.log(j.prec+j.comp);
+					var re=eval(j.prec+j.comp);
+					if(!j.outted)output+=re;
+					var out = document.createElement("div");
+					out.appendChild(document.createTextNode(output));
+					out.className = "cmd out";
+					out.title = j.prec+j.comp;
+					output = "";
+					document.body.appendChild(out);
+				}
+				if(n.length) takeInput(j,n.shift(),takeInput,n,o);
+				else{
+					o(j);
+					listen();
+				}
+			}
+		});
+		next.focus();
+	}
+	function takeInput(J,v,c,n,f){
+		var i = document.createElement("input");
+		i.className = "cmd var";
+		i.placeholder = i.placeholder = v+" = ";
+		document.body.appendChild(i);
+		i.focus();
+		function makeSafe(){
+			i.value = i.placeholder+i.value//.replace(i.placeholder,"");
+		}/*
+		i.addEventListener("change",makeSafe);
+		i.addEventListener("keyup",makeSafe);
+		i.addEventListener("keydown",makeSafe);
+		i.addEventListener("keypress",makeSafe);*/
+		i.addEventListener("keydown",function(e){
+			if(e.key==="Enter"){
+				e.preventDefault();
+				if(v) J.prec += "var "+v+"="+JSON.stringify(eval(this.value))+";";
+				if(n.length) c(J,n.shift(),c,n,f);
+				else {
+					f(J);
+					this.disabled = "true";
+					this.title = "var "+v+"="+JSON.stringify(eval(this.value.replace(this.placeholder,"")))+";";
+					makeSafe();
+					line++;
+					listen();
+				};
+			}
+		});
+	}
+	window.addEventListener("load",listen);
+    </script>
+    <link rel="stylesheet" href="bootstrap.css">
+</head>
+<body>
+	<div id="options">
+		<a target="_blank" href="http://github.com/ConorOBrien-Foxx/Jolf/">github</a> || <a href="explanation.html">explanation</a> || <a href="index.html">interpreter</a>
+		<br>Press <kbd>Enter</kbd> to submit expression.
+		<h2>Options</h2>
+		<input type="checkbox" id="pom"> Pretty output mode?
+	</div>
+</body>
+</html>
