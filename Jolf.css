@@ -7,6 +7,16 @@ p, textarea {
 	margin: 0;
 }
 
+#toIns {
+	display: none;
+}
+
+.insertChar {
+	font-family: Consolas, monospace;
+	white-space: pre;
+	width: 6ch;
+}
+
 p {
 	line-height: 26px;
 }
