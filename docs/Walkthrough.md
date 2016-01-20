@@ -18,7 +18,7 @@ Jolf takes its programs and "transpiles" them, an action that involves construct
 Jolf implicitly outputs the most recent expression, precisely in the way that `eval` returns a value, i.e. `eval("e1;e2;...;eN") = eN`. Also, an unclosed expressions (i.e. arrays, strings) are automatically closed. (If this is ever not the case, open up an issue on the issue page of this repository.)
 
 ## Greetings!
-[Concept taken from Japt's page](https://github.com/ETHproductions/Japt).
+<sub>[Challenge concept taken from Japt's page](https://github.com/ETHproductions/Japt).</sub>
 
 This program outputs and takes input. There are multiple ways of doing this. Perhaps the most intuitive is concatenating (`+`) the original string and the input string (`i`):
 
@@ -30,7 +30,7 @@ This program outputs and takes input. There are multiple ways of doing this. Per
 
 This uses Jolf's character-capture token, `'`. `'!` transpiles to `"!"`.
 
-An equivalent-but-shorter program would be `"Greetings, %!"i`, which uses `%` to interpolate `i` into the string. Using a soon-to-be-added feature `¦`, i.e. instring interpolation, this can be shortened 1 byte:
+An equivalent-but-shorter program would be `"Greetings, %!"i`, which uses `%` to interpolate `i` into the string. Using a soon-to-be-added feature `¦`, i.e. instring interpolation, this can be shortened 1 byte, since we can omit the trailing quote.
 
     "Greetings, ¦i!
 
@@ -52,6 +52,21 @@ Let's try to recreate this in Jolf! There are multiple ways to take input in Jol
 
 Since we need to take three inputs, we can use each of `j`, `J`, and `m:`, which will be `a`, `b`, and `c` respectively. (`c` is `m:` because we use it only once, and thus save the most bytes.)
 
-First, let's calculate the determinant. This stands rather simply, as `-Qj**4Jm:`. Negative `b` is `_j`, and `2a` is `*2J`. Helpfully, Jolf has a plus-minus operator; `±ab` is the array `[a-b,a+b]`. Now, we can proceed in one of two ways: we can divide the resulting array by `2a`, or we can perform the division before we create the array. Let us observe both ways:
+First, let's calculate the determinant. This stands rather simply, as `-Qj**4Jm:`. Adding the square root operation yields `mq-Qj**4Jm`. Negative `b` is `_j`, and `2a` is `*2J`. Helpfully, Jolf has a plus-minus operator; `±ab` is the array `[a-b,a+b]`. Now, we can proceed in one of two ways: we can divide the resulting array by `2a`, or we can perform the division before we create the array. Let us observe both ways:
 
-    Μ±_j-Qj**4Jm:
+    Μ±_jmq-Qj**4Jm:d/H*2J
+           Qj             b^2; square j
+          -  **4Jm:       b^2 - 4*a*c; subtract 4*j*m:
+        mq                sqrt[b^2 - 4*a*c]; take square root
+     ±_j                  [-b + sqrt[b^2 - 4*a*c], -b - sqrt[b^2 - 4*a*c]]; -j plus-minus
+    Μ              d/H*2J [(-b + sqrt[b^2 - 4*a*c])/(2*a),(-b - sqrt[b^2 - 4*a*c])/(2*a)]; map with division by 2J
+    
+This clocks in at 21 bytes. Not too shabby! Our other method would be to divide first by `2J`. This looks like:
+
+    ±/_j*2J/mq-Qj**4Jm:*2J
+
+This is 22 bytes. Worse, but there is a cool trick. If you use a variable more than once, you can use `γ` to auto-assign `γ` to the following value. Thus, we can shorten it further:
+
+    ±/_jγ*2J/mq-Qj**4Jm:γ
+
+And this is an equivalent, 21-byte solution.
