@@ -14,7 +14,7 @@ Whether or not you read the command index, here are some especially useful comma
  * `O` - digit product or array product.
  * `u` - digit sum or array sum.
  * `a` - output.
- * `<space>m` - array map.
+ * `Μ` - array/string character/digit map (capital Mu).
 
 ### Array/Set Theory
 
@@ -34,18 +34,18 @@ Consider a number of the form D<sub>N</sub>&hellip;D<sub>0</sub>, where D<sub>k<
 
 Finally, you can use `@<char>` to generate a number whose value is the character's char code. For example, `@A` is 65, `@~` is 126, and `@ ` is 32.
 
-The table below contains representations of constants. If a number is not listed, it is assumed that `@CHAR` is the best representation of the number, as is often the case. However, if said method is the same length as another method, that other method will be preferred.
+The table below contains representations of constants. If a number is not listed, it is assumed that `@CHAR` is the cheapest representation of the number, as is often the case. However, if said method is the same length as another method, that other method will be preferred. Also, it is often the case that the best representation of a variable that is 1 unit away from one on the table, is usually `hv` (v+1) or `wv` (v-w), unless otherwise listed.
 
-| Constant | Best Representation | Representation Type |
+| Constant | Best Representation | Explanation         |
 |----------|---------------------|---------------------|
 | 0-9      | 0-9                 | Digit               |
 | 10       | t                   | Constant            |
-| 11       | ht                  | Increment Constant  |
-| 15       | wά                  | Decrement Constant  |
 | 16       | ά                   | Constant            |
-| 17       | hά                  | Increment Constant  |
-| 99       | wQt                 | Decrement Constant  |
-| 100      | Qt                  | Square Constant     |
-| 101      | hQt                 | Increment Constant  |
+| 64       | Q8                  | 8^2                 |
+| 100      | Qt                  | 10^2                |
+| 128      | mZ7                 | 2^7                 |
+| 256      | Qά                  | 16^2                |
+| 512      | mZ9                 | 2^9                 |
+
 
 (This table is incomplete/suboptimal. You may make a request for a constant by [pinging me in the Nineteenth byte (@CᴏɴᴏʀO'Bʀɪᴇɴ)](http://chat.stackexchange.com/rooms/240/the-nineteenth-byte), opening up an issue here, or by dropping an email to `+"%or'Con' O%rien4god@%.com'B'gmail"`. It's Jolf code, if you didn't notice.)
