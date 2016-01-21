@@ -129,7 +129,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			return x.replace(new RegExp(y,"g"),"");
 		} else if(Array.isArray(x)){
 			if(Array.isArray(y)){
-				return x.filter(function(e){return y.indexOf(e)>=0;});
+				return x.filter(function(e){return y.indexOf(e)<0;})
 			}
 			return x.filter(function(a,b){return b%y});
 		}
@@ -149,6 +149,20 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			return a.reverse();
 		} else {
 			return a;
+		}
+	}
+
+	function doForEach(arr,func){
+		return map(arr,func);
+	}
+
+	function map(a,f){
+		if(Array.isArray(a)){
+			return a.map(f);
+		} else if(typeof a==="string"){
+			return map(a.split(""),f).join("");
+		} else if(typeof a==="number"){
+			return +map((a+"").split(""),f).join("");
 		}
 	}
 
@@ -358,8 +372,26 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return x.join("");
 	}
 
+	function toBaseArr(n,b){
+		h = Math.ceil(logBase(n,b));
+		a = new Array(h+1) .fill(0);
+		while(n){
+			h = Math.floor(logBASE(n,b));
+			n-=Math.pow(b,h);
+			a[h]++;
+		}
+		a.pop();
+		return a.reverse();
+	}
+
 	function toString(N,b){
-		return N.toString(b||10);
+		if(b===1) return "1".repeat(N);
+		try {
+			return N.toString(b||10);
+		} catch(e){
+			// default to base arr
+			return toBaseArr(N,b);
+		}
 	}
 
 	function getFirst(x){
@@ -421,7 +453,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	function sum(x){
 		if(typeof x==="string") return sum(x.split("").map(function(e){return e.charCodeAt()}));
 		else if(typeof x==="number") return sum(x.toString(10).split(""))
-		return add.apply(window,x);
+		return x.length==1?x[0]:add.apply(window,x);
 	}
 
 	function aSum(x){
@@ -467,6 +499,10 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return x.join(y);
 	}
 
+	function pair(x,y){
+		return [x,y];
+	}
+
 	function unique(x){
 		if(typeof x==="string") return unique(x.split("")).join("");
 		var r = [];
@@ -474,6 +510,16 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			if(!r.has(x[i]))r.push(x[i]);
 		}
 		return r;
+	}
+
+	function degToRad(x){
+		if(Array.isArray(x)) return x.join(",");
+		else if(typeof x==="string") return x.split(",");
+		return x/180*Math.PI;
+	}
+
+	function radToDeg(x){
+		return x/Math.PI*180;
 	}
 
 	function divisors(x){
@@ -526,6 +572,16 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			ind++;
 		}
 		return res;
+	}
+
+	function everyCompare(arr,func){
+		var arity = func.length||0;
+		for(var i=0;i<arr.length;i++){
+			var x = arr.slice(i,i+arity);
+			if(x.length<arity) return true;
+			if(!func.apply(this,x)) return false;
+		}
+		return true;
 	}
 
 	function plusMinus(x,y){
@@ -628,7 +684,12 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	// from http://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#comment54935095_10142256
 	Array.prototype.shuffle=function(J){var t,h,r=this.length;if(0==r)return this;for(;--r;)t=Math.floor(Math.random()*(r+1)),h=this[r],this[r]=this[t],this[t]=h;return this};
 
-	Array.prototype.e = Array.prototype.every;
+	Array.prototype.e = Array.prototype.every;/*function(f){
+		return this.every(function(a,b,c){
+			console.log([a,b,c].slice(0,f.length));
+			f.apply(this,[a,b,c].slice(0,f.length-1));
+		});
+	}*/
 	Array.prototype.f = Array.prototype.filter;
 	Array.prototype.F = Array.prototype.forEach;
 	Array.prototype.h = Array.prototype.has;
@@ -1080,12 +1141,8 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		});
 		return Array.m(res)?Array.b(res):res;
 	}
-	Array.B = function bigIntersection(x){
-		var res = Array.b(x);
-		x.forEach(function(e){
-			res=div(res,e);
-		});
-		return Array.m(res)?Array.B(res):res;
+	Array.B = function intersection(x,y){
+		return x.filter(function(e){return y.indexOf(e)>=0});
 	}
 	Array.c = function chop(x,c){
 		var res=[];
@@ -1095,7 +1152,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return res;
 	}
 	Array.C = function cumSum(x){
-		return x.reduce(function(a,i){return a+x.slice(i+1).reduce(function(a,b){return a+b},0)});
+		return x.map(function(e,i){
+			return x.slice(0,i+1).reduce(function(a,b){return a+b},0);
+		});
 	}
 	Array.d = function deltaList(x){
 		var y=clone(x);y.pop();
@@ -1125,11 +1184,22 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return Array.F(res,c-1);
 	}
 	Array.g = function cumProd(x){
-		return x.reduce(function(a,i){return a+x.slice(i+1).reduce(function(a,b){return a*b},1)});
+		return x.map(function(e,i){
+			return x.slice(0,i+1).reduce(function(a,b){return a*b},1);
+		});
 	}
-	Array.G = function cumFunc(x,func){
-		i = arguments[3]||0;
-		return x.reduce(function(a,i){return a+x.slice(i+1).reduce(func,i)});
+	Array.G = function cumFunc(x,f,d){
+		return x.map(function(e,i){
+			return x.slice(0,i+1).reduce(f,d);
+		});
+	}
+	Array.h = function allButLast(x){
+		if(typeof x==="number") return +(Array.h(x+""));
+		return x.slice(0,-1);
+	}
+	Array.H = function allButFirst(x){
+		if(typeof x==="number") return +(Array.H(x+""));
+		return x.slice(1);
 	}
 	Array.o = function maxLength(x){
 		return Math.max.apply(this,x.map(function(e){return e.length}));
@@ -1367,6 +1437,25 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		var res = math.eval(exp,scope);
 		return res.entries?res.entries.length==1?res.entries[0]:res.entries:res;
 	}
+
+	document.a = function appendChild(x,y){
+		x.appendChild(y);
+	}
+	document.c = document.createElement;
+	document.C = function(){return document.getElementById("code")}
+	document.g = document.getElementById;
+	document.i = function addInnerHTML(element,html){
+		element.innerHTML += html;
+	}
+	document.i = function addValue(element,val){
+		element.value += val;
+	}
+	document.o = function(){return document.getElementById("input")}
+	document.O = function(){return document.getElementById("output")}
+	document.t = function attachText(element,text){
+		element.appendChild(document.createTextNode(text));
+	}
+
 	Pen.prototype.customFunc = function(char,func){
 		Pen.prototype[char] = func;
 	}
@@ -1678,6 +1767,19 @@ var ops = {
 			return RegExp[chrTemp].length;
 		} else {
 			J.comp += "(function(J){return RegExp[\""+chrTemp+"\"]})(";
+			return 0;
+		}
+	},
+	"₯": function(J){
+		var x = "document[\"";
+		var chrTemp = J.code[++J.index];
+		x += chrTemp;
+		x += "\"](";
+		if(typeof document[chrTemp]=="function"){
+			J.comp += x;
+			return document[chrTemp].length;
+		} else {
+			J.comp += "(function(J){return document[\""+chrTemp+"\"]})(";
 			return 0;
 		}
 	},
@@ -2006,7 +2108,12 @@ var ops = {
 		}
 	},
 	"°": function(J){
-
+		J.comp += "radToDeg(";
+		return 1;
+	},
+	"{": function(J){
+		J.comp += "degToRad(";
+		return 1;
 	},
 	"Λ": function(J){
 		J.comp += "capitalLambda(";
@@ -2016,10 +2123,86 @@ var ops = {
 		J.comp += "summation(";
 		return 3;
 	},
-	"Σ": function(J){	// this be the function of my birth
+	"Π": function(J){	// this be the function of my birth (was originally on line 2000)
 		J.comp += "product(";
 		return 3;
-	}
+	},
+	"κ": function(J){
+		J.comp += "span(";
+		return 2;
+	},
+	"δ": function(J){
+		J.comp += "doForEach(";
+		return 2;
+	},
+	"Μ": function(J){
+		J.comp += "map(";
+		return 2;
+	},
+	"Ε": function(J){
+		J.comp += "everyCompare(";
+		return 2;
+	},
+	"ͺ": function(J){
+		J.comp += "pair(";
+		return 2;
+	},
+	"Ώ": function(J){
+		if(J.enc.Ώ){
+			J.comp += "Ώ(";
+			return [1,")"];
+		} else {
+			J.enc.Ώ = true;
+			J.comp += "(Ώ=function Ώ(H){return ";
+			J.func.push([1.5,")"]);
+			return [1,"})("];
+		}
+	},
+	"Ύ": function(J){
+		if(J.enc.Ύ){
+			J.comp += "Ύ(";
+			return [2,")"];
+		} else {
+			J.enc.Ύ = true;
+			J.comp += "(Ύ=function Ύ(H,S){return ";
+			J.func.push([2.5,")"]);
+			return [1,"})("];
+		}
+	},
+	"Ό": function(J){
+		if(J.enc.Ό){
+			J.comp += "Ό(";
+			return [3,")"];
+		} else {
+			J.enc.Ό = true;
+			J.comp += "(Ό=function Ό(H,S,n){return ";
+			J.func.push([3.5,")"]);
+			return [1,"})("];
+		}
+	},
+	"Ί": function(J){
+		if(J.enc.Ί){
+			J.comp += "Ί(";
+			return [4,")"];
+		} else {
+			J.enc.Ί = true;
+			J.comp += "(Ί=function Ί(H,S,n,ά){return ";
+			J.func.push([4.5,")"]);
+			return [1,"})("];
+		}
+	},
+	"Ή": function(J){
+		if(J.enc.Ή){
+			J.comp += "Ή(";
+			return [J.Ή,")"];
+		} else {
+			var ar = J.Ή = J.code[++J.index].charCodeAt();
+			J.enc.Ή = true;
+			J.comp += "(Ή=function Ή(...H){return ";
+			J.func.push([J.Ή+0.5,")"]);
+			return [1,"})("];
+		}
+	},
 }
 
 // data/arguments
@@ -2057,7 +2240,7 @@ var inf = {
 	},
 	"S": function(J){
 		if(!J.enc.S){
-			J.prec += "var S=\"\n\";";
+			J.prec += "var S=\"\\n\";";
 			J.enc.S = true;
 		}
 		J.comp += "S";
@@ -2213,7 +2396,7 @@ var inf = {
 	"\xb6": function(J){
 		J.comp += "\"pl\""
 	},
-	"\u03bb": function(J){
+	"λ": function(J){
 		var next = J.code[++J.index];
 		var par = J.ops;
 		if("mpZ!,".search(next)+1){
@@ -2224,12 +2407,14 @@ var inf = {
 		var func = par==J.ops?(q+"").replace(/[\s\S]+"(.+?)\("[\s\S]+/gm,"$1"):par+"."+window[par][next].name;
 		J.comp += func;
 	},
-	"\u03b9":function(J){
-		J.comp += J.index;
+	"΅": function(J){
+		J.comp += "String."+String[J.code[++J.index]].name||String[J.code[++J.index]];
 	},
-	"\u03ba":function(J){
-		J.comp += "span(";
-		return 2;
+	"©": function(J){
+		J.comp += "Math."+Math[J.code[++J.index]].name||Math[J.code[++J.index]];
+	},
+	"ι":function(J){
+		J.comp += J.index;
 	},
 	"": function(J){}
 }
@@ -2267,7 +2452,7 @@ var mod = {
 	":": function(J){
 		J.mode = 6;
 	},
-	"{": function(J){
+	"‘": function(J){
 		J.mode = 5;
 	},
 	"D": function(J){
@@ -2512,6 +2697,10 @@ Jolf.prototype.check = function(J){
 	if(typeof funcRes!=="undefined"){
 		var consump = funcRes.shift();
 		var ending = funcRes.shift();
+		if(consump!==(consump|0)){
+			this.func.push([consump|0,ending]);
+			return;
+		}
 		if(!consump){
 			this.comp += ending;
 			x = this.check();
@@ -2667,9 +2856,9 @@ Jolf.prototype.step = function(J){
 		break;
 		case 5:	// golfy array
 			if(chr=="\\")this.index++;
-			if(chr!="#"&&chr){
+			if(chr!="’"&&chr){
 				this.build += this.code[this.index];
-			} else if(chr=="#") {
+			} else if(chr=="’") {
 				this.mode = 0;
 				// ensuring we don't have multiple var calls
 				var innerJolf = silentEvalJolfObj(this.build,{enc:this.enc});
