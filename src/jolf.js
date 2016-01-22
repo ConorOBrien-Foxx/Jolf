@@ -105,6 +105,14 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return a - b;
 	}
 
+	function double(x){
+		return mul(2,x);
+	}
+
+	function halve(x){
+		return x/2;
+	}
+
 	function mul(x,y){
 		if(arguments.length>2) return mul(x,mul.apply(window,Array.from(arguments).slice(1)));
 		if(typeof x=="string"&&typeof y=="number"){
@@ -588,6 +596,17 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return [add(x,y),sub(x,y)];
 	}
 
+	function inside(x){
+		if(typeof x==="number") return +inside(x);
+		return x.slice(1,-1);
+	}
+
+	function gamma(x){
+		if(typeof x==="number") return math.gamma(x);
+		else if(typeof x==="string") return x.replace(/./,"$&$&");
+		else if(Array.isArray(x)) return Array.flattenTo(x.map(function(e){return [e,e]}),1);
+	}
+
 	// from http://stackoverflow.com/a/728694/4119004
 	function clone(e){var n;if(null==e||"object"!=typeof e)return e;if(e instanceof Date)return n=new Date,n.setTime(e.getTime()),n;if(e instanceof Array){n=[];for(var t=0,r=e.length;r>t;t++)n[t]=clone(e[t]);return n}if(e instanceof Object){n={};for(var o in e)e.hasOwnProperty(o)&&(n[o]=clone(e[o]));return n}throw new Error("Unable to copy obj! Its type isn't supported.")}
 
@@ -962,6 +981,12 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Math["'"] = function parseFloat(n,base){
 		return eval(parseInt(n*1e14,base)+"/"+Math.pow(base,14));
 	}
+	Math["©"] = function breakSign(n){
+		return [Math.sign(n),Math.abs(n)];
+	}
+	Math["½"] = function floorHalf(n){
+		return Math.floor(n/2);
+	}
 	for(i in Math){Math[Math[i].name]=Math[i]};
 	// adding string stuff
 	String[5] = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\xA0‘’£€₯¦§¨©ͺ«¬\\xad­―°±²³΄΅Ά·ΈΉΊ»Ό½ΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώ";
@@ -1200,6 +1225,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Array.H = function allButFirst(x){
 		if(typeof x==="number") return +(Array.H(x+""));
 		return x.slice(1);
+	}
+	Array.i = function reverseLines(x){
+		return x.split("\n").reverse().join("\n");
 	}
 	Array.o = function maxLength(x){
 		return Math.max.apply(this,x.map(function(e){return e.length}));
@@ -1456,6 +1484,45 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		element.appendChild(document.createTextNode(text));
 	}
 
+	var patterns = {};
+	patterns.b = function rect(w,n,c){
+		return (c.repeat(w)+"\n").repeat(Math.abs(n)).trim();
+	}
+	patterns.s = function square(n,c){
+		return (c.repeat(n)+"\n").repeat(Math.abs(n)).trim();
+	}
+	patterns.t = function triangle(type,h,w,c){
+		var res = "";
+		switch(type){
+			case 0:	// left-cornered right triangle
+				// h = height, w = width
+				for(var i=0;i<h;i++){
+					res += c.repeat(Math.floor(w/h*(i+1)))+" ".repeat(w-Math.floor(w/h*(i+1)))+(i==h-1?"":"\n");
+				}
+				break;
+			case 1: // centered triangle
+				// h = height, w = scale factor
+				for(var i=0;i<h;i++){
+					var s = " ".repeat(w*(h-i-1));
+					res += s+c.repeat(w*2*i+1)+s+(i==h-1?"":"\n");
+				}
+				break;
+			case 2:
+				for(var i=0;i<h;i++){
+					res += c.repeat(Math.floor(w/h*(i+1)))+" ".repeat(w-Math.floor(w/h*(i+1)))+(i==h-1?"":"\n");
+				}
+				res = Array.i(res);
+				break;
+		}
+		return res;
+	}
+	patterns.T = function triangleBase(h,w,c){
+		return patterns.t(1,Math.ceil(h/2),w,c);
+	}
+
+	for(i in patterns)patterns[patterns[i].name]=patterns[i];
+
+
 	Pen.prototype.customFunc = function(char,func){
 		Pen.prototype[char] = func;
 	}
@@ -1635,7 +1702,7 @@ var ctl = {
 	")": function(J){
 		J.comp += "){";
 		J.comp = J.comp.replace(/(while|if|repeat)\((.*)\){.*$/,function(m,p1,p2){
-			return p1+"("+p2.replace(/;*/g,"").replace(/;/g,",")+"){";
+			return p1+" ("+p2.replace(/;*/g,"").replace(/;/g,",")+"){";
 		});
 	}
 }
@@ -1709,7 +1776,7 @@ var ops = {
 		return 1;
 	},
 	"e": function(J){
-		J.comp += "evalJolf(";
+		J.comp += "jolf(";
 		return 1;
 	},
 	"~e": function(J){
@@ -2107,6 +2174,19 @@ var ops = {
 			return 0;
 		}
 	},
+	"―": function(J){
+		var x = "patterns[\"";
+		var chrTemp = J.code[++J.index];
+		x += chrTemp;
+		x += "\"](";
+		if(typeof patterns[chrTemp]=="function"){
+			J.comp += x;
+			return patterns[chrTemp].length;
+		} else {
+			J.comp += "(function(J){return patterns[\""+chrTemp+"\"]})(";
+			return 0;
+		}
+	},
 	"°": function(J){
 		J.comp += "radToDeg(";
 		return 1;
@@ -2203,6 +2283,30 @@ var ops = {
 			return [1,"})("];
 		}
 	},
+	"ώ": function(J){
+		J.comp += "double(";
+		return 1;
+	},
+	"½": function(J){
+		J.comp += "halve(";
+		return 1;
+	},
+	"΄": function(J){
+		J.comp += "sub(";
+		return 3;
+	},
+	"A": function(J){
+		J.comp += "add(";
+		return 3;
+	},
+	"€": function(J){
+		J.comp += "inside(";
+		return 1;
+	},
+	"Γ": function(J){
+		J.comp += "gamma(";
+		return 1;
+	}
 }
 
 // data/arguments
@@ -2436,6 +2540,16 @@ var mod = {
 			J.func.push([1,""]);
 		} else {
 			J.comp += "γ";
+			J.check();
+		}
+	},
+	"Β": function(J){
+		if(!J.enc.Β){
+			J.comp += "Β=Number(";
+			J.enc.Β = true;
+			J.func.push([1,")"]);
+		} else {
+			J.comp += "Β";
 			J.check();
 		}
 	},
