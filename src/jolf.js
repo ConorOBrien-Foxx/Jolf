@@ -347,6 +347,10 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 	});
 
+	// from http://stackoverflow.com/a/29641185/4119004
+	function beep(t,e,n,o,i){var a=audioCtx.createOscillator(),d=audioCtx.createGain();a.connect(d),d.connect(audioCtx.destination),n&&(d.gain.value=n),e&&(a.frequency.value=e),o&&(a.type=o),i&&(a.onended=i),a.start(),setTimeout(function(){a.stop()},t?t:500)}var audioCtx=new(window.AudioContext||window.webkitAudioContext||window.audioContext);
+	var Audio = {};
+
 	function sqrt(x){
 		if(typeof x==="string"){
 			// add more!
@@ -567,12 +571,12 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return Array.isArray(x)?x.join("").split(""):typeof x==="string"?x.split("").join(""):typeof x==="number"?(x+"").split("").map(Number).sort(function(a,b){return a-b;}):"";
 	}
 
-	function firstN(max,com){
+	function firstN(max,con){
 		var ind = 0;
 		var off = 0;
 		var res = [];
 		while(ind<max+off){
-			if(com(ind)){
+			if(con(ind)){
 				res.push(ind);
 			} else {
 				off++;
@@ -580,6 +584,19 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			ind++;
 		}
 		return res;
+	}
+
+	function sliceUntil(comp,func){
+		if(typeof comp==="string") return sliceUntil(comp.split(""),func).join("");
+		else if(typeof comp==="number") return +sliceUntil(comp+"",func);
+		else {
+			var i = 0, res = [];
+			while(!func(comp[i])&&i<comp.length){
+				res.push(comp[i++]);
+			}
+			if(typeof comp[i]!=="undefined")res.push(comp[i]);
+			return res;
+		}
 	}
 
 	function everyCompare(arr,func){
@@ -745,6 +762,13 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	Array.prototype["`"] = Array.prototype.fill;
 
+	String.prototype.F = function forEach(f){
+		var x;
+		for(var i=0;i<this.length;i++){
+			x = f(this[i],i,this);
+		}
+		return x;
+	}
 	String.prototype.E = String.prototype.replace;
 	String.prototype.h = String.prototype.has = function(x){
 		if(arguments.length>1) return this.has(x)&&this.has.apply(this,Array.from(arguments).slice(1));
@@ -1010,14 +1034,17 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}).join("\n");
 	}
 	String.C = function trimLines(x){
-		return x.split("\n").map(function(e){return e.trim()});
+		return x.split("\n").map(function(e){return e.trim()}).join("\n");
 	}
 	String.d = function applyTag(a,x){
 		return "<"+a+">"+x+"</"+a+">";
 	}
-	String.D = function removeTag(a,x){
-		if(a==null||typeof a==="undefined") x.replace(/<(.+?)>.+?<\/\1>/g,"");
-		else return x.replace(RegExp("<"+RegExp.escape(a)+">.+?</"+RegExp.escape(a)+">"),"");
+	String.D = function removeTag(a,x,c){
+		if(a==null||typeof a==="undefined") x.replace(/<(.+?)>(.+?)<\/\1>/g,c?"$2":"");
+		else return x.replace(RegExp("<"+RegExp.escape(a)+".+?>(.+?)</"+RegExp.escape(a)+">"),c?"$1":"");
+	}
+	String.Δ = function removeAllTags(x){
+		return x.replace(/<\/?.+?>/g,"");
 	}
 	String.e = function strictPalindromeTest(x){
 		return x.reverse?x.reverse()==x:typeof x==="number"?String.e(x+""):false;
@@ -1228,6 +1255,14 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	Array.i = function reverseLines(x){
 		return x.split("\n").reverse().join("\n");
+	}
+	Array.j = function allButLastN(x,n){
+		if(typeof x==="number") return +(Array.j(x+"",n));
+		return x.slice(0,x.length-n);
+	}
+	Array.J = function firstN(x,n){
+		if(typeof x==="number") return +(Array.J(x+"",n));
+		return x.slice(0,n);
 	}
 	Array.o = function maxLength(x){
 		return Math.max.apply(this,x.map(function(e){return e.length}));
@@ -1714,8 +1749,8 @@ var ops = {
 		return 1;
 	},
 	"?": function(J){
-		J.comp += "ternary(";
-		return 3;
+		J.comp += "(";
+		return [3,")",["?",":"]];
 	},
 	" ": function(J){
 		J.comp += "prototypeFunc(";
@@ -1745,6 +1780,14 @@ var ops = {
 	"B": function(J){
 		J.comp += "toBinary(";
 		return 1;
+	},
+	"Η": function(J){
+		J.comp += "parseInt(";
+		return [1,",16)"];
+	},
+	"Ι": function(J){
+		J.comp += "parseInt(";
+		return [1,",2)"];
 	},
 	"b": function(J){
 		J.comp += "toString(";
@@ -2013,6 +2056,10 @@ var ops = {
 		J.comp += "getProp(";
 		return 2;
 	},
+	"Υ": function(J){
+		J.comp += "sliceUntil(";
+		return 2;
+	},
 	"~i": function(J){
 		J.comp += "(function(x){return x})(";
 		return 1;
@@ -2138,8 +2185,17 @@ var ops = {
 		return [1,").shift()"];
 	},
 	"Α":function(J){
-		J.comp += "isAvailable(";
-		return 1;
+		var x = "Audio[\"";
+		var chrTemp = J.code[++J.index];
+		x += chrTemp;
+		x += "\"](";
+		if(typeof Audio[chrTemp]=="function"){
+			J.comp += x;
+			return Audio[chrTemp].length;
+		} else {
+			J.comp += "(function(J){return Audio[\""+chrTemp+"\"]})(";
+			return 0;
+		}
 	},
 	"Χ":function(J){
 		J.comp += "(";
@@ -2306,7 +2362,7 @@ var ops = {
 	"Γ": function(J){
 		J.comp += "gamma(";
 		return 1;
-	}
+	},
 }
 
 // data/arguments
@@ -2811,8 +2867,9 @@ Jolf.prototype.check = function(J){
 	if(typeof funcRes!=="undefined"){
 		var consump = funcRes.shift();
 		var ending = funcRes.shift();
+		var intermediate = funcRes.shift();
 		if(consump!==(consump|0)){
-			this.func.push([consump|0,ending]);
+			this.func.push([consump|0,ending,intermediate]);
 			return;
 		}
 		if(!consump){
@@ -2838,8 +2895,8 @@ Jolf.prototype.check = function(J){
 			}
 			return 0;
 		} else {
-			this.comp += ",";
-			this.func.push([consump,ending]);
+			this.comp += Array.isArray(intermediate)?intermediate.shift():intermediate?intermediate:",";
+			this.func.push([consump,ending,intermediate]);
 			return 0.5;
 		}
 	} else {
@@ -2870,16 +2927,18 @@ Jolf.prototype.step = function(J){
 			} else if(this.ops[chr]){ // if the character is an operator
 				var arity = this.ops[chr](this);
 				var close = ")";
+				var intermediate = ",";
 				if(Array.isArray(arity)){
-					close = arity.pop();
-					arity = arity.pop();
+					intermediate = arity[2]||intermediate;
+					close = arity[1]||close;
+					arity = arity[0]||arity;
 				}
 				if(!arity){
-					console.log(arity,!arity);
+					//console.log(arity,!arity);
 					this.comp += ")";
 					this.check();
 				} else {
-					this.func.push([arity,close]);
+					this.func.push([arity,close,intermediate]);
 				}
 			} else if(this.inf[chr]){	// if the character is data
 				this.inf[chr](this);
