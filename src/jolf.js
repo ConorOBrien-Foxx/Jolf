@@ -658,9 +658,6 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 
 // define various functions
 {
-	Object.defineProperty(Array.prototype,"last",{get(){return this[this.length-1]},set(v){this[this.length-1]=v}});
-	Object.defineProperty(RegExp.prototype,"body",{get(){var s=this.toString();return s.slice(s.indexOf("//"),s.lastIndexOf("//"))},set(v){return new RegExp(v)}});
-
 	function JolfRegExp(body,flags){
 		// perform class replacemenjts
 		body = body.replace(/\\p/g,"[A-Z]").replace(/\\P/g,"[^A-Z]").replace(/\k/g,"[a-z]").replace(/\K/g,"[^a-z]");
@@ -2660,16 +2657,16 @@ var mod = {
 		document.getElementById("output").innerHTML = "";
 	},
 	"θ": function(J){
-		J.func.last[0]+=3;
+		J.func[J.func.length-1][0]+=3;
 	},
 	"M": function(J){
-		J.func.last[0]+=2;
+		J.func[J.func.length-1][0]+=2;
 	},
 	";": function(J){
-		J.func.last[0]++;
+		J.func[J.func.length-1][0]++;
 	},
 	"η": function(J){
-		J.func.last[0]--;
+		J.func[J.func.length-1][0]--;
 	},
 	"\u01a6": function(J){
 		location = "jolf.html";
