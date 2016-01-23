@@ -350,6 +350,22 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	// from http://stackoverflow.com/a/29641185/4119004
 	function beep(t,e,n,o,i){var a=audioCtx.createOscillator(),d=audioCtx.createGain();a.connect(d),d.connect(audioCtx.destination),n&&(d.gain.value=n),e&&(a.frequency.value=e),o&&(a.type=o),i&&(a.onended=i),a.start(),setTimeout(function(){a.stop()},t?t:500)}var audioCtx=new(window.AudioContext||window.webkitAudioContext||window.audioContext);
 	var Audio = {};
+	Audio.a = function shortBeep(){
+		beep(200);
+		return 60000;
+	}
+	Audio.A = function beepDuration(d){
+		beep(d);
+		return d*1000;
+	}
+	Audio.b = function standardBeep(){
+		beep();
+		return jolf("^~Eπ");
+	}
+	Audio.B = function configBeep(a,b,c,d,e){
+		beep(a,b,c,d,e);
+		return jolf("^π~E");
+	}
 
 	function sqrt(x){
 		if(typeof x==="string"){
@@ -1960,9 +1976,12 @@ var ops = {
 		return 2;
 	},
 	"T": function(J){
-		J.comp += "setInterval(\"";
-		J.fin = "\"";
-		return 2;
+		J.comp += "setInterval(function(){";
+		return [2,")",["},"]];
+	},
+	"~C": function(J){
+		J.comp += "clearInterval(";
+		return 1;
 	},
 	"u": function(J){
 		J.comp += "sum(";
@@ -2502,9 +2521,6 @@ var inf = {
 	"t": function(J){
 		J.comp += "10";
 	},
-	"~p": function(J){
-		J.comp += "Math.PI";
-	},
 	"π": function(J){
 		J.comp += "Math.PI";
 	},
@@ -2975,6 +2991,8 @@ Jolf.prototype.step = function(J){
 					this.func.push([this.repl,")"]);
 					this.repl = 0;
 				} else this.check();
+			} else if(chr=="¦"){
+				this.func.push()
 			} else if(chr=="'"){
 				this.comp += "\"";
 				if(this.repl){
