@@ -348,6 +348,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	});
 
 	// from http://stackoverflow.com/a/29641185/4119004
+	// duration, frequency, volume, type, callback
 	function beep(t,e,n,o,i){var a=audioCtx.createOscillator(),d=audioCtx.createGain();a.connect(d),d.connect(audioCtx.destination),n&&(d.gain.value=n),e&&(a.frequency.value=e),o&&(a.type=o),i&&(a.onended=i),a.start(),setTimeout(function(){a.stop()},t?t:500)}var audioCtx=new(window.AudioContext||window.webkitAudioContext||window.audioContext);
 	var Audio = {};
 	Audio.a = function shortBeep(){
@@ -363,8 +364,27 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return jolf("^~Eπ");
 	}
 	Audio.B = function configBeep(a,b,c,d,e){
+		d = ["sine","square","sawtooth","triangle"][d] || d;
 		beep(a,b,c,d,e);
 		return jolf("^π~E");
+	}
+	Audio.c = function cfgBeep(a,b){
+		beep(a,b);
+		return a*b*10;
+	}
+	Audio.C = function cfgBeepSeconds(a,b){
+		beep(a*1000,b);
+		return a*b*10000;
+	}
+	Audio.d = function times1000(a){
+		return mul(1000,a);
+	}
+	Audio.D = function divideBy1000(a){
+		return div(a,1000);
+	}
+	Audio.t = function timeline(tones,durations){
+		if(!tones.length) return;
+		else beep(durations.shift(),tones.shift(),1,"sine",function(){Audio.t(tones,durations)});
 	}
 
 	function sqrt(x){
@@ -1957,8 +1977,8 @@ var ops = {
 		return 1;
 	},
 	"~R": function(J){
-		J.comp += "setTimeout(";
-		return 2;
+		J.comp += "setTimeout(function(){";
+		return [2,")",["},"]];
 	},
 	"R": function(J){
 		J.comp += "join(";
