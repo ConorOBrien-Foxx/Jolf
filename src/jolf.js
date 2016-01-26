@@ -1044,6 +1044,14 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Math["½"] = function floorHalf(n){
 		return Math.floor(n/2);
 	}
+	Math.Γ = {};
+	Math.Γ.q = function quadraticFormula(a,b,c){
+		// JΜ±_jU-QjΤ4Jxd/HώJ
+		return plusMinus(-b,Math.sqrt(b*b-4*a*c)).map(function(E){return E/2/a;});
+	}
+	Math.Γ.Q = function quadraticFormulaIm(a,b,c){
+		return [math.eval("a=2;b=4;c=-5;(-b+sqrt(b^2-4*a*c))/2/a").entries+"",math.eval("a=2;b=4;c=-5;(-b-sqrt(b^2-4*a*c))/2/a").entries+""]
+	}
 	for(i in Math){Math[Math[i].name]=Math[i]};
 	// adding string stuff
 	String[5] = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\xA0‘’£€₯¦§¨©ͺ«¬\\xad­―°±²³΄΅Ά·ΈΉΊ»Ό½ΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώ";
@@ -1170,6 +1178,12 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	String.W = function lowerAndUpper(x){
 		return x.toLowerCase()+x.toUpperCase();
+	}
+	String.x = function toLowerCase(x){
+		return x.toLowerCase();
+	}
+	String.X = function toUpperCase(x){
+		return x.toUpperCase();
 	}
 	String.y = function upperN(x,n){
 		return x.slice(0,n)+x[n].toUpperCase()+x.slice(n+1,x.length);
@@ -1590,6 +1604,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 
 	for(i in patterns)patterns[patterns[i].name]=patterns[i];
 
+	Error.log = console.error;
 
 	Pen.prototype.customFunc = function(char,func){
 		Pen.prototype[char] = func;
@@ -1938,6 +1953,19 @@ var ops = {
 		var x = "Math[\"";
 		var chrTemp = J.code[++J.index];
 		x += chrTemp;
+		if(chrTemp=="Γ"){
+			x += "\"][\"";
+			var chrTemp2 = J.code[++J.index];
+			x += chrTemp2;
+			x += "\"](";
+			if(typeof Math.Γ[chrTemp2]=="function"){
+				J.comp += x;
+				return Math.Γ[chrTemp2].length;
+			} else {
+				J.comp += "(function(J){return Math.Γ[\""+chrTemp+"\"]})(";
+				return 0;
+			}
+		}
 		x += "\"](";
 		if(typeof Math[chrTemp]=="function"){
 			J.comp += x;
@@ -2279,6 +2307,19 @@ var ops = {
 			return 0;
 		}
 	},
+	"Έ": function(J){
+		var x = "Error[\"";
+		var chrTemp = J.code[++J.index];
+		x += chrTemp;
+		x += "\"](";
+		if(typeof Error[chrTemp]=="function"){
+			J.comp += x;
+			return Error[chrTemp].length;
+		} else {
+			J.comp += "(function(J){return Error[\""+chrTemp+"\"]})(";
+			return 0;
+		}
+	},
 	"°": function(J){
 		J.comp += "radToDeg(";
 		return 1;
@@ -2391,6 +2432,14 @@ var ops = {
 		J.comp += "add(";
 		return 3;
 	},
+	"Τ": function(J){
+		J.comp += "mul(";
+		return 3;
+	},
+	"Ο": function(J){
+		J.comp += "div(";
+		return 3;
+	},
 	"€": function(J){
 		J.comp += "inside(";
 		return 1;
@@ -2461,6 +2510,13 @@ var inf = {
 			J.enc.I = true;
 		}
 		J.comp += "I";
+	},
+	"ζ": function(J){
+		if(!J.enc.ζ){
+			J.enc.ζ = true;
+			J.prec += "var ζ=-1/12;"
+		}
+		J.comp += "ζ";
 	},
 	"j": function(J){
 		if(!J.enc.j){
@@ -2621,6 +2677,12 @@ var mod = {
 	"«": function(J){
 		J.comp += "`";
 		J.mode = 7;
+	},
+	"Ζ": function(J){
+		if(!J.enc.ζ){
+			J.enc.ζ = true;
+		}
+		J.comp += "ζ=";
 	},
 	"γ": function(J){
 		if(!J.enc.γ){
@@ -2887,6 +2949,8 @@ Jolf.prototype.exec = function(J){
 				this.total = this.total.replace(/function\s*\((.+?)\)/,"function anonymous"+this.unnamedFuncs+"($1)");
 				console.log(this.total);
 				eval(this.total);
+			} else {
+				throw e;
 			}
 		}
 		return (this.outted?function(f){return f}:alert)(res);
@@ -2901,12 +2965,14 @@ Jolf.prototype.check = function(J){
 		var consump = funcRes.shift();
 		var ending = funcRes.shift();
 		var intermediate = funcRes.shift();
+		var callback = funcRes.shift();
+		console.log(callback);
 		if(consump!==(consump|0)){
-			this.func.push([consump|0,ending,intermediate]);
+			this.func.push([consump|0,ending,intermediate,callback]);
 			return;
 		}
 		if(!consump){
-			this.comp += ending;
+			this.comp += ending;	// ,
 			x = this.check();
 			if(x>0){
 				var lst = this.comp.slice(-1);
@@ -2918,9 +2984,10 @@ Jolf.prototype.check = function(J){
 		}
 		consump--;
 		if(!consump){
-			this.comp += ending;
+			this.comp += ending;	// ,
 			x = this.check();
 			if(x>0){
+				callback(this);
 				var lst = this.comp.slice(-1);
 				this.comp = this.comp.slice(0,-1);
 				this.comp += this.fin + lst;
@@ -2929,7 +2996,7 @@ Jolf.prototype.check = function(J){
 			return 0;
 		} else {
 			this.comp += Array.isArray(intermediate)?intermediate.shift():intermediate?intermediate:",";
-			this.func.push([consump,ending,intermediate]);
+			this.func.push([consump,ending,intermediate,callback]);
 			return 0.5;
 		}
 	} else {
@@ -2961,7 +3028,9 @@ Jolf.prototype.step = function(J){
 				var arity = this.ops[chr](this);
 				var close = ")";
 				var intermediate = ",";
+				var callback = (function(){return;});
 				if(Array.isArray(arity)){
+					callback = arity[3]||callback;
 					intermediate = arity[2]||intermediate;
 					close = arity[1]||close;
 					arity = arity[0]||arity;
@@ -2971,7 +3040,7 @@ Jolf.prototype.step = function(J){
 					this.comp += ")";
 					this.check();
 				} else {
-					this.func.push([arity,close,intermediate]);
+					this.func.push([arity,close,intermediate,callback]);
 				}
 			} else if(this.inf[chr]){	// if the character is data
 				this.inf[chr](this);
@@ -3009,7 +3078,9 @@ Jolf.prototype.step = function(J){
 					this.repl = 0;
 				} else this.check();
 			} else if(chr=="¦"){
-				this.func.push()
+				this.comp += "\"+(";
+				this.mode = 0;
+				this.func.push([1,")+\"",",",function(J){J.mode=1;J.comp=J.comp.slice(0,-1);}]);
 			} else if(chr=="'"){
 				this.comp += "\"";
 				if(this.repl){
