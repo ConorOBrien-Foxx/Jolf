@@ -47,7 +47,7 @@ Let's try to recreate this in Jolf! There are multiple ways to take input in Jol
 
  * `i`, `I`, and `m~`: string input.
  * `j`, `J`, and `m:`: numeric input.
- * `k`, `K`, and ``m```: comma-seperated array.
+ * `k`, `K`, and ``m` ``: comma-seperated array.
  * `x`, `X`, and `m;`: evaluated input.
 
 Since we need to take three inputs, we can use each of `j`, `J`, and `m:`, which will be `a`, `b`, and `c` respectively. (`c` is `m:` because we use it only once, and thus save the most bytes.)
