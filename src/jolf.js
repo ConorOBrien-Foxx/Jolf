@@ -1607,6 +1607,16 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		var res = math.eval(exp,scope);
 		return res.entries?res.entries.length==1?res.entries[0]:res.entries:res;
 	}
+	mathC["\x01"] = function getData(x){
+		return x.data||x._data||x.re;
+	}
+	mathC["\x02"] = function imagToArray(x){
+		return [x.re,x.im];
+	}
+	mathC["\x03"] = function displayImg(x){
+		if(Array.isArray(x)) return x[0]+"+"+x[1]+"i";
+		else return mathC["\x03"](mathC["\x02"](x));
+	}
 
 	document.a = function appendChild(x,y){
 		x.appendChild(y);
