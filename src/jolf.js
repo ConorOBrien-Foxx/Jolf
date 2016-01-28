@@ -9,7 +9,7 @@
 var debug = false;
 // polyfills from developer.mozilla.org
 {
-String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(null==this)throw new TypeError("can't convert "+this+" to object");var r=""+this;if(t=+t,t!=t&&(t=0),0>t)throw new RangeError("repeat count must be non-negative");if(t==1/0)throw new RangeError("repeat count must be less than infinity");if(t=Math.floor(t),0==r.length||0==t)return"";if(r.length*t>=1<<28)throw new RangeError("repeat count must not overflow maximum string size");for(var e="";1==(1&t)&&(e+=r),t>>>=1,0!=t;)r+=r;return e});Array.prototype.every||(Array.prototype.every=function(r,t){"use strict";var e,n;if(null==this)throw new TypeError("this is null or not defined");var o=Object(this),i=o.length>>>0;if("function"!=typeof r)throw new TypeError;for(arguments.length>1&&(e=t),n=0;i>n;){var f;if(n in o){f=o[n];var y=r.call(e,f,n,o);if(!y)return!1}n++}return!0});Math.clz32=Math.clz32||function(J){"use strict";var t=[32,31,0,16,0,30,3,0,15,0,0,0,29,10,2,0,0,0,12,14,21,0,19,0,0,28,0,25,0,9,1,0,17,0,4,,0,0,11,0,13,22,20,0,26,0,0,18,5,0,0,23,0,27,0,6,0,24,7,0,8,0,0,0];return function(r){var u=Number(r)>>>0;return u|=u>>>1,u|=u>>>2,u|=u>>>4,u|=u>>>8,u|=u>>>16,u=t[Math.imul(u,116069625)>>>26]}}();Math.trunc=Math.trunc||function(t){return 0>t?Math.ceil(t):Math.floor(t)};Math.sign=Math.sign||function(n){return n=+n,0===n||isNaN(n)?n:n>0?1:-1};Math.imul=Math.imul||function(t,u){var a=t>>>16&65535,i=65535&t,n=u>>>16&65535,r=65535&u;return i*r+(a*r+i*n<<16>>>0)|0};!function(J){function t(t,n,o){return"undefined"==typeof o||0===+o?Math[t](n):(n=+n,o=+o,isNaN(n)||"number"!=typeof o||o%1!==0?NaN:(n=n.toString().split("e"),n=Math[t](+(n[0]+"e"+(n[1]?+n[1]-o:-o))),n=n.toString().split("e"),+(n[0]+"e"+(n[1]?+n[1]+o:o))))}Math.round10||(Math.round10=function(n,o){return t("round",n,o)}),Math.floor10||(Math.floor10=function(n,o){return t("floor",n,o)}),Math.ceil10||(Math.ceil10=function(n,o){return t("ceil",n,o)})}();Math.cbrt=Math.cbrt||function(t){var a=Math.pow(Math.abs(t),1/3);return 0>t?-a:a};Math.expm1=Math.expm1||function(t){return Math.exp(t)-1};Math.fround=Math.fround||function(n){return function(r){return n[0]=r,n[0]}}(Float32Array(1));Math.log10=Math.log10||function(t){return Math.log(t)/Math.LN10};Math.log2=Math.log2||function(t){return Math.log(t)/Math.LN2};Array.prototype.every||(Array.prototype.every=function(r,t){"use strict";var e,n;if(null==this)throw new TypeError("this is null or not defined");var o=Object(this),i=o.length>>>0;if("function"!=typeof r)throw new TypeError;for(arguments.length>1&&(e=t),n=0;i>n;){var f;if(n in o){f=o[n];var y=r.call(e,f,n,o);if(!y)return!1}n++}return!0});Math.hypot=Math.hypot||function(J){for(var t=0,r=arguments.length,n=0;r>n;n++){if(arguments[n]===1/0||arguments[n]===-(1/0))return 1/0;t+=arguments[n]*arguments[n]}return Math.sqrt(t)};Math.log10=Math.log10||function(t){return Math.log(t)/Math.LN10};String.fromCodePoint||!function(J){var r=function(J){try{var r={},n=Object.defineProperty,t=n(r,r,r)&&n}catch(e){}return t}(),n=String.fromCharCode,t=Math.floor,e=function(J){var r,e,o=16384,i=[],a=-1,u=arguments.length;if(!u)return"";for(var f="";++a<u;){var g=Number(arguments[a]);if(!isFinite(g)||0>g||g>1114111||t(g)!=g)throw RangeError("Invalid code point: "+g);65535>=g?i.push(g):(g-=65536,r=(g>>10)+55296,e=g%1024+56320,i.push(r,e)),(a+1==u||i.length>o)&&(f+=n.apply(null,i),i.length=0)}return f};r?r(String,"fromCodePoint",{value:e,configurable:!0,writable:!0}):String.fromCodePoint=e}();Array.prototype.fill||(Array.prototype.fill=function(t){if(null==this)throw new TypeError("this is null or not defined");for(var r=Object(this),n=r.length>>>0,i=arguments[1],a=i>>0,e=0>a?Math.max(n+a,0):Math.min(a,n),o=arguments[2],h=void 0===o?n:o>>0,l=0>h?Math.max(n+h,0):Math.min(h,n);l>e;)r[e]=t,e++;return r});
+String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(null==this)throw new TypeError("can't convert "+this+" to object");var r=""+this;if(t=+t,t!=t&&(t=0),0>t)throw new RangeError("repeat count must be non-negative");if(t==1/0)throw new RangeError("repeat count must be less than infinity");if(t=Math.floor(t),0==r.length||0==t)return"";if(r.length*t>=1<<28)throw new RangeError("repeat count must not overflow maximum string size");for(var e="";1==(1&t)&&(e+=r),t>>>=1,0!=t;)r+=r;return e});Array.prototype.every||(Array.prototype.every=function(r,t){"use strict";var e,n;if(null==this)throw new TypeError("this is null or not defined");var o=Object(this),i=o.length>>>0;if("function"!=typeof r)throw new TypeError;for(arguments.length>1&&(e=t),n=0;i>n;){var f;if(n in o){f=o[n];var y=r.call(e,f,n,o);if(!y)return!1}n++}return!0});Math.clz32=Math.clz32||function(J){"use strict";var t=[32,31,0,16,0,30,3,0,15,0,0,0,29,10,2,0,0,0,12,14,21,0,19,0,0,28,0,25,0,9,1,0,17,0,4,,0,0,11,0,13,22,20,0,26,0,0,18,5,0,0,23,0,27,0,6,0,24,7,0,8,0,0,0];return function(r){var u=Number(r)>>>0;return u|=u>>>1,u|=u>>>2,u|=u>>>4,u|=u>>>8,u|=u>>>16,u=t[Math.imul(u,116069625)>>>26]}}();Math.trunc=Math.trunc||function(t){return 0>t?Math.ceil(t):Math.floor(t)};Math.sign=Math.sign||function(n){return n=+n,0===n||isNaN(n)?n:n>0?1:-1};Math.imul=Math.imul||function(t,u){var a=t>>>16&65535,i=65535&t,n=u>>>16&65535,r=65535&u;return i*r+(a*r+i*n<<16>>>0)|0};!function(J){function t(t,n,o){return"undefined"==typeof o||0===+o?Math[t](n):(n=+n,o=+o,isNaN(n)||"number"!=typeof o||o%1!==0?NaN:(n=n.toString().split("e"),n=Math[t](+(n[0]+"e"+(n[1]?+n[1]-o:-o))),n=n.toString().split("e"),+(n[0]+"e"+(n[1]?+n[1]+o:o))))}Math.round10||(Math.round10=function(n,o){return t("round",n,o)}),Math.floor10||(Math.floor10=function(n,o){return t("floor",n,o)}),Math.ceil10||(Math.ceil10=function(n,o){return t("ceil",n,o)})}();Math.cbrt=Math.cbrt||function(t){var a=Math.pow(Math.abs(t),1/3);return 0>t?-a:a};Math.expm1=Math.expm1||function(t){return Math.exp(t)-1};Math.fround=Math.fround||function(n){return function(r){return n[0]=r,n[0]}}(Float32Array(1));Math.log10=Math.log10||function(t){return Math.log(t)/Math.LN10};Math.log2=Math.log2||function(t){return Math.log(t)/Math.LN2};Array.prototype.every||(Array.prototype.every=function(r,t){"use strict";var e,n;if(null==this)throw new TypeError("this is null or not defined");var o=Object(this),i=o.length>>>0;if("function"!=typeof r)throw new TypeError;for(arguments.length>1&&(e=t),n=0;i>n;){var f;if(n in o){f=o[n];var y=r.call(e,f,n,o);if(!y)return!1}n++}return!0});Math.hypot=Math.hypot||function(J){for(var t=0,r=arguments.length,n=0;r>n;n++){if(arguments[n]===1/0||arguments[n]===-(1/0))return 1/0;t+=arguments[n]*arguments[n]}return Math.sqrt(t)};Math.log10=Math.log10||function(t){return Math.log(t)/Math.LN10};String.fromCodePoint||!function(J){var r=function(J){try{var r={},n=Object.defineProperty,t=n(r,r,r)&&n}catch(e){}return t}(),n=String.fromCharCode,t=Math.floor,e=function(J){var r,e,o=16384,i=[],a=-1,u=arguments.length;if(!u)return"";for(var f="";++a<u;){var g=Number(arguments[a]);if(!isFinite(g)||0>g||g>1114111||t(g)!=g)throw RangeError("Invalid code point: "+g);65535>=g?i.push(g):(g-=65536,r=(g>>10)+55296,e=g%1024+56320,i.push(r,e)),(a+1==u||i.length>o)&&(f+=n.apply(null,i),i.length=0)}return f};r?r(String,"fromCodePoint",{value:e,configurable:!0,writable:!0}):String.fromCodePoint=e}();Array.prototype.fill||(Array.prototype.fill=function(t){if(null==this)throw new TypeError("this is null or not defined");for(var r=Object(this),n=r.length>>>0,i=arguments[1],a=i>>0,e=0>a?Math.max(n+a,0):Math.min(a,n),o=arguments[2],h=void 0===o?n:o>>0,l=0>h?Math.max(n+h,0):Math.min(h,n);l>e;)r[e]=t,e++;return r});Array.prototype.findIndex||(Array.prototype.findIndex=function(r){if(null===this)throw new TypeError("Array.prototype.findIndex called on null or undefined");if("function"!=typeof r)throw new TypeError("predicate must be a function");for(var n,e=Object(this),t=e.length>>>0,o=arguments[1],i=0;t>i;i++)if(n=e[i],r.call(o,n,i,e))return i;return-1});
 }
 
 {// functions
@@ -317,6 +317,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 
 	function less(x,y){
 		if(arguments.length>2) return less(x,y)&&less.apply(window,Array.from(arguments).slice(1));
+		if(Array.isArray(x)){
+
+		}
 		return x < y;
 	}
 
@@ -330,6 +333,11 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			return x.reduce(function(a,b){return a*b});
 		}
 		return Number(x.toString().split("").map(Number).reduce(function(a,b){return a*b}))
+	}
+
+	function distinctN(N,array,condition){
+		var x = jolf("ZemZxj",array,N).filter(function(e){return equals(e,e.sort(condition))});
+		return x;
 	}
 
 	(function(f){window.alert=function(a,J){a=typeof a==="undefined"?"":a;if(a==Infinity){f(Infinity)}else if((document.getElementById("pom").checked)){f(JSON.stringify(a))}else{f(a)};(J||{}).outted=true;}})(function(x){
@@ -421,7 +429,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 
 	function toBaseArr(n,b){
-		h = Math.ceil(logBase(n,b));
+		h = Math.ceil(logBASE(n,b));
 		a = new Array(h+1) .fill(0);
 		while(n){
 			h = Math.floor(logBASE(n,b));
@@ -731,6 +739,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		"i":1,
 		"f":1,
 		"F":1,
+		"K":1,
 		"h":1,
 		"l":2,
 		"L":1,
@@ -808,6 +817,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return !!(1+this.search(new RegExp(x,"g")));
 	}
 	String.prototype.i = String.prototype.indexOf;
+	String.prototype.K = String.prototype.findindex;
 	String.prototype.s = String.prototype.search;
 	String.prototype.S = String.prototype.map = function map(f){
 		var copy = this.split("");
@@ -1044,6 +1054,26 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Math["½"] = function floorHalf(n){
 		return Math.floor(n/2);
 	}
+	Math.ε = Math.pow(2,-52)
+	Math["²"] = function squareFree(x){
+		return jolf("=Ζm)jμζ",x);
+	}
+	Math.ρ = function parity(x){
+		return x%2;
+	}
+	Math["±"] = function times2minus1(x){
+		return 2*x-1;
+	}
+	Math.β = toBaseArr;
+	Math.Β = function nthPermutationOfLength(n,l,charset){
+		var q = charset.length;
+		n -= Math.pow(q,l-1);
+		return toBaseArr(n,q).map(function(e){return charset[e]}).join("");
+	}
+	Math["§"] = function nthPermutation(n,charset){
+		var q = charset.length;
+		return toBaseArr(n,q).map(function(e){return charset[e]}).join("");
+	}
 	Math.Γ = {};
 	Math.Γ.q = function quadraticFormula(a,b,c){
 		// JΜ±_jU-QjΤ4Jxd/HώJ
@@ -1256,6 +1286,8 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		});
 	}
 	Array.d = function deltaList(x){
+		if(typeof x==="number") return Array.d(x+"").split("").map(Number);
+		if(typeof x==="string") return Array.d(x.split("")).join("");
 		var y=clone(x);y.pop();
 		return y.map(function(e,i){
 			return x[i+1]-x[i];
@@ -1311,8 +1343,22 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		if(typeof x==="number") return +(Array.J(x+"",n));
 		return x.slice(0,n);
 	}
-	Array.o = function maxLength(x){
-		return Math.max.apply(this,x.map(function(e){return e.length}));
+	Array.k = function min(x){
+		return Math.min.apply(Math,x);
+	}
+	Array.K = function max(x){
+		return Math.max.apply(Math,x);
+	}
+	Array.l = function numberOf(x,n){
+		return x.filter(function(e){return equals(e,n)}).length
+	}
+	Array.L = function shiftLeft(x,n){
+		// or rotate
+		while(n-->0){
+			var k = x.shift();
+			x.push(k);
+		}
+		return x;
 	}
 	Array.m = function maxDim(x){
 		if(x == []) return 0;
@@ -1337,6 +1383,17 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	Array.N = function max(x){
 		return Math.maax.apply(Math,x);
+	}
+	Array.o = function maxLength(x){
+		return Math.max.apply(this,x.map(function(e){return e.length}));
+	}
+	Array.O = function shiftRight(x,n){
+		// or rotate
+		while(n-->0){
+			var k = x.pop();
+			x=[k].concat(x);
+		}
+		return x;
 	}
 	Array.p = function swap(a){
 		var len = Math.max.apply(Math,a.map(function(e){return e.length}));
@@ -1421,6 +1478,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		*/
 	}
 
+	Array.ρ = function lengthParity(x){
+		return x.length%2;
+	}
 	for(p in Array)Array[Array[p].name]=Array[p];
 	Date[0] = Date.parse;
 	Date[1] = Date.now;
@@ -1538,7 +1598,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 
 	math.config({number:"bignumber",precision:300});
 	mathC = clone(math);
-	"abs0acos0acosh0acot0acoth0acsc0acsch0add0and0arg0asec0asech0asin0asinh0atan0atan20atanh0bellNumbers0bignumber0bitAnd0bitNot0bitOr0bitXor0boolean0catalan0cbrt0ceil0chain0clone0combinations0compare0compile0complex0composition0concat0conj0cos0cosh0cot0coth0cross0csc0csch0cube0deepEqual0det0diag0distance0divide0dot0dotDivide0dotMultiply0dotPow0equal0eval0exp0eye0factorial0filter0fix0flatten0floor0forEach0format0fraction0gamma0gcd0help0hypot0im0index0intersect0inv0isInteger0isNegative0isNumeric0isPositive0isZero0kldivergence0larger0largerEq0lcm0leftShift0log0log100lsolve0lup0lusolve0map0matrix0max0mean0median0min0mod0mode0multinomial0multiply0norm0not0nthRoot0number0ones0or0parse0parser0partitionSelect0permutations0pickRandom0pow0print0prod0quantileSeq0random0randomInt0range0re0resize0rightArithShift0rightLogShift0round0sec0sech0sign0sin0sinh0size0slu0smaller0smallerEq0sort0sparse0sqrt0square0squeeze0std0stirlingS20string0subset0subtract0sum0tan0tanh0to0trace0transpose0typeof0unaryMinus0unaryPlus0unequal0unit0usolve0var0xgcd0xor0zeros".split(0).forEach(function(e,i){mathC[String.fromCharCode(i+1)]=mathC[e]=math[e]});
+	"abs0acos0acosh0acot0acoth0acsc0acsch0add0and0arg0asec0asech0asin0asinh0atan0atan20atanh0bellNumbers0bignumber0bitAnd0bitNot0bitOr0bitXor0boolean0catalan0cbrt0ceil0chain0clone0combinations0compare0compile0complex0composition0concat0conj0cos0cosh0cot0coth0cross0csc0csch0cube0deepEqual0det0diag0distance0divide0dot0dotDivide0dotMultiply0dotPow0equal0eval0exp0eye0factorial0filter0fix0flatten0floor0forEach0format0fraction0gamma0gcd0help0hypot0im0index0intersect0inv0isInteger0isNegative0isNumeric0isPositive0isZero0kldivergence0larger0largerEq0lcm0leftShift0log0log100lsolve0lup0lusolve0map0matrix0max0mean0median0min0mod0mode0multinomial0multiply0norm0not0nthRoot0number0ones0or0parse0parser0partitionSelect0permutations0pickRandom0pow0print0prod0quantileSeq0random0randomInt0range0re0resize0rightArithShift0rightLogShift0round0sec0sech0sign0sin0sinh0size0slu0smaller0smallerEq0sort0sparse0sqrt0square0squeeze0std0stirlingS20string0subset0subtract0sum0tan0tanh0to0trace0transpose0typeof0unaryMinus0unaryPlus0unequal0unit0usolve0var0xgcd0xor0zeros".split(0).forEach(function(e,i){mathC[String[5][i]]=mathC[e]=math[e]});
 	mathC[6] = function eval(exp){
 		var scope = {};
 		jolf("\x10+plpu").forEach(function(e,i){
@@ -1776,6 +1836,21 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			return String[3](String.l,n)[String.l.indexOf(m)];
 		});
 	}
+	Misc.t = function bitShiftRight(a,b){
+		return a>>b;
+	}
+	Misc.T = function bitShiftRightOne(a){
+		return a>>1;
+	}
+	Misc.u = function bitShiftLeft(a,b){
+		return a<<b;
+	}
+	Misc.U = function bitShiftLeftOne(a){
+		return a<<1;
+	}
+	Misc["¬"] = function bitFlip(x){
+		return parseInt(toBinary(x).split("").map(function(x){return +!+x}).join(""),2);
+	}
 }
 
 var ctl = {
@@ -1965,6 +2040,10 @@ var ops = {
 				J.comp += "(function(J){return Math.Γ[\""+chrTemp+"\"]})(";
 				return 0;
 			}
+		} else if(chrTemp=="‘"){
+			J.mode = 9;
+			J.comp += "parseInt(\"";
+			return;
 		}
 		x += "\"](";
 		if(typeof Math[chrTemp]=="function"){
@@ -2124,6 +2203,10 @@ var ops = {
 		J.comp += "sliceUntil(";
 		return 2;
 	},
+	"Α": function(J){
+		J.comp += "("
+		return [1,").charCodeAt()"];
+	},
 	"~i": function(J){
 		J.comp += "(function(x){return x})(";
 		return 1;
@@ -2143,6 +2226,10 @@ var ops = {
 	">": function(J){
 		J.comp += "more(";
 		return 2;
+	},
+	"~n": function(J){
+		J.comp += "distinctN(";
+		return 3;
 	},
 	"&": function(J){
 		J.comp += "and(";
@@ -2750,6 +2837,9 @@ var mod = {
 	"η": function(J){
 		J.func[J.func.length-1][0]--;
 	},
+	"\xad": function(J){
+		J.func[J.func.length-1][0] = J.code[++J.index].charCodeAt();
+	},
 	"\u01a6": function(J){
 		location = "jolf.html";
 	},
@@ -2966,7 +3056,7 @@ Jolf.prototype.check = function(J){
 		var ending = funcRes.shift();
 		var intermediate = funcRes.shift();
 		var callback = funcRes.shift();
-		console.log(callback);
+		//console.log(callback);
 		if(consump!==(consump|0)){
 			this.func.push([consump|0,ending,intermediate,callback]);
 			return;
@@ -2987,7 +3077,7 @@ Jolf.prototype.check = function(J){
 			this.comp += ending;	// ,
 			x = this.check();
 			if(x>0){
-				callback(this);
+				if(typeof callback==="function")callback(this);
 				var lst = this.comp.slice(-1);
 				this.comp = this.comp.slice(0,-1);
 				this.comp += this.fin + lst;
@@ -3026,21 +3116,23 @@ Jolf.prototype.step = function(J){
 				this.comp += this.sbs[chr](this);
 			} else if(this.ops[chr]){ // if the character is an operator
 				var arity = this.ops[chr](this);
-				var close = ")";
-				var intermediate = ",";
-				var callback = (function(){return;});
-				if(Array.isArray(arity)){
-					callback = arity[3]||callback;
-					intermediate = arity[2]||intermediate;
-					close = arity[1]||close;
-					arity = arity[0]||arity;
-				}
-				if(!arity){
-					//console.log(arity,!arity);
-					this.comp += ")";
-					this.check();
-				} else {
-					this.func.push([arity,close,intermediate,callback]);
+				if(typeof arity!=="undefined"){
+					var close = ")";
+					var intermediate = ",";
+					var callback = (function(){return;});
+					if(Array.isArray(arity)){
+						callback = arity[3]||callback;
+						intermediate = arity[2]||intermediate;
+						close = arity[1]||close;
+						arity = arity[0]||arity;
+					}
+					if(!arity){
+						//console.log(arity,!arity);
+						this.comp += ")";
+						this.check();
+					} else {
+						this.func.push([arity,close,intermediate,callback]);
+					}
 				}
 			} else if(this.inf[chr]){	// if the character is data
 				this.inf[chr](this);
@@ -3176,6 +3268,13 @@ Jolf.prototype.step = function(J){
 				this.check();
 				this.bldFun = "";
 			}
+		break;
+		case 9: // quote number mode
+			if("«‘’»".indexOf(chr)>=0){
+				this.comp += "\","+["2","8","10","16"]["«‘’»".indexOf(chr)]+")";
+				this.mode = 0;
+				this.check();
+			} else this.comp += chr;
 		break;
 	}
 	// increment for next step
