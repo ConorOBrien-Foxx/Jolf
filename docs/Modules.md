@@ -1,5 +1,5 @@
 # Modules
-This documents the certain modules in Jolf. For readability, each space will be replaced by an underscore. Use a space when coding.
+This documents the certain modules in Jolf. **For readability, each space will be replaced by an underscore. Use a space when coding.**
 
 ## Prototype module
 These are constructed as `(space)(character)(this)(arguments)`.
