@@ -2527,7 +2527,7 @@ var ops = {
 		J.comp += "sub(";
 		return 3;
 	},
-	"A": function(J){
+	"Ά": function(J){
 		J.comp += "add(";
 		return 3;
 	},
