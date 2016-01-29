@@ -153,9 +153,8 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			return a.split("").reverse().join("");
 		} else if(typeof a=="number"){
 			return -a;
-		} else if(typeof a=="array"){
-			a.reverse();
-			return a;
+		} else if(Array.isArray(a)){
+			return a.reverse();
 		} else {
 			return a;
 		}
