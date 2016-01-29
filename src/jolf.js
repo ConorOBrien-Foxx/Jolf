@@ -1137,6 +1137,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		s=String.m(s);
 		v=String.m(v);
 		for(var i=y;i<y+v.length;i++){
+			if(typeof s[i]==="undefined"){}
 			for(var j=x;j<x+v[0].length;j++){
 				console.log(i,y,i-y,v);
 				s[i][j]=v[i-y][j-x];
@@ -1383,7 +1384,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return Math.min.apply(Math,x);
 	}
 	Array.N = function max(x){
-		return Math.maax.apply(Math,x);
+		return Math.max.apply(Math,x);
 	}
 	Array.o = function maxLength(x){
 		return Math.max.apply(this,x.map(function(e){return e.length}));
@@ -1639,10 +1640,10 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 
 	var patterns = {};
 	patterns.b = function rect(w,n,c){
-		return (c.repeat(w)+"\n").repeat(Math.abs(n)).trim();
+		return ("!".repeat(w)+"\n").repeat(Math.abs(n)).trim().replace(/!/g,c);
 	}
 	patterns.s = function square(n,c){
-		return (c.repeat(n)+"\n").repeat(Math.abs(n)).trim();
+		return ("!".repeat(n)+"\n").repeat(Math.abs(n)).trim().replace(/!/g,c);
 	}
 	patterns.t = function triangle(type,h,w,c){
 		var res = "";
@@ -3267,7 +3268,8 @@ Jolf.prototype.step = function(J){
 			if(chr=="»"){
 				this.mode = 0;
 				this.comp += "`";
-			} else this.comp += this.code[this.index];
+				this.check();
+			} else this.comp += this.code[this.index]=="\\"?"\\\\":this.code[this.index];
 		break;
 		case 8:	// build function mode
 			this.bldFun += chr;
