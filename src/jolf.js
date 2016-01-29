@@ -946,6 +946,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		else return Math.memoized.j[n] = Math.j(n-1)+Math.j(n-2);
 	}
 	Math.J = Math.phi = Math.PHI = (1+Math.sqrt(5))/2;
+	Math["°"] = 360/(1+(1+Math.sqrt(5))/2);
 	Math.k = function perm(r,n){return factorial(r)/factorial(r-n)}
 	Math.K = function binom(r,n){return Math.k(r,n)/factorial(n)}
 	Math.memoized.l = [0,1];
