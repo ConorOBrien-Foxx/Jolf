@@ -154,7 +154,8 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		} else if(typeof a=="number"){
 			return -a;
 		} else if(typeof a=="array"){
-			return a.reverse();
+			a.reverse();
+			return a;
 		} else {
 			return a;
 		}
