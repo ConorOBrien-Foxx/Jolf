@@ -1351,7 +1351,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Array.K = function max(x){
 		return Math.max.apply(Math,x);
 	}
-	Array.l = function numberOf(x,n){
+		Array.l = function numberOf(x,n){
 		return x.filter(function(e){return equals(e,n)}).length
 	}
 	Array.L = function shiftLeft(x,n){
@@ -2215,7 +2215,7 @@ var ops = {
 		J.comp += "sliceUntil(";
 		return 2;
 	},
-	"Α": function(J){
+	"\u03a2": function(J){
 		J.comp += "("
 		return [1,").charCodeAt()"];
 	},
