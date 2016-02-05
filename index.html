@@ -6,11 +6,14 @@
 	<meta http-equiv="X-UA-Compatible" content="chrome=1">
 	<meta name="description" content="Jolf : A golfier prefix version of JavaScript">
 	<link rel="stylesheet" href="bootstrap.css">
+	<script src="https://rawgit.com/Ed-von-Schleck/shoco/master/shoco.js"></script>
 	<script src="https://rawgit.com/gf3/Levenshtein/master/lib/levenshtein.js"></script>
 	<script src="https://rawgit.com/mathiasbynens/utf8.js/master/utf8.js"></script>
 	<script src="https://rawgit.com/davebalmer/turtlewax/master/pen.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/2.5.0/math.min.js"></script>
-	<script src="https://rawgit.com/ConorOBrien-Foxx/Jolf/master/src/jolf.js"></script>
+	<script src="https://rawgit.com/pieroxy/lz-string/master/libs/lz-string.min.js"></script>
+	<!--script src="https://rawgit.com/ConorOBrien-Foxx/Jolf/master/src/jolf.js"></script-->
+	<script src="Jolf.js"></script>
 	<script>
 	// from tryitonline.net
 	function load(){
@@ -103,7 +106,12 @@
 			}
 			o+="<hr>"+x.explanation("  ");
 			document.getElementById("outCode").innerHTML = o;
-			x.exec();
+			try {
+				x.exec();
+			} catch(e){
+				var error = document.getElementById("error");
+				error.innerHTML += e + "<br>";
+			}
 		});
 		document.getElementById("runnn").addEventListener("click",function(){
 			var x = new Jolf(document.getElementById("code").value);
@@ -148,6 +156,7 @@
 			}
 		});
 		document.getElementById("clear").addEventListener("click",function(){document.getElementById("output").innerHTML = "";});
+		document.getElementById("clearError").addEventListener("click",function(){document.getElementById("error").innerHTML = "";});
 		updateByteCount();
 	}
 
@@ -197,6 +206,9 @@
 		<p>Output</p>
 		<div id="output"></div>
 		<button id="clear" class="btn btn-block btn-info sev">clear</button>
+		<p>Error</P>
+		<div id="error"></div>
+		<button id="clearError"class="btn btn-block btn-warning sev">clear</button>
 		<p>Transpiled code</p>
 		<div id="outCode"></div>
 		<p>Canvas output</p>
