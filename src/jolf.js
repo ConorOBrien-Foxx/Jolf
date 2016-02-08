@@ -33,6 +33,16 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	function convertFrom1to7(r){for(var o="!‘’!€₯!!!!.!!!!―!!!!...!...!.!....................!............................................!",t="",e="",a=0;a<r.length;a++){var n=r[a];e=n,n.charCodeAt(0)>=160&&(e=o[n.charCodeAt(0)-160],"!"===e&&(e=n),"."===e&&(e=String.fromCharCode(n.charCodeAt(0)+720))),t+=e}return t}
 	function isValidISO88597(u){for(var A=/[\u0000-\u00A0\u2018\u2019\u00A3\u20AC\u20AF\u00A6-\u00A9\u037A\u00AB-\u00AD\u2015\u00B0-\u00B3\u0384-\u0386\u00B7\u0388-\u038A\u00BB\u038C\u00BD\u038E-\u03CE]/,B=!0,t=0;t<u.length;t++)B=B&&A.test(u[t]);return B}
 
+	newWordList = wordList = wordList.concat(wordList.map(function(x){return x[0].toUpperCase()+x.slice(1)}),wordList.map(function(x){return x.toUpperCase()}));
+	var ENDINGS = " !,.:;?";
+	for(var i=0;i<ENDINGS.length;i++){
+		console.log(ENDINGS[i])
+		newWordList=newWordList.concat(wordList.map(function(x){return x+ENDINGS[i]}));
+	}
+	wordList = newWordList.concat([]);
+	delete newWordList;
+	wordListSpace = wordList.concat(wordList.map(function(x){return x+" "}));
+
 	// cart product: from http://stackoverflow.com/a/29585751/4119004, minified
 	function cartesianProduct(x,y){
 		return (function(r){var n=[],t=Array(r.length);return function u(a){if(a==r.length)return n.push(r.map(function(r,n){return r[t[n]]}));for(var e=0;e<r[a].length;++e)t[a]=e,u(a+1)}(0),n})(Array.from(arguments));
@@ -438,6 +448,14 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 		a.pop();
 		return a.reverse();
+	}
+
+	function fromBaseArr(a,b){
+		f = 0;
+		a.reverse().map(function(e,i){
+			return f+=e*Math.pow(b,i);
+		});
+		return f;
 	}
 
 	function toString(N,b){
@@ -868,7 +886,10 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return a.toFixed(b);
 	}
 	Math[7] = function toExponential(a,b){
-		return a.toExponetial(b);
+		return a.toExponential(b);
+	}
+	Math["@"] = function toExponential(a){
+		return a.toExponential();
 	}
 	Math[8] = Math.lcm = function lcm(a,b){
 		return (a*b)/Math[9](a,b);
@@ -1094,6 +1115,10 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	for(i in Math){Math[Math[i].name]=Math[i]};
 	// adding string stuff
 	String[5] = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\xA0‘’£€₯¦§¨©ͺ«¬\\xad­―°±²³΄΅Ά·ΈΉΊ»Ό½ΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώ";
+	String["«"] = shoco.c;
+	String["»"] = shoco.d;
+	function d(h){for(var r,t,u=[],e=0,n=h.length;n>e;)r=h.charCodeAt(e++),r>=55296&&56319>=r&&n>e?(t=h.charCodeAt(e++),56320==(64512&t)?u.push(((1023&r)<<10)+(1023&t)+65536):(u.push(r),e--)):u.push(r);return u}
+	String["©"] = d;
 	String.A = String.fromCharCode;
 	String.a = String.fromCodePoint;
     String.Ω = function fromGreekPoint(n){
@@ -1971,6 +1996,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Misc["¬"] = function bitFlip(x){
 		return parseInt(toBinary(x).split("").map(function(x){return +!+x}).join(""),2);
 	}
+	Misc["~"] = function bitwiseNegation(x){
+		return ~Number(x);
+	}
 }
 
 var ctl = {
@@ -1987,6 +2015,11 @@ var ctl = {
 
 // constant-arity ops
 var ops = {
+	"»": function(J){
+		J.comp += "shoco.d(\"";
+		J.mode = 1;
+		return 1;
+	},
 	"#": function(J){
 		J.comp += "toHex(";
 		return 1;
@@ -2249,10 +2282,6 @@ var ops = {
 	},
 	"~y": function(J){
 		J.comp += "silentEvalJolf(";
-		return 1;
-	},
-	"’": function(J){
-		J.comp += "compress(";
 		return 1;
 	},
 	"y": function(J){
@@ -2907,6 +2936,18 @@ var mod = {
 			J.enc.ζ = true;
 		}
 		J.comp += "ζ=";
+	},
+	"Ξ": function(J){
+		var char1 = String.greekPointAt(J.code[++J.index]);
+		var char2 = String.greekPointAt(J.code[++J.index]);
+		var char3 = String.greekPointAt(J.code[++J.index]);
+		var ind = fromBaseArr([char1,char2,char3],256);
+		var list = wordList;
+		if(ind>=wordList.length){
+			ind -= wordList.length;
+			list = wordListSpace;
+		}
+		J.comp += "\""+list[ind]+"\"";
 	},
 	"γ": function(J){
 		if(!J.enc.γ){
