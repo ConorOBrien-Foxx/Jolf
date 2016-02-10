@@ -12,6 +12,7 @@
 	<script src="https://rawgit.com/davebalmer/turtlewax/master/pen.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/2.5.0/math.min.js"></script>
 	<script src="https://rawgit.com/pieroxy/lz-string/master/libs/lz-string.min.js"></script>
+	<script src="https://raw.githubusercontent.com/ConorOBrien-Foxx/WordList-JS/master/src/wordRaw.js"></script>
 	<script src="https://rawgit.com/ConorOBrien-Foxx/Jolf/master/src/jolf.js"></script>
 	<script>
 	// from tryitonline.net
@@ -147,9 +148,7 @@
 						updateByteCount();
 					});
 
-					if(c%16===0&&c)
-					{toIns.appendChild(document.createElement("br"));
-				console.log(c)}
+					if(c%16===0&&c){toIns.appendChild(document.createElement("br"));}
 					toIns.appendChild(bu)
 				});
 			}
