@@ -36,7 +36,6 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	newWordList = wordList = wordList.concat(wordList.map(function(x){return x[0].toUpperCase()+x.slice(1)}),wordList.map(function(x){return x.toUpperCase()}));
 	var ENDINGS = " !,.:;?";
 	for(var i=0;i<ENDINGS.length;i++){
-		console.log(ENDINGS[i])
 		newWordList=newWordList.concat(wordList.map(function(x){return x+ENDINGS[i]}));
 	}
 	wordList = newWordList.concat([]);
@@ -527,7 +526,15 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	function sum(x){
 		if(typeof x==="string") return sum(x.split("").map(function(e){return e.charCodeAt()}));
 		else if(typeof x==="number") return sum(x.toString(10).split(""))
-		return x.length==1?x[0]:add.apply(window,x);
+		try {
+			return x.length==1?x[0]:add.apply(window,x);
+		} catch(e){
+			var s = 0;
+			while(x.length>=1){
+				s = add(s,x.pop());
+			}
+			return s;
+		}
 	}
 
 	function aSum(x){
@@ -644,6 +651,19 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 				off++;
 			}
 			ind++;
+		}
+		return res;
+	}
+
+	function allBelow(max,con){
+		return range(0,max).filter(function(e){return con(e)});
+	}
+
+	// expects a linear function as func
+	function belowFunc(max,func){
+		var i = 0, res = [];
+		while(func(i)<max){
+			res.push(func(i++));
 		}
 		return res;
 	}
@@ -870,6 +890,14 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Math.memoized = {};
 	Math["%"] = function absMod(a,b){
 		return Math.abs(a%b);
+	}
+	Math.Δ = function triangle(n){
+		return (n*n+n)/2;
+	}
+	Math.δ = divisors;
+	Math["|"] = function divides(a,b){
+		if(Array.isArray(a)) return a.some(function(e){return Math.divides(e,b)});
+		return b%a==0;
 	}
 	Math["Φ"] = function customFib(n,s1,s2){
 		life[[s1,s2]] = life[[s1,s2]]||[s1,s2];
@@ -1390,7 +1418,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Array.K = function max(x){
 		return Math.max.apply(Math,x);
 	}
-		Array.l = function numberOf(x,n){
+	Array.l = function numberOf(x,n){
 		return x.filter(function(e){return equals(e,n)}).length
 	}
 	Array.L = function shiftLeft(x,n){
@@ -1503,6 +1531,12 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 		return typeof x==="string"?a.map(function(e){return e.join("")}).join(""):a;
 	}
+	Array.u = function evenOf(x){
+		return x.filter(function(e){return e%2==0});
+	}
+	Array.U = function oddOf(x){
+		return x.filter(function(e){return e%2});
+	}
 	Array.T = function trim(x){
 		return x.map(function(e){return e.trim();})
 	}
@@ -1559,6 +1593,16 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			}
 		}
 		return a;
+	}
+	Array.z = function maxFunction(min,max,funcA,funcB){
+		var mFound = -Infinity, nR;
+		for(var i=min;i<max+1;i++){
+			for(var j=i+1;j<max+1;j++){
+				nR = funcA(i,j);
+				if(nR>mFound&&funcB(nR)) mFound = nR;
+			}
+		}
+		return mFound;
 	}
 	Array.Z = function ZZ(){
 		return "top!";
@@ -1998,6 +2042,12 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 	Misc["~"] = function bitwiseNegation(x){
 		return ~Number(x);
+	}
+	Misc["|"] = function NAND(a,b){
+		return !(a&&b);
+	}
+	Misc["^"] = function bitwiseNAND(a,b){
+		return ~(a&b);
 	}
 }
 
@@ -2534,6 +2584,14 @@ var ops = {
 		J.comp += "firstN(";
 		return 2;
 	},
+	"~B": function(J){
+		J.comp += "allBelow(";
+		return 2;
+	},
+	"~b": function(J){
+		J.comp += "belowFunc(";
+		return 2;
+	},
 	"!": function(J){
 		var x = "mathC[\"";
 		var chrTemp = J.code[++J.index];
@@ -2844,6 +2902,11 @@ var inf = {
 	"q": function(J){
 		J.comp += "\""+J.code.replace(/\\/g,"\\\\").replace(/(["\n])/g,"\\$1")+"\"";
 	},
+	"Ν": function(J){
+		var l = String.greekPointAt(J.code[++J.index]);
+		var s = J.code.slice(++J.index,J.index+=l);
+		J.comp += fromBaseArr(s.split("").map(String.greekPointAt),256);
+	},
 	"t": function(J){
 		J.comp += "10";
 	},
@@ -2901,11 +2964,12 @@ var inf = {
 	"λ": function(J){
 		var next = J.code[++J.index];
 		var par = J.ops;
-		if("mpZ!,".search(next)+1){
+		if("mpZ!,".search(RegExp.escape(next))+1){
 			par="!"==next?"mathC":"m"==next?"Math":"p"==next?"String":"Z"==next?"Array":"Misc";
 			next = J.code[++J.index];
 		}
 		var q = par[next];
+		console.log(q,q=="*");
 		var func = par==J.ops?(q+"").replace(/[\s\S]+"(.+?)\("[\s\S]+/gm,"$1"):par+"."+window[par][next].name;
 		J.comp += func;
 	},
@@ -2917,6 +2981,18 @@ var inf = {
 	},
 	"ι":function(J){
 		J.comp += J.index;
+	},
+	"Ξ": function(J){
+		var char1 = String.greekPointAt(J.code[++J.index]);
+		var char2 = String.greekPointAt(J.code[++J.index]);
+		var char3 = String.greekPointAt(J.code[++J.index]);
+		var ind = fromBaseArr([char1,char2,char3],256);
+		var list = wordList;
+		if(ind>=wordList.length){
+			ind -= wordList.length;
+			list = wordListSpace;
+		}
+		J.comp += "\""+list[ind]+"\"";
 	},
 	"": function(J){}
 }
@@ -2936,18 +3012,6 @@ var mod = {
 			J.enc.ζ = true;
 		}
 		J.comp += "ζ=";
-	},
-	"Ξ": function(J){
-		var char1 = String.greekPointAt(J.code[++J.index]);
-		var char2 = String.greekPointAt(J.code[++J.index]);
-		var char3 = String.greekPointAt(J.code[++J.index]);
-		var ind = fromBaseArr([char1,char2,char3],256);
-		var list = wordList;
-		if(ind>=wordList.length){
-			ind -= wordList.length;
-			list = wordListSpace;
-		}
-		J.comp += "\""+list[ind]+"\"";
 	},
 	"γ": function(J){
 		if(!J.enc.γ){
