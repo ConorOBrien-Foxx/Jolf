@@ -209,6 +209,19 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return x.charCodeAt();
 	}
 
+	function close(n){
+		var D = arguments[1]||"{([", d = arguments[2]||"})]";
+		for(var i=n.length-1,depth=[0,0];i>=0;--i){
+			var c=n[i];
+			for(var j=0;j<D.length;++j){
+				if(c==D[j])depth[j]--;
+				else if(c==d[j])depth[j]++;
+				if(depth[j]<0)return close(n+d[j]);
+			}
+		}
+		return n;
+	}
+
 	function pow(x,y){
 		if(arguments.length>2) return pow(x,pow.apply(window,Array.from(arguments).slice(1)));
 		return Math.pow(x,y);
@@ -248,6 +261,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 
 	function range(x,y){
+		if(arguments.length<2) throw Error("Insufficient arguments passed.")
 		if(Array.isArray(x)&&Array.isArray(y)){
 			return x.filter(function(e){return !y.has(e)})
 		}
@@ -1147,6 +1161,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	String["»"] = shoco.d;
 	function d(h){for(var r,t,u=[],e=0,n=h.length;n>e;)r=h.charCodeAt(e++),r>=55296&&56319>=r&&n>e?(t=h.charCodeAt(e++),56320==(64512&t)?u.push(((1023&r)<<10)+(1023&t)+65536):(u.push(r),e--)):u.push(r);return u}
 	String["©"] = d;
+	String["γ"] = close;
 	String.A = String.fromCharCode;
 	String.a = String.fromCodePoint;
     String.Ω = function fromGreekPoint(n){
@@ -2992,7 +3007,7 @@ var inf = {
 			ind -= wordList.length;
 			list = wordListSpace;
 		}
-		J.comp += "\""+list[ind]+"\"";
+		J.comp += "\""+list[ind].replace(/["\\\n]/g,"\\$&")+"\"";
 	},
 	"": function(J){}
 }
@@ -3002,6 +3017,10 @@ var mod = {
 	"\"": function(J){
 		J.comp += "\"";
 		J.mode = 1;
+	},
+	"ξ": function(J){
+		J.comp += "\"";
+		J.mode = 10;
 	},
 	"«": function(J){
 		J.comp += "`";
@@ -3228,6 +3247,10 @@ Jolf.prototype.readable = function(J){
 	return this.prec+read;
 }
 
+Jolf.prototype.close = function(){
+	this.comp = close(this.comp);
+}
+
 Jolf.prototype.explanation = function(s){
 	try {
 		var r = this.comp.match(/\w+?\([^,(]+?\)|[)(,]|\w+/g);
@@ -3341,6 +3364,8 @@ Jolf.prototype.step = function(J){
 	// checking index bounds / func stack
 	if(debug)console.log(this.prec,this.comp);
 	if(this.index > this.code.length){
+		this.close();
+		console.log("DONE")
 		this.total = this.prec+this.comp;
 		return false;
 	}
@@ -3393,7 +3418,7 @@ Jolf.prototype.step = function(J){
 				//this.fin  = "";
 				this.check();
 			}
-		break;
+			break;
 		case 1:	// string mode
 			if(chr=="\\"){	// escape next character or apply control sequence
 				var x = this.code[++this.index];
@@ -3433,14 +3458,14 @@ Jolf.prototype.step = function(J){
 			} else {
 				this.comp += chr;
 			}
-		break;
+			break;
 		case 2:
 			this.comp += "\"";
 			this.comp += chr=="\n"?"\\n":chr;
 			this.comp += "\"";
 			this.check();
 			this.mode = 0;
-		break;
+			break;
 		case 3:	// array mode
 			if(chr=="\\"){
 				this.index++;
@@ -3454,7 +3479,7 @@ Jolf.prototype.step = function(J){
 				this.mode = 0;
 				this.check();
 			}
-		break;
+			break;
 		case 4:	// JS literal mode
 			if(chr=="$"){
 				this.mode = 0;
@@ -3466,7 +3491,7 @@ Jolf.prototype.step = function(J){
 			}
 			if(chr=="\\") this.index++;
 			this.comp += this.code[this.index];
-		break;
+			break;
 		case 5:	// golfy array
 			if(chr=="\\")this.index++;
 			if(chr!="’"&&chr){
@@ -3489,18 +3514,18 @@ Jolf.prototype.step = function(J){
 				// checking
 				this.check();
 			}
-		break;
+			break;
 		case 6:	// JS literal mode (short)
 			this.comp += this.code[this.index];
 			this.mode = 0;
-		break;
+			break;
 		case 7:
 			if(chr=="»"){
 				this.mode = 0;
 				this.comp += "`";
 				this.check();
 			} else this.comp += this.code[this.index]=="\\"?"\\\\":this.code[this.index];
-		break;
+			break;
 		case 8:	// build function mode
 			this.bldFun += chr;
 			if(chr=="}"){
@@ -3511,14 +3536,39 @@ Jolf.prototype.step = function(J){
 				this.check();
 				this.bldFun = "";
 			}
-		break;
+			break;
 		case 9: // quote number mode
 			if("«‘’»".indexOf(chr)>=0){
 				this.comp += "\","+["2","8","10","16"]["«‘’»".indexOf(chr)]+")";
 				this.mode = 0;
 				this.check();
 			} else this.comp += chr;
-		break;
+			break;
+		case 10:
+			if(chr=="ώ"){
+				this.mode = 0;
+				this.comp += "\"";
+				this.check();
+			} else {
+				--this.index;
+				var char1 = String.greekPointAt(this.code[++this.index]);
+				var char2 = String.greekPointAt(this.code[++this.index]);
+				var char3 = String.greekPointAt(this.code[++this.index]);
+				var ind = fromBaseArr([char1,char2,char3],256);
+				var list = wordList;
+				if(ind>=wordList.length){
+					ind -= wordList.length;
+					list = wordListSpace;
+				}
+				try {
+					list[ind];
+					console.log(char1,char2,char3,ind,list[ind].replace(/["\\\n]/g,"\\$&"));
+					this.comp += list[ind].replace(/["\\\n]/g,"\\$&");
+				} catch(e){
+					this.comp += "\"";
+				}
+			}
+			break;
 	}
 	// increment for next step
 	this.index++;
