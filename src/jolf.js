@@ -494,10 +494,13 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 
 	function head(x){
+		if(Array.isArray(x)) return x.map(head);
 		return x+1;
 	}
 
 	function decrement(x){
+		if(Array.isArray(x)) return x.map(decrement);
+		else if(typeof x=="string") return x.slice(-1);
 		return x-1;
 	}
 
@@ -655,8 +658,8 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 
 	function firstN(max,con){
-		var ind = 0;
-		var off = 0;
+		var ind = arguments[2]||0;
+		var off = arguments[2]||0;
 		var res = [];
 		while(ind<max+off){
 			if(con(ind)){
@@ -680,6 +683,10 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			res.push(func(i++));
 		}
 		return res;
+	}
+
+	function firstSatisfying(func){
+		return firstN(1,func,arguments[1]||0)[0];
 	}
 
 	function sliceUntil(comp,func){
@@ -911,6 +918,10 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Math.δ = divisors;
 	Math["|"] = function divides(a,b){
 		if(Array.isArray(a)) return a.some(function(e){return Math.divides(e,b)});
+		return b%a==0;
+	}
+	Math["τ"] = function dividesConjuction(a,b){
+		if(Array.isArray(a)) return a.every(function(e){return Math.divides(e,b)});
 		return b%a==0;
 	}
 	Math["Φ"] = function customFib(n,s1,s2){
@@ -1434,6 +1445,8 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return Math.max.apply(Math,x);
 	}
 	Array.l = function numberOf(x,n){
+		if(typeof x==="number") return Array.l(x+"",n);
+		if(typeof x==="string") return Array.l(x.split(""),n);
 		return x.filter(function(e){return equals(e,n)}).length
 	}
 	Array.L = function shiftLeft(x,n){
@@ -2607,6 +2620,11 @@ var ops = {
 		J.comp += "belowFunc(";
 		return 2;
 	},
+	"~d": function(J){
+		J.comp += "firstSatisfying(function(H,S,n){return ";
+		J.func.push([1,")"],[1,"}"]);
+		return;
+	},
 	"!": function(J){
 		var x = "mathC[\"";
 		var chrTemp = J.code[++J.index];
@@ -3089,14 +3107,26 @@ var mod = {
 	"θ": function(J){
 		J.func[J.func.length-1][0]+=3;
 	},
+	"~θ": function(J){
+		J.func[J.func.length-2][0]+=3;
+	},
 	"M": function(J){
 		J.func[J.func.length-1][0]+=2;
+	},
+	"~M": function(J){
+		J.func[J.func.length-2][0]+=2;
 	},
 	";": function(J){
 		J.func[J.func.length-1][0]++;
 	},
+	"~;": function(J){
+		J.func[J.func.length-2][0]++;
+	},
 	"η": function(J){
 		J.func[J.func.length-1][0]--;
+	},
+	"~η": function(J){
+		J.func[J.func.length-2][0]--;
 	},
 	"\xad": function(J){
 		J.func[J.func.length-1][0] = J.code[++J.index].charCodeAt();
