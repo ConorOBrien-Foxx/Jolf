@@ -500,7 +500,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 
 	function decrement(x){
 		if(Array.isArray(x)) return x.map(decrement);
-		else if(typeof x=="string") return x.slice(-1);
+		else if(typeof x=="string") return x.slice(1);
 		return x-1;
 	}
 
