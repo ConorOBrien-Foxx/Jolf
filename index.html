@@ -13,6 +13,7 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/2.5.0/math.min.js"></script>
 	<script type="text/javascript" src="https://rawgit.com/pieroxy/lz-string/master/libs/lz-string.min.js"></script>
 	<script type="text/javascript" src="https://rawgit.com/ConorOBrien-Foxx/WordList-JS/master/src/wordRaw.js"></script>
+	<script type="text/javascript" src="https://rawgit.com/MikeMcl/bignumber.js/master/bignumber.min.js"></script>
 	<script type="text/javascript" src="https://rawgit.com/ConorOBrien-Foxx/Jolf/master/src/jolf.js"></script>
 	<script>
 	// from tryitonline.net
@@ -107,6 +108,7 @@
 			o+="<hr>"+x.explanation("  ");
 			document.getElementById("outCode").innerHTML = o;
 			try {
+				x.close();
 				x.exec();
 			} catch(e){
 				var error = document.getElementById("error");
