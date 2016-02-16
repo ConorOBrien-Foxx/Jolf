@@ -1293,6 +1293,9 @@ function numberDecompress(str){
 	function d(h){for(var r,t,u=[],e=0,n=h.length;n>e;)r=h.charCodeAt(e++),r>=55296&&56319>=r&&n>e?(t=h.charCodeAt(e++),56320==(64512&t)?u.push(((1023&r)<<10)+(1023&t)+65536):(u.push(r),e--)):u.push(r);return u}
 	String["©"] = d;
 	String["γ"] = close;
+	String["ϊ"] = function chop(n,s){
+		return s.slice(n,-n);
+	}
 	String.A = String.fromCharCode;
 	String.a = String.fromCodePoint;
     String.Ω = function fromGreekPoint(n){
@@ -1902,6 +1905,7 @@ function numberDecompress(str){
 		var res = math.eval(exp,scope);
 		return res.entries?res.entries.length==1?res.entries[0]:res.entries:res;
 	}
+	mathC.x = math.bitXor;
 	mathC["\x01"] = function getData(x){
 		return x.data||x._data||x.re;
 	}
@@ -2716,8 +2720,8 @@ var ops = {
 		return [1,").charCodeAt().toString(16)"]
 	},
 	"Ψ": function(J){
-		J.comp += "(H,S,n)=>";
-		return [1,""];
+		J.comp += "(ά,έ,ή)=>";
+		return [1," "];
 	},
 	"φ": function(J){
 		J.comp += "function(H,S){";
@@ -3441,7 +3445,7 @@ Jolf.prototype.readable = function(J){
 }
 
 Jolf.prototype.close = function(){
-	this.comp = close(this.comp);
+	//this.comp = close(this.comp);
 }
 
 Jolf.prototype.explanation = function(s){
