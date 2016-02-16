@@ -3514,7 +3514,6 @@ Jolf.prototype.check = function(J){
 		var ending = funcRes.shift();
 		var intermediate = funcRes.shift();
 		var callback = funcRes.shift();
-		console.log("fr: ",callback.toSource(),JSON.stringify(this.func));
 		if(consump!==(consump|0)){
 			this.func.push([consump|0,ending,intermediate,callback]);
 			return;
@@ -3535,7 +3534,6 @@ Jolf.prototype.check = function(J){
 			this.comp += ending;	// ,
 			x = this.check();
 			if(x>0){
-				//console.log(callback.toSource());
 				if(typeof callback==="function")callback(this);
 				var lst = this.comp.slice(-1);
 				this.comp = this.comp.slice(0,-1);
