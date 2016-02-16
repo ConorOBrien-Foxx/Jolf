@@ -451,6 +451,36 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return x.join("");
 	}
 
+function bin(x){
+	for(var r="",loop=1e4;x!=""&&loop--;){
+		r=x.slice(-1)%2+r;
+		for(x=x.slice(0,-1)+(x.slice(-1)-x.slice(-1)%2),y=z='',i=0;i<x.length;i++)
+			y+=(z+x[i])/2|0,z=x[i]%2;x=y.replace(/^0+/,"")
+	}
+	return r;
+}
+
+function abin(x){
+	return x.split("").reverse().reduce(function(total,cur,index){
+		return total.plus(
+			(new BigNumber(+cur)).times(
+				(new BigNumber(2)).pow(index)
+			)
+		)
+	},new BigNumber(0));
+}
+
+function numberCompress(s){
+
+
+	//while(s.length%6)s=s+"0";
+	//return Array.chop(Array.chop(s,3).map(function(x){return String.pad((+x).toString(2),10,0)}).join(""),8).map(function(y){return String.fromGreekPoint(parseInt(y,2))}).join("");
+}
+
+function numberDecompress(str){
+	//return Array.chop(str.split("").map(function(e){return String.pad(String.greekPointAt(e).toString(2),8,0)}).join(""),10).map(function(t){return String.pad(parseInt(t,2)+"",3,0)}).join("");
+}
+
 	function toBaseArr(n,b){
 		h = Math.ceil(logBASE(n,b));
 		a = new Array(h+1) .fill(0);
@@ -542,7 +572,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 
 	function sum(x){
 		if(typeof x==="string") return sum(x.split("").map(function(e){return e.charCodeAt()}));
-		else if(typeof x==="number") return sum(x.toString(10).split(""))
+		else if(typeof x==="number") return sum(x.toString(10).split("").map(Number))
 		try {
 			return x.length==1?x[0]:add.apply(window,x);
 		} catch(e){
@@ -599,6 +629,10 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 
 	function pair(x,y){
 		return [x,y];
+	}
+
+	function wrap(x){
+		return [x];
 	}
 
 	function unique(x){
@@ -672,6 +706,38 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return res;
 	}
 
+	function generateWhileCond(generator,condition){
+		var args = arguments[2]||[];
+		var ret = [], inst = generator(...args);
+		var val;
+		// while there does not exist an element that satisfies condition
+		while(!ret.some(condition)){
+			val = inst.next();
+			if(!val.done) ret.push(val.value);
+			else break;
+		}
+		// the last element, i.e. the element that triggered the condition
+		return ret[ret.length-1];
+	}
+
+	// for when we're only interested in the last yield, from which
+	// the condition will select.
+	function doubleGenSelect(generator,min,max,condition){
+		var i = min, cur, val, tVal, rVal = [];
+		while(i<max){
+			cur = generator(i), tVal = [];
+			// exhaust the generator
+			do {
+				val = cur.next();
+				tVal.push(val);
+			} while(!val.done);
+			tVal.pop();
+			rVal.push(tVal.pop().value);
+			i++;
+		}
+		return rVal;
+	}
+
 	function allBelow(max,con){
 		return range(0,max).filter(function(e){return con(e)});
 	}
@@ -687,6 +753,10 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 
 	function firstSatisfying(func){
 		return firstN(1,func,arguments[1]||0)[0];
+	}
+
+	function maxUnder(max,genFunc){
+
 	}
 
 	function sliceUntil(comp,func){
@@ -920,7 +990,8 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		if(Array.isArray(a)) return a.some(function(e){return Math.divides(e,b)});
 		return b%a==0;
 	}
-	Math["τ"] = function dividesConjuction(a,b){
+	Math.τ = function dividesConjuction(a,b){
+		if(Array.isArray(a)&&Array.isArray(b)) return a.every(function(e,i){return Math.divides(e,b[i])})
 		if(Array.isArray(a)) return a.every(function(e){return Math.divides(e,b)});
 		return b%a==0;
 	}
@@ -1165,6 +1236,55 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Math.Γ.Q = function quadraticFormulaIm(a,b,c){
 		return [math.eval("a=2;b=4;c=-5;(-b+sqrt(b^2-4*a*c))/2/a").entries+"",math.eval("a=2;b=4;c=-5;(-b-sqrt(b^2-4*a*c))/2/a").entries+""]
 	}
+	Math.Γ.c = function collatz(n){
+		var a = [];
+		while(n!==1){
+			a.push(n);
+			if(n%2==0) n/=2;
+			else {n*=3;n++}
+		}
+		a.push(1);
+		return a;
+	}
+	Math.Γ.C = function collatzLength(n){
+		return Math.Γ.c(n).length;
+	}
+	for(var k in Math.Γ) Math.Γ[Math.Γ[k].name] = Math.Γ[k];
+	Math.γ = {};
+	try {
+		// ES6 code tester
+		eval("function*a(){}");
+		eval("x=>x");
+		Math.γ.c = function* collatz(val){
+			var step = 0, vals = [];
+			while(val !== 1){
+				vals.push(val);
+				if(val % 2 == 0) val /= 2;
+				else val*=3, val++;
+				yield val;
+				step++;
+			}
+			yield [step,vals];
+			return ret = {done:true};
+		}
+		Math.γ.p = function* pythagTriple(){
+			var m = 2, n = 1, t = [], a, b, c;
+			while(true){
+				a = m*m-n*n, b = 2*m*n, c = m*m+n*n;
+				// check for duplicates
+				if(t.every((y,i)=>!Math.τ(y,[a,b,c][i])))
+					yield [a,b,c];
+				t.push([a,b,c]);
+				n++;
+				if(n>=m) m++,n=1;
+			}
+		}
+		for(var k in Math.γ){
+			Math.γ[Math.γ[k].name] = Math.γ[k];
+		}
+	} catch(e){
+		console.log("Warning: your browser does not support generators/ES6, and thus may not be able to execute some Jolf code.");
+	}
 	for(i in Math){Math[Math[i].name]=Math[i]};
 	// adding string stuff
 	String[5] = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\xA0‘’£€₯¦§¨©ͺ«¬\\xad­―°±²³΄΅Ά·ΈΉΊ»Ό½ΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώ";
@@ -1350,8 +1470,19 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	String[6] = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	String["^"] = ["0","1","2","3","4","5","6","7","8","9","A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
 	String[7] = "";
+	String[8] = function subOfLen(str,len){
+		var q = [];
+		for(var i=0;i<str.length-len+1;i++){
+			q.push(str.substr(i,len));
+		}
+		return q;
+	}
 	for(i in String){String[String[i].name]=String[i]};
-
+	Array[0] = function displayArr(a){
+		return a.map(function(y){return y.map(function(t){return JSON.stringify(t)}).join("\t")}).join("\n")
+	}
+	// from http://codegolf.stackexchange.com/questions/69560/display-2d-array-as-ascii-table
+	Array[1] = function asciiTable(n,r){var a=n[0].map(function(r,a){var i=n.map(function(n){return void 0!=n[a]?n[a].length:0});return Math.max.apply(Math,i)});n=n.map(function(n){return"| "+n.map(function(n,r){var i=n.length;return i<a[r]&&(n+=new Array(a[r]-i+1).join(" ")),n}).join(" | ")+" |"});var i="+"+a.map(function(n){return new Array(n+3).join("-")}).join("+")+"+";return r?i+"\n"+n[0]+"\n"+i+"\n"+n.slice(1).join("\n")+"\n"+i:i+"\n"+n.join("\n")+"\n"+i}
 	Array.a = function makeArray(x,y){
 		return jolf("Zb*[J]j",x,y);
 	}
@@ -1521,6 +1652,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 				rotated[i][j]=x[n-j-1,i];
 			}
 		}
+		return rotated;
 	}
 	Array.R = function rotateNeg90(x){
 		var rotated = clone(x);
@@ -1549,6 +1681,9 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 		return res;
 	}
+	Array.T = function trim(x){
+		return x.map(function(e){return e.trim();})
+	}
 	Array.t = function take(n,x){
 		var a=[];
 		for(var i=0;i<n;i++){
@@ -1565,8 +1700,11 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	Array.U = function oddOf(x){
 		return x.filter(function(e){return e%2});
 	}
-	Array.T = function trim(x){
-		return x.map(function(e){return e.trim();})
+	Array.v = function minKey(x){
+		return [y=Array.min(x),x.indexOf(y)];
+	}
+	Array.V = function maxKey(x){
+		return [y=Array.max(x),x.indexOf(y)];
 	}
 	Array.w = function(a){
 		// [1,2,3,4,5,6,7,8,9]
@@ -2098,6 +2236,11 @@ var ops = {
 		J.mode = 1;
 		return 1;
 	},
+	"¦": function(J){
+		J.comp += "numberDecompress(\"";
+		J.mode = 1;
+		return 1;
+	},
 	"#": function(J){
 		J.comp += "toHex(";
 		return 1;
@@ -2274,6 +2417,11 @@ var ops = {
 		} else if(chrTemp=="‘"){
 			J.mode = 9;
 			J.comp += "parseInt(\"";
+			return;
+		} else if(chrTemp=="γ"){
+			var chrTemp2 = J.code[++J.index];
+			J.comp += "Math.γ."+Math.γ[chrTemp2].name;
+			J.check();
 			return;
 		}
 		x += "\"](";
@@ -2625,6 +2773,14 @@ var ops = {
 		J.func.push([1,")"],[1,"}"]);
 		return;
 	},
+	"~g": function(J){
+		J.comp += "generateWhileCond(";
+		return 2;
+	},
+	"~H": function(J){
+		J.comp += "doubleGenSelect(";
+		return 3;
+	},
 	"!": function(J){
 		var x = "mathC[\"";
 		var chrTemp = J.code[++J.index];
@@ -2703,6 +2859,10 @@ var ops = {
 	"ͺ": function(J){
 		J.comp += "pair(";
 		return 2;
+	},
+	"²": function(J){
+		J.comp += "wrap(";
+		return 1;
 	},
 	"Ώ": function(J){
 		if(J.enc.Ώ){
@@ -3011,6 +3171,9 @@ var inf = {
 	},
 	"©": function(J){
 		J.comp += "Math."+Math[J.code[++J.index]].name||Math[J.code[++J.index]];
+	},
+	"β": function(J){
+		J.comp += "Math.Γ."+Math.Γ[J.code[++J.index]].name||Math.Γ[J.code[++J.index]];
 	},
 	"ι":function(J){
 		J.comp += J.index;
@@ -3351,7 +3514,7 @@ Jolf.prototype.check = function(J){
 		var ending = funcRes.shift();
 		var intermediate = funcRes.shift();
 		var callback = funcRes.shift();
-		//console.log(callback);
+		console.log("fr: ",callback.toSource(),JSON.stringify(this.func));
 		if(consump!==(consump|0)){
 			this.func.push([consump|0,ending,intermediate,callback]);
 			return;
@@ -3372,6 +3535,7 @@ Jolf.prototype.check = function(J){
 			this.comp += ending;	// ,
 			x = this.check();
 			if(x>0){
+				//console.log(callback.toSource());
 				if(typeof callback==="function")callback(this);
 				var lst = this.comp.slice(-1);
 				this.comp = this.comp.slice(0,-1);
@@ -3469,7 +3633,7 @@ Jolf.prototype.step = function(J){
 			} else if(chr=="¦"){
 				this.comp += "\"+(";
 				this.mode = 0;
-				this.func.push([1,")+\"",",",function(J){J.mode=1;J.comp=J.comp.slice(0,-1);}]);
+				this.func.push([1,")+\"",",",function(J){console.log("TEST");J.mode=1;J.comp=J.comp.slice(0,-1);}]);
 			} else if(chr=="'"){
 				this.comp += "\"";
 				if(this.repl){
@@ -3485,6 +3649,21 @@ Jolf.prototype.step = function(J){
 				this.repl++;
 			} else if(chr=="\n"){
 				this.comp += "\\n";
+			} else if(chr=="Ξ"){
+				var char1 = String.greekPointAt(this.code[++this.index]);
+				var char2 = String.greekPointAt(this.code[++this.index]);
+				var char3 = String.greekPointAt(this.code[++this.index]);
+				var ind = fromBaseArr([char1,char2,char3],256);
+				var list = wordList;
+				if(ind>=wordList.length){
+					ind -= wordList.length;
+					list = wordListSpace;
+				}
+				this.comp += list[ind].replace(/["\\\n]/g,"\\$&");
+			} else if(chr=="‘"){
+				this.comp += "'";
+			} else if(chr=="’"){
+				this.comp += "\"";
 			} else {
 				this.comp += chr;
 			}
@@ -3550,7 +3729,7 @@ Jolf.prototype.step = function(J){
 			this.mode = 0;
 			break;
 		case 7:
-			if(chr=="»"){
+			if(chr=="»"||typeof chr=="undefined"){
 				this.mode = 0;
 				this.comp += "`";
 				this.check();
