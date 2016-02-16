@@ -131,7 +131,7 @@ Called with `!` + `char`.
  * `u` - [`undefined`](http://mathjs.org/docs/reference/functions/undefined.html)
  * `v` - [`lsolve`](http://mathjs.org/docs/reference/functions/lsolve.html)
  * `w` - [`lup`](http://mathjs.org/docs/reference/functions/lup.html)
- * `x` - unassigned
+ * `x` - [`bitXor`](http://mathjs.org/docs/reference/functions/bitXor.html)
  * `y` - [`map`](http://mathjs.org/docs/reference/functions/map.html)
  * `z` - [`matrix`](http://mathjs.org/docs/reference/functions/matrix.html)
  * `{` - [`max`](http://mathjs.org/docs/reference/functions/max.html)
