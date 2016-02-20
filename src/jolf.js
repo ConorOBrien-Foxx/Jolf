@@ -2172,11 +2172,15 @@ function numberDecompress(str){
 
 	var Misc = {};
 	Misc.a = function drawBox(w,h,o){
+		if(typeof o==="undefined"){
+			o = h;
+			h = w;
+		}
 		o = o.split("");
-		var corner = o[0];
-		var horiz  = o[1];
-		var vert   = o[2];
-		var inner  = o[3];
+		var corner = o[0] || "+";
+		var horiz  = o[1] || "-";
+		var vert   = o[2] || "|";
+		var inner  = o[3] || " ";
 		return corner+horiz.repeat(w-2)+corner+"\n"+
 		String.repeatVertically(vert+inner.repeat(w-2)+vert,h-2)+corner+horiz.repeat(w-2)+corner;
 	}
