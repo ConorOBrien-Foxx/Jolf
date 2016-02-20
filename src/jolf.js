@@ -49,6 +49,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 
 	function capitalLambda(n,q){
 		var l = jolf("ZAj",n-1);
+		if(n==1) return 1;
 		l.push(1);
 		if(q<n) return l[q];
 		while(q>=l.length){
@@ -180,6 +181,16 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			return map(a.split(""),f).join("");
 		} else if(typeof a==="number"){
 			return +map((a+"").split(""),f).join("");
+		}
+	}
+
+	function filter(a,f){
+		if(Array.isArray(a)){
+			return a.filter(f);
+		} else if(typeof a==="string"){
+			return filter(a.split(""),f).join("");
+		} else if(typeof a==="number"){
+			return +filter((a+"").split(""),f).join("");
 		}
 	}
 
@@ -759,6 +770,10 @@ function numberDecompress(str){
 
 	}
 
+	function ord(s){
+		return s.length==1?s.charCodeAt():s.split("").map(function(e){return String.greekPointAt(e)});
+	}
+
 	function sliceUntil(comp,func){
 		if(typeof comp==="string") return sliceUntil(comp.split(""),func).join("");
 		else if(typeof comp==="number") return +sliceUntil(comp+"",func);
@@ -1298,6 +1313,9 @@ function numberDecompress(str){
 	}
 	String.A = String.fromCharCode;
 	String.a = String.fromCodePoint;
+	String.κ = function(s){
+		return String.fromCharCOde(s);
+	}
     String.Ω = function fromGreekPoint(n){
 		return jolf("~ ")[n]||String.fromCharCode(n);
 	}
@@ -2599,6 +2617,10 @@ var ops = {
 		J.comp += "sliceUntil(";
 		return 2;
 	},
+	"ό": function(J){
+		J.comp += "ord(";
+		return 1;
+	},
 	"\u03a2": function(J){
 		J.comp += "("
 		return [1,").charCodeAt()"];
@@ -2856,6 +2878,9 @@ var ops = {
 		J.comp += "map(";
 		return 2;
 	},
+	"ψ": function(J){
+		J.comp += "filter(";
+	},
 	"Ε": function(J){
 		J.comp += "everyCompare(";
 		return 2;
@@ -2966,6 +2991,9 @@ var inf = {
 			J.enc.E = true;
 		}
 		J.comp += "E";
+	},
+	"\x05": function(J){
+		J.comp += "\" \"";
 	},
 	"~ ": function(J){
 		J.comp += "\"\\x00\\x01\\x02\\x03\\x04\\x05\\x06\\x07\\x08\\x09\\x0a\\x0b\\x0c\\x0d\\x0e\\x0f\\x10\\x11\\x12\\x13\\x14\\x15\\x16\\x17\\x18\\x19\\x1a\\x1b\\x1c\\x1d\\x1e\\x1f !\\\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\\x7f\\x80\\x81\\x82\\x83\\x84\\x85\\x86\\x87\\x88\\x89\\x8a\\x8b\\x8c\\x8d\\x8e\\x8f\\x90\\x91\\x92\\x93\\x94\\x95\\x96\\x97\\x98\\x99\\x9a\\x9b\\x9c\\x9d\\x9e\\x9f ‘’£€₯¦§¨©ͺ«¬­―°±²³΄΅Ά·ΈΉΊ»Ό½ΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώ\"";
