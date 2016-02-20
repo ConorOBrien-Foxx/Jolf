@@ -788,6 +788,7 @@ function numberDecompress(str){
 	}
 
 	function everyCompare(arr,func){
+		if(typeof func!=="function") return arr.every(function(e){return e===func});
 		var arity = func.length||0;
 		for(var i=0;i<arr.length;i++){
 			var x = arr.slice(i,i+arity);
@@ -1805,10 +1806,13 @@ function numberDecompress(str){
 		return new Date(Date.now());
 	}
 	Date[4] = function nowTimeHMS(){
-		return jolf("{fdfffh#");
+		return [Date.d(),Date.f(),Date.h()];
+	}
+	Date[5] = function nowTimeHM(){
+		return [Date.d(),Date.f()];
 	}
 	Date["$"] = function nowTimeUTCHMS(a,b,c){
-		return jolf("{fDm:fFm:fHm:#",a,b,c);
+		return jolf("‘fDm:fFm:fHm:’",a,b,c);
 	}
 	var funcs = ["getDate","getDay","getFullYear","getHours","getMilliseconds","getMinutes","getMonth","getSeconds","getTime","getTimezoneOffset","getUTCDate","getUTCDay","getUTCFullYear","getUTCHours","getUTCMilliseconds","getUTCMinutes","getUTCMonth","getUTCSeconds","getYear"];
 	var names = "abcdefghijklmnopqrstuvwxyz".split("");
