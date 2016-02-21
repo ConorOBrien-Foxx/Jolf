@@ -271,6 +271,13 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		return x*x;
 	}
 
+	function slice(x,y,z){
+		if(Array.isArray(z)) return x.slice(y,-y);
+		if(typeof y==="array") return sum(y.map(function(e){return x.slice(e,z)}));
+		if(typeof x==="number") return +slice(x+"",y,z);
+		return x.slice(y,z);
+	}
+
 	function range(x,y){
 		if(arguments.length<2) throw Error("Insufficient arguments passed.")
 		if(Array.isArray(x)&&Array.isArray(y)){
@@ -481,16 +488,20 @@ function abin(x){
 	},new BigNumber(0));
 }
 
-function numberCompress(s){
+	function numberCompress(s){
+		// remove leading zeroes
+		s = s.replace(/^0*/,"");
+		while(s.length%3) s="0"+s;
+		s = s.match(/.../g).map(y=>("0000000000"+(+y).toString(2)).slice(-10)).join("");
+		while(s.length%8) s="0"+s;
+		return s.match(/.{1,8}/g).map(y=>String.fromCharCode(parseInt(y,2))).join("");
+	}
 
-
-	//while(s.length%6)s=s+"0";
-	//return Array.chop(Array.chop(s,3).map(function(x){return String.pad((+x).toString(2),10,0)}).join(""),8).map(function(y){return String.fromGreekPoint(parseInt(y,2))}).join("");
-}
-
-function numberDecompress(str){
-	//return Array.chop(str.split("").map(function(e){return String.pad(String.greekPointAt(e).toString(2),8,0)}).join(""),10).map(function(t){return String.pad(parseInt(t,2)+"",3,0)}).join("");
-}
+	function numberDecompress(s){
+		s = s.split("").map(t=>("00000000"+t.charCodeAt().toString(2)).slice(-8)).join("");
+		while(s.length%10) s="0"+s;
+		return s.match(/.{1,10}/g).map(x=>parseInt(x,2)).join("");
+	}
 
 	function toBaseArr(n,b){
 		h = Math.ceil(logBASE(n,b));
@@ -1271,35 +1282,36 @@ function numberDecompress(str){
 		// ES6 code tester
 		eval("function*a(){}");
 		eval("x=>x");
-		Math.γ.c = function* collatz(val){
-			var step = 0, vals = [];
-			while(val !== 1){
-				vals.push(val);
-				if(val % 2 == 0) val /= 2;
-				else val*=3, val++;
-				yield val;
-				step++;
-			}
-			yield [step,vals];
-			return ret = {done:true};
-		}
-		Math.γ.p = function* pythagTriple(){
-			var m = 2, n = 1, t = [], a, b, c;
-			while(true){
-				a = m*m-n*n, b = 2*m*n, c = m*m+n*n;
-				// check for duplicates
-				if(t.every((y,i)=>!Math.τ(y,[a,b,c][i])))
-					yield [a,b,c];
-				t.push([a,b,c]);
-				n++;
-				if(n>=m) m++,n=1;
-			}
-		}
-		for(var k in Math.γ){
-			Math.γ[Math.γ[k].name] = Math.γ[k];
-		}
+		eval("Math.γ.c = function* collatz(val){\
+			var step = 0, vals = [];\
+			while(val !== 1){\
+				vals.push(val);\
+				if(val % 2 == 0) val /= 2;\
+				else val*=3, val++;\
+				yield val;\
+				step++;\
+			}\
+			yield [step,vals];\
+			return ret = {done:true};\
+		}\
+		Math.γ.p = function* pythagTriple(){\
+			var m = 2, n = 1, t = [], a, b, c;\
+			while(true){\
+				a = m*m-n*n, b = 2*m*n, c = m*m+n*n;\
+				// check for duplicates\
+				if(t.every((y,i)=>!Math.τ(y,[a,b,c][i])))\
+					yield [a,b,c];\
+				t.push([a,b,c]);\
+				n++;\
+				if(n>=m) m++,n=1;\
+			}\
+		}\
+		for(var k in Math.γ){\
+			Math.γ[Math.γ[k].name] = Math.γ[k];\
+		}");
 	} catch(e){
 		console.log("Warning: your browser does not support generators/ES6, and thus may not be able to execute some Jolf code.");
+		console.log(e);
 	}
 	for(i in Math){Math[Math[i].name]=Math[i]};
 	// adding string stuff
@@ -1505,6 +1517,9 @@ function numberDecompress(str){
 	}
 	// from http://codegolf.stackexchange.com/questions/69560/display-2d-array-as-ascii-table
 	Array[1] = function asciiTable(n,r){var a=n[0].map(function(r,a){var i=n.map(function(n){return void 0!=n[a]?n[a].length:0});return Math.max.apply(Math,i)});n=n.map(function(n){return"| "+n.map(function(n,r){var i=n.length;return i<a[r]&&(n+=new Array(a[r]-i+1).join(" ")),n}).join(" | ")+" |"});var i="+"+a.map(function(n){return new Array(n+3).join("-")}).join("+")+"+";return r?i+"\n"+n[0]+"\n"+i+"\n"+n.slice(1).join("\n")+"\n"+i:i+"\n"+n.join("\n")+"\n"+i}
+	Array[2] = function allEqualTo(a,n){
+		return a.every(function(H){return Array.isArray(n)?n.some(function(e){return e==H}):H==n;});
+	}
 	Array.a = function makeArray(x,y){
 		return jolf("Zb*[J]j",x,y);
 	}
@@ -2988,6 +3003,10 @@ var ops = {
 	"Γ": function(J){
 		J.comp += "gamma(";
 		return 1;
+	},
+	"]": function(J){
+		J.comp += "slice(";
+		return 3;
 	},
 }
 
