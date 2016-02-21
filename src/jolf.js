@@ -1282,36 +1282,38 @@ function abin(x){
 		// ES6 code tester
 		eval("function*a(){}");
 		eval("x=>x");
-		eval("Math.γ.c = function* collatz(val){\
-			var step = 0, vals = [];\
-			while(val !== 1){\
-				vals.push(val);\
-				if(val % 2 == 0) val /= 2;\
-				else val*=3, val++;\
-				yield val;\
-				step++;\
-			}\
-			yield [step,vals];\
-			return ret = {done:true};\
-		}\
-		Math.γ.p = function* pythagTriple(){\
-			var m = 2, n = 1, t = [], a, b, c;\
-			while(true){\
-				a = m*m-n*n, b = 2*m*n, c = m*m+n*n;\
-				// check for duplicates\
-				if(t.every((y,i)=>!Math.τ(y,[a,b,c][i])))\
-					yield [a,b,c];\
-				t.push([a,b,c]);\
-				n++;\
-				if(n>=m) m++,n=1;\
-			}\
-		}\
-		for(var k in Math.γ){\
-			Math.γ[Math.γ[k].name] = Math.γ[k];\
-		}");
+		/*Math.γ.c = function* collatz(val){
+			var step = 0, vals = [];
+			while(val !== 1){
+				vals.push(val);
+				if(val % 2 == 0) val /= 2;
+				else val*=3, val++;
+				yield val;
+				step++;
+			}
+			yield [step,vals];
+			return ret = {done:true};
+		}
+		Math.γ.p = function* pythagTriple(){
+			var m = 2, n = 1, t = [], a, b, c;
+			while(true){
+				a = m*m-n*n, b = 2*m*n, c = m*m+n*n;
+				// check for duplicates
+				if(t.every((y,i)=>!Math.τ(y,[a,b,c][i])))
+					yield [a,b,c];
+				t.push([a,b,c]);
+				n++;
+				if(n>=m) m++,n=1;
+			}
+		}
+		for(var k in Math.γ){
+			Math.γ[Math.γ[k].name] = Math.γ[k];
+		}*/
+		eval("Math.γ.c=function*collatz(val){var step=0,vals=[];while(val!==1){vals.push(val);if(val%2==0)val/=2;else val*=3,val++;yield val;step++;} yield[step,vals];return ret={done:true};}");
+		eval("Math.γ.p=function*pythagTriple(){var m=2,n=1,t=[],a,b,c;while(true){a=m*m-n*n,b=2*m*n,c=m*m+n*n;if(t.every((y,i)=>!Math.τ(y,[a,b,c][i]))) yield[a,b,c];t.push([a,b,c]);n++;if(n>=m)m++,n=1;}}");
+		eval("for(var k in Math.γ){Math.γ[Math.γ[k].name]=Math.γ[k];}");
 	} catch(e){
 		console.log("Warning: your browser does not support generators/ES6, and thus may not be able to execute some Jolf code.");
-		console.log(e);
 	}
 	for(i in Math){Math[Math[i].name]=Math[i]};
 	// adding string stuff
