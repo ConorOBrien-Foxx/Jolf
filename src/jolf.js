@@ -279,6 +279,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 
 	function range(x,y){
+		if(typeof x==="string"&&typeof y==="string") return RegExp.Q(x,y);
 		if(arguments.length<2) throw Error("Insufficient arguments passed.")
 		if(Array.isArray(x)&&Array.isArray(y)){
 			return x.filter(function(e){return !y.has(e)})
@@ -709,6 +710,10 @@ function abin(x){
 		return Array.isArray(x)?x.join(""):typeof x==="number"?x*10:typeof x==="string"?x.split(""):"";
 	}
 
+	function splitJoinNewline(x){
+		return typeof x==="string"?x.split("\n"):typeof x==="number"?(x+"").split("").join("\n"):x.join("\n");
+	}
+
 	function singleton(x){
 		return Array.isArray(x)?x.join("").split(""):typeof x==="string"?x.split("").join(""):typeof x==="number"?(x+"").split("").map(Number).sort(function(a,b){return a-b;}):"";
 	}
@@ -726,6 +731,11 @@ function abin(x){
 			ind++;
 		}
 		return res;
+	}
+
+	function propNth(condition,max){
+		window.a = [condition,max];
+		return firstN(max,condition).slice(-1);
 	}
 
 	function generateWhileCond(generator,condition){
@@ -775,10 +785,6 @@ function abin(x){
 
 	function firstSatisfying(func){
 		return firstN(1,func,arguments[1]||0)[0];
-	}
-
-	function maxUnder(max,genFunc){
-
 	}
 
 	function ord(s){
@@ -1446,6 +1452,12 @@ function abin(x){
 	String.T = function joinBySpaces(x){
 		return x.join(" ");
 	}
+	String.Η = function splitByNewlines(x){
+		return x.split("\n");
+	}
+	String.η = function joinByNewlines(x){
+		return x.join("\n");
+	}
 	String.u = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 	String.U = ["A","B","C","D","E","F","G","H","I","J","K","L","M","N","O","P","Q","R","S","T","U","V","W","X","Y","Z"];
 	String.v = function groupByNumbers(x){
@@ -1931,6 +1943,9 @@ function abin(x){
 			return;
 		});
 		return res;
+	}
+	RegExp.Q = function expandRange(a,b){
+		return RegExp.q(a+"-"+b);
 	}
 
 	math.config({number:"bignumber",precision:300});
@@ -2707,6 +2722,10 @@ var ops = {
 		J.comp += "...";
 		return [1,""];
 	},
+	"\x9f": function(J){
+		J.comp += "splitJoinNewline(";
+		return 1;
+	},
 	"\x03":function(J){
 		return ~~(a%2);
 	},
@@ -2810,6 +2829,10 @@ var ops = {
 	"~F": function(J){
 		J.comp += "firstN(";
 		return 2;
+	},
+	"~h": function(J){
+		J.comp += "propNth(function(H,S,n){";
+		return [2,")",["},"]];
 	},
 	"~B": function(J){
 		J.comp += "allBelow(";
