@@ -333,6 +333,10 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 	}
 
+	function lastArg(){
+		return arguments[arguments.length-1];
+	}
+
 	function equals(x,y){
 		if(arguments.length>2) return equals(x,y)&&equals.apply(window,Array.from(arguments).slice(1));
 		if(Array.isArray(x)){
@@ -1334,8 +1338,11 @@ function abin(x){
 	}
 	String.A = String.fromCharCode;
 	String.a = String.fromCodePoint;
+	String["{"] = function addSPlural(string,n){
+		return string + (n !== 1 ? "s" : "");
+	}
 	String.κ = function(s){
-		return String.fromCharCOde(s);
+		return String.fromCharCode(s);
 	}
     String.Ω = function fromGreekPoint(n){
 		return jolf("~ ")[n]||String.fromCharCode(n);
@@ -2709,6 +2716,10 @@ var ops = {
 			J.comp += "(function(J){return Misc[\""+chrTemp+"\"]})(";
 			return 0;
 		}
+	},
+	"³": function(J){
+		J.comp += "lastArg(";
+		return 3;
 	},
 	"\x12": function(J){
 		J.comp += "doubleNeg(";
