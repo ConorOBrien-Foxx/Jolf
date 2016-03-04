@@ -31,7 +31,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 
 	// from http://stackoverflow.com/a/34800836/4119004
 	function convertFrom1to7(r){for(var o="!‘’!€₯!!!!.!!!!―!!!!...!...!.!....................!............................................!",t="",e="",a=0;a<r.length;a++){var n=r[a];e=n,n.charCodeAt(0)>=160&&(e=o[n.charCodeAt(0)-160],"!"===e&&(e=n),"."===e&&(e=String.fromCharCode(n.charCodeAt(0)+720))),t+=e}return t}
-	function isValidISO88597(u){for(var A=/[\u0000-\u00A0\u2018\u2019\u00A3\u20AC\u20AF\u00A6-\u00A9\u037A\u00AB-\u00AD\u2015\u00B0-\u00B3\u0384-\u0386\u00B7\u0388-\u038A\u00BB\u038C\u00BD\u038E-\u03CE]/,B=!0,t=0;t<u.length;t++)B=B&&A.test(u[t]);return B}
+	function isValidISO88597(u){for(var A=/[\u0000-\u00A0\u2018\u2019\u00A3\u20AC\u20AF\u00A6-\u00A9\u037A\u00AB-\u00AD\u2015\u00B0-\u00B3\u0384-\u0386\u00B7\u0388-\u038A\u00BB\u038C\u00BD\u038E-\u03CEÿ]/,B=!0,t=0;t<u.length;t++)B=B&&A.test(u[t]);return B}
 
 	newWordList = wordList = wordList.concat(wordList.map(function(x){return x[0].toUpperCase()+x.slice(1)}),wordList.map(function(x){return x.toUpperCase()}));
 	var ENDINGS = " !,.:;?";
@@ -506,6 +506,25 @@ function abin(x){
 		s = s.split("").map(t=>("00000000"+t.charCodeAt().toString(2)).slice(-8)).join("");
 		while(s.length%10) s="0"+s;
 		return s.match(/.{1,10}/g).map(x=>parseInt(x,2)).join("");
+	}
+
+	function compressBinary(s){
+		// remove leading zeroes
+		s = s.replace(/^0*/,"");
+		while(s.length%8) s="0"+s;
+		return s.match(/.{1,8}/g).map(
+			function(y){
+				return String.fromGreekPoint(parseInt(y,2))
+			}
+		).join("");
+	}
+
+	function decompressBinary(s){
+		return s.split("").map(
+			function(t){
+				return ("00000000"+String.greekPointAt(t).toString(2)).slice(-8);
+			}
+		).join("");
 	}
 
 	function toBaseArr(n,b){
@@ -1497,6 +1516,15 @@ function abin(x){
 	String.Z = function toGreek(x){
 		return {Alpha:"Α",alpha:"α",Beta:"Β",beta:"β",Gamma:"Γ",gamma:"γ",Delta:"Δ",delta:"δ",Epsilon:"Ε",epsilon:"ε",Zeta:"Ζ",zeta:"ζ",Eta:"Η",eta:"η",Theta:"Θ",theta:"θ",Iota:"Ι",iota:"ι",Kappa:"Κ",kappa:"κ",Lambda:"Λ",lambda:"λ",Mu:"Μ",mu:"μ",Nu:"Ν",nu:"ν",Xi:"Ξ",xi:"ξ",Omicron:"Ο",omicron:"ο",Pi:"Π",pi:"π",Rho:"Ρ",rho:"ρ",Sigma:"Σ",sigma:"σ",Tau:"Τ",tau:"τ",Upsilon:"Υ",upsilon:"υ",Phi:"Φ",phi:"φ",Chi:"Χ",chi:"χ",Psi:"Ψ",psi:"ψ",Omega:"Ω",omega:"ω"}[x];
 	}
+	String.goatFound = false;
+	String.ά = function goatFoundQuery(query){
+		if(query.toLowerCase().has("goat")) String.goatFound = true;
+		return "Goat a load of this!";
+	}
+	String.Γ = function isGoat(f){
+		return String.goatFound;
+	}
+	String.
 	String.α = "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ";
 	String.Α = ["Α","Β","Γ","Δ","Ε","Ζ","Η","Θ","Ι","Κ","Λ","Μ","Ν","Ξ","Ο","Π","Ρ","Σ","Τ","Υ","Φ","Χ","Ψ","Ω"];
 	String.β = "αβγδεζηθικλμνξοπρστυφχψω";
@@ -2307,6 +2335,11 @@ var ops = {
 	},
 	"¦": function(J){
 		J.comp += "numberDecompress(\"";
+		J.mode = 1;
+		return 1;
+	},
+	"·": function(J){
+		J.comp += "decompressBinary(\"";
 		J.mode = 1;
 		return 1;
 	},
