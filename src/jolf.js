@@ -1516,12 +1516,16 @@ function abin(x){
 	String.Z = function toGreek(x){
 		return {Alpha:"Α",alpha:"α",Beta:"Β",beta:"β",Gamma:"Γ",gamma:"γ",Delta:"Δ",delta:"δ",Epsilon:"Ε",epsilon:"ε",Zeta:"Ζ",zeta:"ζ",Eta:"Η",eta:"η",Theta:"Θ",theta:"θ",Iota:"Ι",iota:"ι",Kappa:"Κ",kappa:"κ",Lambda:"Λ",lambda:"λ",Mu:"Μ",mu:"μ",Nu:"Ν",nu:"ν",Xi:"Ξ",xi:"ξ",Omicron:"Ο",omicron:"ο",Pi:"Π",pi:"π",Rho:"Ρ",rho:"ρ",Sigma:"Σ",sigma:"σ",Tau:"Τ",tau:"τ",Upsilon:"Υ",upsilon:"υ",Phi:"Φ",phi:"φ",Chi:"Χ",chi:"χ",Psi:"Ψ",psi:"ψ",Omega:"Ω",omega:"ω"}[x];
 	}
+	String.ω = "αβγδεζηθικλμνξοπρστυφχψω";
+	String.Ω = ["α","β","γ","δ","ε","ζ","η","θ","ι","κ","λ","μ","ν","ξ","ο","π","ρ","σ","τ","υ","φ","χ","ψ","ω"];
+	String.ψ = "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ";
+	String.Ψ = ["Α","Β","Γ","Δ","Ε","Ζ","Η","Θ","Ι","Κ","Λ","Μ","Ν","Ξ","Ο","Π","Ρ","Σ","Τ","Υ","Φ","Χ","Ψ","Ω"];
 	String.goatFound = false;
 	String.ά = function goatFoundQuery(query){
-		if(query.toLowerCase().has("goat")) String.goatFound = true;
+		if(query.search(/\ud83d\udc10|goat/i)+1) String.goatFound = true;
 		return "Goat a load of this!";
 	}
-	String.Γ = function isGoat(f){
+	String.Γ = function isGoat(){
 		return String.goatFound;
 	}
 	String.α = "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ";
@@ -1857,6 +1861,16 @@ function abin(x){
 	}
 	Array.Z = function ZZ(){
 		return "top!";
+	}
+	Array.Α = function next(array,member){
+		return array[array.indexOf(member)+1]||array[0];
+	}
+	Array.α = function prev(array,member){
+		return array[array.indexOf(member)-1]||array[array.length-1];
+	}
+	Array["§"] = function cust(array,member,f){
+		var f2 = arguments[3];
+		return array[f(array.indexOf(member))]||f2(array);
 	}
 	Array.ρ = function lengthParity(x){
 		return x.length%2;
@@ -2331,6 +2345,14 @@ var ops = {
 		J.comp += "shoco.d(\"";
 		J.mode = 1;
 		return 1;
+	},
+	"\x80": function(J){
+		J.comp += "(";
+		return [3,")",["==42?",":"]];
+	},
+	"\x81": function(J){
+		J.comp += "((ASQ=";
+		return [2,":ASQ)",[")==42?"]];
 	},
 	"¦": function(J){
 		J.comp += "numberDecompress(\"";
