@@ -1253,7 +1253,7 @@ function abin(x){
 			}
 			return powerSet;
 		}
-		return Math.pow(2,x);
+		return unique(Math.pow(2,x));
 	}
 	Math[2] = Math.max;
 	Math[3] = Math.min;
