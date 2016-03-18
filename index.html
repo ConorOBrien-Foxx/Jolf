@@ -14,7 +14,8 @@
 	<script type="text/javascript" src="https://rawgit.com/pieroxy/lz-string/master/libs/lz-string.min.js"></script>
 	<script type="text/javascript" src="https://rawgit.com/ConorOBrien-Foxx/WordList-JS/master/src/wordRaw.js"></script>
 	<script type="text/javascript" src="https://rawgit.com/MikeMcl/bignumber.js/master/bignumber.min.js"></script>
-	<script type="text/javascript" src="https://rawgit.com/ConorOBrien-Foxx/Jolf/master/src/jolf.js"></script>
+	<!--script type="text/javascript" src="https://rawgit.com/ConorOBrien-Foxx/Jolf/master/src/jolf.js"></script-->
+	<script type="text/javascript" src="Jolf.js"></script>
 	<script>
 	// from tryitonline.net
 	function load(){
@@ -98,6 +99,10 @@
 		});
 		document.getElementById("run").addEventListener("click",function(){
 			var x = new Jolf(document.getElementById("code").value);
+			if(document.getElementById("isp").checked){
+				delete x.ops[" "];
+				x.ops["~~"] = ops[" "];
+			}
 			while(x.step());
 			var o;
 			try {
@@ -117,6 +122,10 @@
 		});
 		document.getElementById("runnn").addEventListener("click",function(){
 			var x = new Jolf(document.getElementById("code").value);
+			if(document.getElementById("isp").checked){
+				delete x.ops[" "];
+				x.ops["~~"] = ops[" "];
+			}
 			while(x.step());
 			var o;
 			try {
@@ -189,7 +198,7 @@
 	<div id="main">
 		<div id="toIns">If you see this, something has gone wrong.</div>
 		<button class="btn btn-block btn-primary sev" id="run">
-			Run (runs the program once)
+			Run
 		</button>
 		<table>
 			<tr><td class="lrg" colspan="2">(bytes: <span id="bytes">0</span>)</td><td></td></tr>
@@ -198,17 +207,17 @@
 			<tr><td colspan="2"></td></tr>
 			<tr><td colspan="2"></td></tr>
 		</table>
-		<button id="transform" class="btn btn-info sev">apply transformation of code</button>
+		<button id="transform" class="btn btn-info sev">transform code</button>
 		<p>Input</p>
 		<p>Input is seperated by a double newline (<code>\n\n</code>).</p>
 		<textarea id="input" spellcheck="false"></textarea>
-		<button class="btn btn-block btn-warning sev" id="runnn">Full Run (runs the program once for each input)</button>
+		<button class="btn btn-block btn-warning sev" id="runnn">Test Suite</button>
 		<p>Output</p>
 		<div id="output"></div>
-		<button id="clear" class="btn btn-block btn-info sev">clear</button>
+		<button id="clear" class="btn btn-block btn-info sev">clear output</button>
 		<p>Error</P>
 		<div id="error"></div>
-		<button id="clearError"class="btn btn-block btn-warning sev">clear</button>
+		<button id="clearError"class="btn btn-block btn-warning sev">clear error</button>
 		<p>Transpiled code</p>
 		<div id="outCode"></div>
 		<p>Canvas output</p>
@@ -216,7 +225,8 @@
 		<br><button id="uploadISOGREEK">Upload as an ISO 8859-7-encoded file</button><input type="file" id="isogreek">
 	</div><div id="options">
 		<h2>Options</h2>
-		<input type="checkbox" id="pom"> Pretty output mode?
+		<input type="checkbox" id="pom"> Pretty output mode?<br>
+		<input type="checkbox" id="isp"> Ignore spaces?
 	</div>
 </div>
 </body>
