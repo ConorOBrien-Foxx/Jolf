@@ -1253,7 +1253,10 @@ function abin(x){
 			}
 			return powerSet;
 		}
-		return unique(Math.pow(2,x));
+		return Math.pow(2,x);
+	}
+	Math["ψ"] = function uniqueExp2(x){
+		return unique(Math.Z(x));
 	}
 	Math[2] = Math.max;
 	Math[3] = Math.min;
@@ -3064,6 +3067,10 @@ var ops = {
 		J.comp += "map(";
 		return 2;
 	},
+	"~m": function(J){
+		J.comp += "map(";
+		return 2;
+	},
 	"ψ": function(J){
 		J.comp += "filter(";
 		return 2;
@@ -3073,6 +3080,10 @@ var ops = {
 		return 2;
 	},
 	"ͺ": function(J){
+		J.comp += "pair(";
+		return 2;
+	},
+	"~.": function(J){
 		J.comp += "pair(";
 		return 2;
 	},
