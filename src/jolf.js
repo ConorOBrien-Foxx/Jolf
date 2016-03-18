@@ -333,6 +333,18 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		}
 	}
 
+	function setLen(array,len){
+		return array.map(function(e){return String.pad(e,len,"0").slice(-2)});
+	}
+
+	function manhattanAdd(a,b){
+		return +Array.from(arguments).reduce(function(a,b){return a+b},"");
+	}
+
+	function decimal(a){
+		return Number(a[0]+"."+a.slice(1).join(""));
+	}
+
 	function lastArg(){
 		return arguments[arguments.length-1];
 	}
@@ -497,15 +509,23 @@ function abin(x){
 		// remove leading zeroes
 		s = s.replace(/^0*/,"");
 		while(s.length%3) s="0"+s;
-		s = s.match(/.../g).map(y=>("0000000000"+(+y).toString(2)).slice(-10)).join("");
+		s = s.match(/.../g).map(function(y){
+			return ("0000000000"+(+y).toString(2)).slice(-10);
+		}).join("");
 		while(s.length%8) s="0"+s;
-		return s.match(/.{1,8}/g).map(y=>String.fromCharCode(parseInt(y,2))).join("");
+		return s.match(/.{1,8}/g).map(function(y){
+			String.fromGreekPoint(parseInt(y,2))
+		}).join("");
 	}
 
 	function numberDecompress(s){
-		s = s.split("").map(t=>("00000000"+t.charCodeAt().toString(2)).slice(-8)).join("");
+		s = s.split("").map(function(t){
+			return ("00000000"+String.greekPointAt(t).toString(2)).slice(-8);
+		}).join("");
 		while(s.length%10) s="0"+s;
-		return s.match(/.{1,10}/g).map(x=>parseInt(x,2)).join("");
+		return s.match(/.{1,10}/g).map(function(x){
+			return parseInt(x,2);
+		}).join("").replace(/^0+/,"");
 	}
 
 	function compressBinary(s){
@@ -950,7 +970,10 @@ function abin(x){
 	}
 	Array.prototype.has = function(x){
 		if(arguments.length>1) return this.has(x)&&this.has.apply(this,Array.from(arguments).slice(1));
-		return !!(this.indexOf(x)+1);
+		for(var i=0;i<this.length;i++){
+			if(x<=this[i]&&x>=this[i]) return true;
+		}
+		return false;
 	}
 	// from http://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#comment54935095_10142256
 	Array.prototype.shuffle=function(J){var t,h,r=this.length;if(0==r)return this;for(;--r;)t=Math.floor(Math.random()*(r+1)),h=this[r],this[r]=this[t],this[t]=h;return this};
@@ -1463,8 +1486,12 @@ function abin(x){
 
 	}
 	String.q = function pad(str,len,symb){
-		if(str.length>=len) return str;
-		else return String.q((typeof symb==="undefined"?" ":symb)+str,len,symb);
+		if(str.length>=len||typeof str==="Number"&&(str+"").length>=len) return str;
+		return typeof str === "String" ?
+			String.q((typeof symb==="undefined"?" ":symb)+str,len,symb) :
+			typeof str === "Number" ? String.q((typeof symb==="undefined"?" ":symb)+str) :
+			typeof str === "Array" ? String.q([(typeof symb==="undefined"?" ":symb)].concat(str)) :
+			123431;
 	}
 	String.r = function right(x){
 
@@ -1516,8 +1543,8 @@ function abin(x){
 	String.Z = function toGreek(x){
 		return {Alpha:"Α",alpha:"α",Beta:"Β",beta:"β",Gamma:"Γ",gamma:"γ",Delta:"Δ",delta:"δ",Epsilon:"Ε",epsilon:"ε",Zeta:"Ζ",zeta:"ζ",Eta:"Η",eta:"η",Theta:"Θ",theta:"θ",Iota:"Ι",iota:"ι",Kappa:"Κ",kappa:"κ",Lambda:"Λ",lambda:"λ",Mu:"Μ",mu:"μ",Nu:"Ν",nu:"ν",Xi:"Ξ",xi:"ξ",Omicron:"Ο",omicron:"ο",Pi:"Π",pi:"π",Rho:"Ρ",rho:"ρ",Sigma:"Σ",sigma:"σ",Tau:"Τ",tau:"τ",Upsilon:"Υ",upsilon:"υ",Phi:"Φ",phi:"φ",Chi:"Χ",chi:"χ",Psi:"Ψ",psi:"ψ",Omega:"Ω",omega:"ω"}[x];
 	}
-	String.ω = "αβγδεζηθικλμνξοπρστυφχψω";
-	String.Ω = ["α","β","γ","δ","ε","ζ","η","θ","ι","κ","λ","μ","ν","ξ","ο","π","ρ","σ","τ","υ","φ","χ","ψ","ω"];
+	String.χ = "αβγδεζηθικλμνξοπρστυφχψω";
+	String.Χ = ["α","β","γ","δ","ε","ζ","η","θ","ι","κ","λ","μ","ν","ξ","ο","π","ρ","σ","τ","υ","φ","χ","ψ","ω"];
 	String.ψ = "ΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡΣΤΥΦΧΨΩ";
 	String.Ψ = ["Α","Β","Γ","Δ","Ε","Ζ","Η","Θ","Ι","Κ","Λ","Μ","Ν","Ξ","Ο","Π","Ρ","Σ","Τ","Υ","Φ","Χ","Ψ","Ω"];
 	String.goatFound = false;
@@ -1862,6 +1889,7 @@ function abin(x){
 	Array.Z = function ZZ(){
 		return "top!";
 	}
+	Array.ώ = function permute(n){function t(n,r){for(var e,r=r||[],o=0;o<n.length;o++)e=n.splice(o,1),0===n.length&&c.push(r.concat(e)),t(n.slice(),r.concat(e)),n.splice(o,0,e[0]);return c}var c=[];return t(n)}
 	Array.Α = function next(array,member){
 		return array[array.indexOf(member)+1]||array[0];
 	}
@@ -1879,7 +1907,7 @@ function abin(x){
 	Date[0] = Date.parse;
 	Date[1] = Date.now;
 	Date[2] = Date.UTC;
-	Date[3] = function nowInstnace(){
+	Date[3] = function nowInstance(){
 		return new Date(Date.now());
 	}
 	Date[4] = function nowTimeHMS(){
@@ -1887,6 +1915,12 @@ function abin(x){
 	}
 	Date[5] = function nowTimeHM(){
 		return [Date.d(),Date.f()];
+	}
+	Date[6] = function nowTimeDMY(){
+		return [Date.g(),Date.k(),Date.c()];
+	}
+	Date[7] = function american(){
+		return [Date.t(),Date.k(),Date.u()];
 	}
 	Date["$"] = function nowTimeUTCHMS(a,b,c){
 		return jolf("‘fDm:fFm:fHm:’",a,b,c);
@@ -1899,6 +1933,19 @@ function abin(x){
 		Date[names[i]] = window[funcs[i]+"Now"];}catch(e){};
 		Date[names[i].toUpperCase()] = window[funcs[i]+"Input"];}catch(e){};
 	}
+	Date.t = function getNaturalMonthNow(){
+		return Date.g()+1;
+	}
+	Date.T = function getNaturalMonthInput(d){
+		return Date.G(d)+1;
+	}
+	Date.u = function getSuffixYearNow(){
+		return +(Date.c()+"").slice(-2);
+	}
+	Date.U = function getSuffixYearInput(d){
+		return +(Date.c(d)+"").slice(-2);
+	}
+
 	RegExp[0] = function evalAsRegExp(x){
 		return RegExp(x);
 	}
@@ -2331,11 +2378,21 @@ var ctl = {
 	"W": function(J){
 		J.comp += "while(";
 	},
+	"~Ώ": function(J){
+		if(!J.enc.Ώp){
+			J.comp += "function Ώp(H){";
+			J.enc.Ώp = true;
+		} else {
+			J.comp += "Ώp(";
+			J.func.push([1,")"]);
+		}
+	},
 	")": function(J){
+		J.comp = J.comp[J.comp.length-1]===";"?J.comp.slice(0,-1):J.comp;
 		J.comp += "){";
-		J.comp = J.comp.replace(/(while|if|repeat)\((.*)\){.*$/,function(m,p1,p2){
-			return p1+" ("+p2.replace(/;*/g,"").replace(/;/g,",")+"){";
-		});
+		/*J.comp = J.comp.replace(/(while|if|repeat|function .+?)\((.*)\){.*$/,function(m,p1,p2){
+			return p1+" ("+p2.replace(/;* /g,"").replace(/;/g,",")+"){";
+		});*/
 	}
 }
 
@@ -2447,6 +2504,10 @@ var ops = {
 		return 1;
 	},
 	"~f": function(J){
+		J.comp += "apply(";
+		return 2;
+	},
+	"Λ": function(J){
 		J.comp += "apply(";
 		return 2;
 	},
@@ -2783,6 +2844,10 @@ var ops = {
 		J.comp += "booleanNegation(";
 		return 1;
 	},
+	"~!": function(J){
+		J.comp += "booleanNegation(";
+		return 1;
+	},
 	"\x0B": function(J){
 		J.comp += "...";
 		return [1,""];
@@ -2798,7 +2863,11 @@ var ops = {
 		J.comp += "joinByNothing(";
 		return 1;
 	},
-	"\x11":function(J){
+	"\x11": function(J){
+		J.comp += "singleton(";
+		return 1;
+	},
+	"~,": function(J){
 		J.comp += "singleton(";
 		return 1;
 	},
@@ -2967,7 +3036,7 @@ var ops = {
 		J.comp += "degToRad(";
 		return 1;
 	},
-	"Λ": function(J){
+	"~Λ": function(J){
 		J.comp += "capitalLambda(";
 		return 2;
 	},
@@ -2987,12 +3056,17 @@ var ops = {
 		J.comp += "doForEach(";
 		return 2;
 	},
+	"Δ": function(J){
+		J.comp += "setLen(";
+		return 2;
+	},
 	"Μ": function(J){
 		J.comp += "map(";
 		return 2;
 	},
 	"ψ": function(J){
 		J.comp += "filter(";
+		return 2;
 	},
 	"Ε": function(J){
 		J.comp += "everyCompare(";
@@ -3309,9 +3383,14 @@ var inf = {
 		if("mpZ!,".search(RegExp.escape(next))+1){
 			par="!"==next?"mathC":"m"==next?"Math":"p"==next?"String":"Z"==next?"Array":"Misc";
 			next = J.code[++J.index];
+		} else if(next==="~"){
+			next += J.code[++J.index];
+			if(next==="~Ώ"){
+				J.comp += "Ώp";
+				return;
+			}
 		}
 		var q = par[next];
-		console.log(q,q=="*");
 		var func = par==J.ops?(q+"").replace(/[\s\S]+"(.+?)\("[\s\S]+/gm,"$1"):par+"."+window[par][next].name;
 		J.comp += func;
 	},
@@ -3339,7 +3418,15 @@ var inf = {
 		}
 		J.comp += "\""+list[ind].replace(/["\\\n]/g,"\\$&")+"\"";
 	},
-	"": function(J){}
+	"": function(J){},
+	"\x82": function(J){
+		J.comp += "manhattanAdd(";
+		return 2;
+	},
+	"\x83": function(J){
+		J.comp += "manhattanAdd(";
+		return 3;
+	},
 }
 
 // zero-arity functions
@@ -3600,7 +3687,7 @@ Jolf.prototype.explanation = function(s){
 		var prev = "";
 		r.forEach(function(e,i){
 			del = " ".repeat(prev.length+1);
-			console.log(prev);
+			//console.log(prev);
 			switch(e){
 				case"(":res+=e+"\n"+del.repeat(++t);prev=r[i-1];break;
 				case",":res+=e+"\n"+del.repeat(t);break;
@@ -3703,10 +3790,10 @@ Jolf.prototype.check = function(J){
 
 Jolf.prototype.step = function(J){
 	// checking index bounds / func stack
-	if(debug)console.log(this.prec,this.comp);
+	if(debug) console.log(this.prec,this.comp);
 	if(this.index > this.code.length){
 		this.close();
-		console.log("DONE")
+		//console.log("DONE")
 		this.total = this.prec+this.comp;
 		return false;
 	}
