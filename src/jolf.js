@@ -29,18 +29,28 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	    head.appendChild(script);
 	}
 
+	// from http://stackoverflow.com/a/950146/4119004
+	function loadScript(e,t){var a=document.getElementsByTagName("head")[0],n=document.createElement("script");n.type="text/javascript",n.src=e,n.onreadystatechange=t,n.onload=t,a.appendChild(n)}
+
 	// from http://stackoverflow.com/a/34800836/4119004
 	function convertFrom1to7(r){for(var o="!‘’!€₯!!!!.!!!!―!!!!...!...!.!....................!............................................!",t="",e="",a=0;a<r.length;a++){var n=r[a];e=n,n.charCodeAt(0)>=160&&(e=o[n.charCodeAt(0)-160],"!"===e&&(e=n),"."===e&&(e=String.fromCharCode(n.charCodeAt(0)+720))),t+=e}return t}
 	function isValidISO88597(u){for(var A=/[\u0000-\u00A0\u2018\u2019\u00A3\u20AC\u20AF\u00A6-\u00A9\u037A\u00AB-\u00AD\u2015\u00B0-\u00B3\u0384-\u0386\u00B7\u0388-\u038A\u00BB\u038C\u00BD\u038E-\u03CEÿ]/,B=!0,t=0;t<u.length;t++)B=B&&A.test(u[t]);return B}
 
-	newWordList = wordList = wordList.concat(wordList.map(function(x){return x[0].toUpperCase()+x.slice(1)}),wordList.map(function(x){return x.toUpperCase()}));
-	var ENDINGS = " !,.:;?";
-	for(var i=0;i<ENDINGS.length;i++){
-		newWordList=newWordList.concat(wordList.map(function(x){return x+ENDINGS[i]}));
+	var wordList;
+	function loadWordList(){
+		if(typeof wordList==="undefined"){
+			loadScript("https://rawgit.com/ConorOBrien-Foxx/WordList-JS/master/src/wordRaw.js", function(){
+				newWordList = wordList = wordList.concat(wordList.map(function(x){return x[0].toUpperCase()+x.slice(1)}),wordList.map(function(x){return x.toUpperCase()}));
+				var ENDINGS = " !,.:;?";
+				for(var i=0;i<ENDINGS.length;i++){
+					newWordList=newWordList.concat(wordList.map(function(x){return x+ENDINGS[i]}));
+				}
+				wordList = newWordList.concat([]);
+				delete newWordList;
+				wordListSpace = wordList.concat(wordList.map(function(x){return x+" "}));
+			});
+		}
 	}
-	wordList = newWordList.concat([]);
-	delete newWordList;
-	wordListSpace = wordList.concat(wordList.map(function(x){return x+" "}));
 
 	// cart product: from http://stackoverflow.com/a/29585751/4119004, minified
 	function cartesianProduct(x,y){
@@ -147,7 +157,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			return x.replace(new RegExp(y,"g"),"");
 		} else if(Array.isArray(x)){
 			if(Array.isArray(y)){
-				return x.filter(function(e){return y.indexOf(e)<0;})
+				return x.filter(function(e){return y.looseIndexOf(e)<0;})
 			}
 			return x.filter(function(a,b){return b%y});
 		}
@@ -373,6 +383,11 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		} else return x === y;
 	}
 
+	function radicalEquals(x,y){
+		if(arguments.length>2) return radicalEquals(x,y)&&radicalEquals.apply(window,Array.from(arguments).slice(1));
+		return x<=y&&x>=y;
+	}
+
 	function less(x,y){
 		if(arguments.length>2) return less(x,y)&&less.apply(window,Array.from(arguments).slice(1));
 		if(Array.isArray(x)){
@@ -387,10 +402,10 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 
 	function prod(x){
-		if(Array.isArray(x)){
-			return x.reduce(function(a,b){return a*b});
-		}
-		return Number(x.toString().split("").map(Number).reduce(function(a,b){return a*b}))
+		if(typeof x==="string") return prod(x.split("").map(function(e){return e.charCodeAt()}));
+		else if(typeof x==="number") return prod(x.toString(10).split("").map(Number));
+		if(x.length === 0) return 1;
+		return x.reduce(function(a,b){return a*b});
 	}
 
 	function distinctN(N,array,condition){
@@ -638,16 +653,9 @@ function abin(x){
 
 	function sum(x){
 		if(typeof x==="string") return sum(x.split("").map(function(e){return e.charCodeAt()}));
-		else if(typeof x==="number") return sum(x.toString(10).split("").map(Number))
-		try {
-			return x.length==1?x[0]:add.apply(window,x);
-		} catch(e){
-			var s = 0;
-			while(x.length>=1){
-				s = add(s,x.pop());
-			}
-			return s;
-		}
+		else if(typeof x==="number") return sum(x.toString(10).split("").map(Number));
+		if(x.length === 0) return 0;
+		return x.reduce(function(a,b){return a+b});
 	}
 
 	function aSum(x){
@@ -963,9 +971,10 @@ function abin(x){
 		"R":0,
 		"s":1,
 		"S":1,
+		"T":0,
 		"`":1,
 	}
-	Array.prototype.getRandEl = function(J){
+	Array.prototype.getRandEl = function(){
 		return this[Math.floor(Math.random()*this.length)];
 	}
 	Array.prototype.has = function(x){
@@ -974,6 +983,12 @@ function abin(x){
 			if(x<=this[i]&&x>=this[i]) return true;
 		}
 		return false;
+	}
+	Array.prototype.looseIndexOf = function(member){
+		for(var i=0;i<this.length;i++){
+			if(this[i]<=member&&this[i]>=member) return i;
+		}
+		return -1;
 	}
 	// from http://stackoverflow.com/questions/2450954/how-to-randomize-shuffle-a-javascript-array#comment54935095_10142256
 	Array.prototype.shuffle=function(J){var t,h,r=this.length;if(0==r)return this;for(;--r;)t=Math.floor(Math.random()*(r+1)),h=this[r],this[r]=this[t],this[t]=h;return this};
@@ -992,7 +1007,7 @@ function abin(x){
 	Array.prototype.r = Array.prototype.getRandEl;
 	Array.prototype.R = Array.prototype.reverse;
 	Array.prototype.s = Array.prototype.shift;
-	Array.prototype.S = Array.prototype.shuffle;
+	Array.prototype.T = Array.prototype.shuffle;
 	Array.prototype.l = Array.prototype.L = Array.prototype.slice;
 	Array.prototype.m = function(f){
 		if(typeof f=="function"){
@@ -1570,7 +1585,7 @@ function abin(x){
 		return x==0?s:x>0?String[2](s.slice(1)+s[0],x-1):String[3](s,-x);
 	}
 	String[3] = function shiftRight(s,x){
-		return x==0?s:x>0?String[3](s.slice(-1)+s.slice(0,-1),x-1):String[3](s,-x);
+		return x==0?s:x>0?String[3](s.slice(-1)+s.slice(0,-1),x-1):String[2](s,-x);
 	}
 	String[4] = function interweave(a,b){
 		var a = Array.from(arguments).map(function(x){return x.split("")});
@@ -1758,10 +1773,22 @@ function abin(x){
 		for(var n=0;n<x[0].length;){}
 	}
 	Array.q = function sort(x){
-		return x.sort();
+		return x.slice().sort();
 	}
 	Array.Q = function sortNumbers(x){
-		return x.sort(function(x,y){return 2*(y<x)-1});
+		return x.slice().sort(function(x,y){return 2*(y<x)-1});
+	}
+	Array["."] = function isSorted(x){
+		return radicalEquals(Array.q(x),x);
+	}
+	Array[","] = function isSortedNumeric(x){
+		return radicalEquals(Array.Q(x),x);
+	}
+	Array["<"] = function shiftLeft(s,x){
+		return x==0?s:x>0?Array["<"](s.slice(1).concat(s[0]),x-1):Array[">"](s,-x);
+	}
+	Array[">"] = function shiftRight(s,x){
+		return x==0?s:x>0?Array[">"](s.slice(-1).concat(s.slice(0,-1)),x-1):Array["<"](s,-x);
 	}
 	Array.r = function rotate(x){
 		var rotated = clone(x);
@@ -1849,6 +1876,12 @@ function abin(x){
 	}
 	Array.x.b = function reverseModularM(n,m){
 		return jolf("ZXZyjjdw-J%+SnJ",n,m);
+	}
+	Array.x.I = function identity(n){
+		return jolf("ZXZyjjdP=Sn",j);
+	}
+	Array.x.i = function multEye(n,m){
+		return math.eye(n,m)._data;
 	}
 
 	Array.X = function matrixMap(X,f){
@@ -2405,6 +2438,10 @@ var ops = {
 		J.comp += "shoco.d(\"";
 		J.mode = 1;
 		return 1;
+	},
+	"£":function(J){
+		J.comp += "radicalEquals(";
+		return 2;
 	},
 	"\x80": function(J){
 		J.comp += "(";
@@ -3422,6 +3459,7 @@ var inf = {
 		var char2 = String.greekPointAt(J.code[++J.index]);
 		var char3 = String.greekPointAt(J.code[++J.index]);
 		var ind = fromBaseArr([char1,char2,char3],256);
+		loadWordList();
 		var list = wordList;
 		if(ind>=wordList.length){
 			ind -= wordList.length;
@@ -3687,10 +3725,6 @@ Jolf.prototype.readable = function(J){
 	return this.prec+read;
 }
 
-Jolf.prototype.close = function(){
-	//this.comp = close(this.comp);
-}
-
 Jolf.prototype.explanation = function(s){
 	try {
 		var r = this.comp.match(/\w+?\([^,(]+?\)|[)(,]|\w+/g);
@@ -3803,7 +3837,6 @@ Jolf.prototype.step = function(J){
 	// checking index bounds / func stack
 	if(debug) console.log(this.prec,this.comp);
 	if(this.index > this.code.length){
-		this.close();
 		//console.log("DONE")
 		this.total = this.prec+this.comp;
 		return false;
@@ -3811,6 +3844,7 @@ Jolf.prototype.step = function(J){
 	// var for char
 	var chr = this.code[this.index];
 	if(chr=="~"&&this.mode==0) chr+=this.code[++this.index];
+	console.log(chr,this.code,this.index);
 	switch(this.mode){
 		case 0:
 			// read the character and get its type
@@ -3899,6 +3933,7 @@ Jolf.prototype.step = function(J){
 				var char2 = String.greekPointAt(this.code[++this.index]);
 				var char3 = String.greekPointAt(this.code[++this.index]);
 				var ind = fromBaseArr([char1,char2,char3],256);
+				loadWordList();
 				var list = wordList;
 				if(ind>=wordList.length){
 					ind -= wordList.length;
@@ -4009,6 +4044,7 @@ Jolf.prototype.step = function(J){
 				var char2 = String.greekPointAt(this.code[++this.index]);
 				var char3 = String.greekPointAt(this.code[++this.index]);
 				var ind = fromBaseArr([char1,char2,char3],256);
+				loadWordList();
 				var list = wordList;
 				if(ind>=wordList.length){
 					ind -= wordList.length;
@@ -4028,6 +4064,17 @@ Jolf.prototype.step = function(J){
 	this.index++;
 	if(this.debug) console.log(this);
 	return this;
+}
+
+// autocomplete functions with input
+Jolf.prototype.close = function(){
+	this.index--;
+	while(this.func.length){
+		console.log(this.code, this.index, this.code.length, JSON.stringify(this.func));
+		if(this.code.length >= 10) break;
+		this.code += "m;";
+		this.step();
+	}
 }
 
 function evalJolf(code){	// lightweight wrapper code
