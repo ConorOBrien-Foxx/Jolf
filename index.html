@@ -12,7 +12,6 @@
 	<script type="text/javascript" src="https://rawgit.com/davebalmer/turtlewax/master/pen.js"></script>
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/2.5.0/math.min.js"></script>
 	<script type="text/javascript" src="https://rawgit.com/pieroxy/lz-string/master/libs/lz-string.min.js"></script>
-	<script type="text/javascript" src="https://rawgit.com/ConorOBrien-Foxx/WordList-JS/master/src/wordRaw.js"></script>
 	<script type="text/javascript" src="https://rawgit.com/MikeMcl/bignumber.js/master/bignumber.min.js"></script>
 	<script type="text/javascript" src="Jolf.js"></script>
 	<script>
@@ -103,6 +102,7 @@
 				x.ops["~~"] = ops[" "];
 			}
 			while(x.step());
+			x.close();
 			var o;
 			try {
 				o = x.readable();
@@ -112,7 +112,6 @@
 			o+="<hr>"+x.explanation("  ");
 			document.getElementById("outCode").innerHTML = o;
 			try {
-				x.close();
 				x.exec();
 			} catch(e){
 				var error = document.getElementById("error");
@@ -126,6 +125,7 @@
 				x.ops["~~"] = ops[" "];
 			}
 			while(x.step());
+			x.close();
 			var o;
 			try {
 				o = x.readable();
@@ -192,6 +192,7 @@
 			</div>
 		</div>
 		<button class="btn btn-danger" id="insert">insert character</button>
+		<button class="btn btn-primary" id="exportCode">export code</button>
 		<a target="_blank" href="http://github.com/ConorOBrien-Foxx/Jolf/">github</a> || <a href="explanation.html">explanation</a> || <a href="command.html">command line</a>
 	</header>
 	<div id="main">
@@ -225,7 +226,7 @@
 	</div><div id="options">
 		<h2>Options</h2>
 		<input type="checkbox" id="pom"> Pretty output mode?<br>
-		<input type="checkbox" id="isp"> Ignore spaces?
+		<input type="checkbox" id="isp"> Ignore spaces?<br>
 	</div>
 </div>
 </body>
