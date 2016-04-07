@@ -597,6 +597,7 @@ function abin(x){
 	}
 
 	function getLast(x){
+		if(typeof x==="number") return getLast(x+"");
 		return x[x.length-1];
 	}
 
@@ -649,6 +650,10 @@ function abin(x){
 		if(arguments.length>2) return or(x,or.apply(window,Array.from(arguments).slice(1)));
 		if(Array.isArray(x)&&Array.isArray(x)) return x.concat(y);
 		return x||y;
+	}
+
+	function stringify(x){
+		return (x+"");
 	}
 
 	function sum(x){
@@ -3021,6 +3026,11 @@ var ops = {
 		J.func.push([1,")"],[1,"}"]);
 		return;
 	},
+	"~I": function(J){
+		J.comp += "firstSatisfying(function(H,S,n){return ";
+		J.func.push([2,")"],[1,"}"]);
+		return;
+	},
 	"~g": function(J){
 		J.comp += "generateWhileCond(";
 		return 2;
@@ -3111,6 +3121,10 @@ var ops = {
 	"ψ": function(J){
 		J.comp += "filter(";
 		return 2;
+	},
+	"§": function(J){
+		J.comp += "stringify(";
+		return 1;
 	},
 	"Ε": function(J){
 		J.comp += "everyCompare(";
@@ -3220,6 +3234,10 @@ var ops = {
 		J.comp += "slice(";
 		return 3;
 	},
+}
+
+for(var i=132;i<=142;i++){
+	ops[String.fromCharCode(i)] = new Function("J", "J.comp += \"equals("+(i-132)+",\";return 1;");
 }
 
 // data/arguments
@@ -4071,8 +4089,7 @@ Jolf.prototype.close = function(){
 	this.index--;
 	while(this.func.length){
 		console.log(this.code, this.index, this.code.length, JSON.stringify(this.func));
-		if(this.code.length >= 10) break;
-		this.code += "m;";
+		this.code += "x";
 		this.step();
 	}
 }
