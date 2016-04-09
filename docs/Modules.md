@@ -196,3 +196,32 @@ Called with `!` + `char`.
  * `’` - [`multinomial`](http://mathjs.org/docs/reference/functions/multinomial.html)
  * `€` - [`norm`](http://mathjs.org/docs/reference/functions/norm.html)
  * `₯` - [`not`](http://mathjs.org/docs/reference/functions/not.html)
+
+
+## Array `Z` module
+
+These are called `Z<char>` in the program. Currently an incomplete list.
+
+ * `a` (`Za<numA><numB>`) - makes an array filled with `numA` of length `numB`. Literally, `Zb*[J]j` (if `J = numA` and `j = numB`).
+ * `A` (`ZA<num>`) - makes a zero array of length `num`. Compare to `Za0<num>` and `Zb*[0]j`.
+ * `b` (`Zb<array>`) - returns the big union of the array, i.e., flattening the array.
+ * `B` (`ZB<arrayA><arrayB>`) - returns the intersection of two arrays.
+ * `c` (`Zc<array><num>`) - returns `array` chopped into subarrays of length `num`. For example, `Zc[1,2,3,4,5]2` yields `[[1,2],[3,4],[5]]`.
+ * `C` (`ZC<array>`) - returns the cumulative summation of `array`. For example, `ZC[1,2,3,4,5]` yields `[1,1+2,1+2+3,1+2+3+4,1+2+3+4+5] = [1,3,6,10,15]`.
+ * `d` (`Zd<array>`) - returns the differences between the indices of `array`. For example, `Zd[1,5,2,3]` yields `[4,-3,1]`.
+ * `D` (`ZD<str>`) - converts `str` into an array of digts.
+ * `e` (`Ze<array><num>`) - returns all entries of length `num` in `array`.
+ * `E` (`ZE<array><num>`) - returns all entries _not_ of length `num` in `array`.
+ * `f` (`Zf<array>`) - flattens an array.
+ * `F` (`ZF<array><num>`) - flattens an array, but only to a certain depth `num`.
+ * `g` (`Zg<array>`) - returns cumulative product on `array`. See `ZC`.
+ * `G` (`ZG<array><func><num>`) - cumulatively reduces `array` over the function `func` with a starting point `num`.
+ * `h` (`Zh<any>`) - returns "all but the last entry of" `any`. (For a number, it chops of the last digit.)
+ * `H` (`ZH<any>`) - returns "all but the first of" `any`. Compare `Zh`.
+ * `i` (`Zi<str>`) - returns `str`s lines, but reversed and joined.
+ * `I` - unassigned
+ * `j` (`Zj<any><num>`) - returns "all but the last `N`" of `any`. Compare `Zh`.
+ * `J` (`ZJ<any><num>`) - returns "all but the first `N`" of `any`. Compare `Zh`.
+ * `k` (`Zk<array>`) - returns the minimal element of `array`.
+ * `K` (`ZK<array>`) - returns the maximal element of `array`.
+(TBA)
