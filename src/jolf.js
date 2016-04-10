@@ -2114,18 +2114,18 @@ function abin(x){
 	document.C = function(){return document.getElementById("code")}
 	document.g = document.getElementById;
 	document.i = function addInnerHTML(element,html){
-		element.innerHTML += html;
+		return element.innerHTML += html;
 	}
 	document.I = function addValue(element,val){
-		element.value += val;
+		return element.value += val;
 	}
 	document.o = function(){return document.getElementById("input")}
 	document.O = function(){return document.getElementById("output")}
 	document.s = function setInnerHTML(element,html){
-		element.innerHMTL = html;
+		return element.innerHMTL = html;
 	}
 	document.S = function setValue(element,val){
-		element.value = val;
+		return element.value = val;
 	}
 	document.T = function(){return document.body;}
 	document.t = function attachText(element,text){
