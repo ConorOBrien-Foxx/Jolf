@@ -2116,11 +2116,18 @@ function abin(x){
 	document.i = function addInnerHTML(element,html){
 		element.innerHTML += html;
 	}
-	document.i = function addValue(element,val){
+	document.I = function addValue(element,val){
 		element.value += val;
 	}
 	document.o = function(){return document.getElementById("input")}
 	document.O = function(){return document.getElementById("output")}
+	document.s = function setInnerHTML(element,html){
+		element.innerHMTL = html;
+	}
+	document.S = function setValue(element,val){
+		element.value = val;
+	}
+	document.T = function(){return document.body;}
 	document.t = function attachText(element,text){
 		element.appendChild(document.createTextNode(text));
 	}
@@ -3342,15 +3349,15 @@ var inf = {
 	},
 	"ή": function(J){
 		if(!J.enc.ή){
-			J.prec += "var ή=\"\t\";";
+			J.prec += "var ή=\" \";";
 			J.enc.ή = true;
 		}
-		J.comp += "έ";
+		J.comp += "ή";
 	},
 	"ί": function(J){
 		if(!J.enc.ή){
 			J.prec += "var ί=math.i;";
-			J.enc.ή = true;
+			J.enc.ί = true;
 		}
 		J.comp += "ί";
 	},
