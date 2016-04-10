@@ -165,7 +165,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 	}
 
 	function getProp(a,b){
-		return a[b]||(window[a]||[])[b]||42;
+		return a[b];
 	}
 
 	function neg(a){
@@ -1200,7 +1200,7 @@ function abin(x){
 	Math.J = Math.phi = Math.PHI = (1+Math.sqrt(5))/2;
 	Math["°"] = 360/(1+(1+Math.sqrt(5))/2);
 	Math.k = function perm(r,n){return factorial(r)/factorial(r-n)}
-	Math.K = function binom(r,n){return Math.k(r,n)/factorial(n)}
+	Math.K = function binom(n,k){return factorial(n)/(factorial(n-k)*factorial(k));}
 	Math.memoized.l = [0,1];
 	Math.l = function fibonacci(n){
 		n = Math.floor(n);
@@ -1510,10 +1510,10 @@ function abin(x){
 	}
 	String.q = function pad(str,len,symb){
 		if(str.length>=len||typeof str==="Number"&&(str+"").length>=len) return str;
-		return typeof str === "String" ?
+		return typeof str === "string" ?
 			String.q((typeof symb==="undefined"?" ":symb)+str,len,symb) :
-			typeof str === "Number" ? String.q((typeof symb==="undefined"?" ":symb)+str) :
-			typeof str === "Array" ? String.q([(typeof symb==="undefined"?" ":symb)].concat(str)) :
+			typeof str === "number" ? String.q((typeof symb==="undefined"?" ":symb)+str) :
+			Array.isArray(str) ? String.q([(typeof symb==="undefined"?" ":symb)].concat(str)) :
 			123431;
 	}
 	String.r = function right(x){
@@ -2503,6 +2503,10 @@ var ops = {
 		J.comp += "toBinary(";
 		return 1;
 	},
+	"~Y": function(J){
+		J.comp += "toBinary(";
+		return 1;
+	},
 	"Η": function(J){
 		J.comp += "parseInt(";
 		return [1,",16)"];
@@ -2829,6 +2833,10 @@ var ops = {
 		return 1;
 	},
 	"\u03a2": function(J){
+		J.comp += "("
+		return [1,").charCodeAt()"];
+	},
+	"~@": function(J){
 		J.comp += "("
 		return [1,").charCodeAt()"];
 	},
