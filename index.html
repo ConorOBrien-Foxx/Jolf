@@ -13,6 +13,7 @@
 	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mathjs/2.5.0/math.min.js"></script>
 	<script type="text/javascript" src="https://rawgit.com/pieroxy/lz-string/master/libs/lz-string.min.js"></script>
 	<script type="text/javascript" src="https://rawgit.com/MikeMcl/bignumber.js/master/bignumber.min.js"></script>
+	<script type="text/javascript" src="http://jsbeautifier.org/js/lib/beautify.js"></script>
 	<script type="text/javascript" src="Jolf.js"></script>
 	<script>
 	// from tryitonline.net
@@ -103,13 +104,7 @@
 			}
 			while(x.step());
 			x.close();
-			var o;
-			try {
-				o = x.readable();
-			} catch(e){
-				o = x.total;
-			}
-			o+="<hr>"+x.explanation("  ");
+			var o = js_beautify(x.prec+x.comp);
 			document.getElementById("outCode").innerHTML = o;
 			try {
 				x.exec();
@@ -126,13 +121,7 @@
 			}
 			while(x.step());
 			x.close();
-			var o;
-			try {
-				o = x.readable();
-			} catch(e){
-				o = x.total;
-			}
-			o+="<hr>"+x.explanation("  ");
+			var o = js_beautify(x.prec+x.comp);
 			document.getElementById("outCode").innerHTML = o;
 			document.getElementById("input").value.split("\n\n").forEach(function(e,i){
 				document.getElementById("output").innerHTML += "--- TEST CASE "+i+": "+e+" ---<br>";
