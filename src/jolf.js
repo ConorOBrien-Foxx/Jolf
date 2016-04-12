@@ -484,7 +484,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 		var max = Math.max(y.length,z.length);
 		var min = Math.min(y.length,z.length);
 		for(var i=0;i<max;i++){
-			x = x.replace(new RegExp(y[i],"g"),z[i%min]);
+			x = x.replace(new RegExp(RegExp.escape(y[i]),"g"),z[i%min]);
 		}
 		return x;
 	}
@@ -1857,17 +1857,24 @@ function abin(x){
 	Array.V = function maxKey(x){
 		return [y=Array.max(x),x.indexOf(y)];
 	}
-	Array.w = function(a){
-		// [1,2,3,4,5,6,7,8,9]
-		/*
-		3 2 2 1 1
-		4 3 3 2 2 1 1
-		[
-			[1,2,3],
-			[8,9,4],
-			[7,6,5]
-		]
-		*/
+	Array.w = function recalOverflow(array,max){
+		var min = (typeof arguments[2] === "undefined") ? 1 : arguments[2];
+		for(var i=array.length;i>=0;--i){
+			if(array[i]>max){
+				array[i] = min;
+				if(i>0){
+					array[i-1]++;
+				} else {
+					array.unshift(min);
+				}
+			}
+		}
+		return array;
+	}
+	Array.W = function setMember(array, index, newVal){
+		if(index < 0) index += array.length
+		array[index] = newVal;
+		return array;
 	}
 	Array.x = {};
 	Array.x.A = function modular(n){
@@ -2454,6 +2461,10 @@ var ops = {
 	"£":function(J){
 		J.comp += "radicalEquals(";
 		return 2;
+	},
+	"~+": function(J){
+		J.comp += "clone(";
+		return 1;
 	},
 	"\x80": function(J){
 		J.comp += "(";
@@ -3154,6 +3165,10 @@ var ops = {
 		return 2;
 	},
 	"²": function(J){
+		J.comp += "wrap(";
+		return 1;
+	},
+	"~:": function(J){
 		J.comp += "wrap(";
 		return 1;
 	},
