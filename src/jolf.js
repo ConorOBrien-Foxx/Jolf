@@ -430,7 +430,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 
 	// from http://stackoverflow.com/a/29641185/4119004
 	// duration, frequency, volume, type, callback
-	function beep(t,e,n,o,i){var a=audioCtx.createOscillator(),d=audioCtx.createGain();a.connect(d),d.connect(audioCtx.destination),n&&(d.gain.value=n),e&&(a.frequency.value=e),o&&(a.type=o),i&&(a.onended=i),a.start(),setTimeout(function(){a.stop()},t?t:500)}var audioCtx=new(window.AudioContext||window.webkitAudioContext||window.audioContext);
+	try{eval("function beep(t,e,n,o,i){var a=audioCtx.createOscillator(),d=audioCtx.createGain();a.connect(d),d.connect(audioCtx.destination),n&&(d.gain.value=n),e&&(a.frequency.value=e),o&&(a.type=o),i&&(a.onended=i),a.start(),setTimeout(function(){a.stop()},t?t:500)}var audioCtx=new(window.AudioContext||window.webkitAudioContext||window.audioContext);")}catch(e){console.log("audio not loaded");}
 	var Audio = {};
 	Audio.a = function shortBeep(){
 		beep(200);
