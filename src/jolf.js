@@ -796,7 +796,7 @@ function abin(x){
 
 	function generateWhileCond(generator,condition){
 		var args = arguments[2]||[];
-		var ret = [], inst = generator(...args);
+		eval("var ret = [], inst = generator(...args);");
 		var val;
 		// while there does not exist an element that satisfies condition
 		while(!ret.some(condition)){
