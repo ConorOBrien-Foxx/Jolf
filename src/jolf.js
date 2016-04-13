@@ -1390,7 +1390,8 @@ function abin(x){
 	} catch(e){
 		console.log("Warning: your browser does not support generators/ES6, and thus may not be able to execute some Jolf code.");
 	}
-	for(i in Math){Math[Math[i].name]=Math[i]};
+	if(Math.K.name)	// for IE
+		for(i in Math){Math[Math[i].name]=Math[i]};
 	// adding string stuff
 	String[5] = " !\"#$%&'()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\\]^_`abcdefghijklmnopqrstuvwxyz{|}~\xA0‘’£€₯¦§¨©ͺ«¬\\xad­―°±²³΄΅Ά·ΈΉΊ»Ό½ΎΏΐΑΒΓΔΕΖΗΘΙΚΛΜΝΞΟΠΡ΢ΣΤΥΦΧΨΩΪΫάέήίΰαβγδεζηθικλμνξοπρςστυφχψωϊϋόύώ";
 	String["«"] = shoco.c;
@@ -1613,7 +1614,8 @@ function abin(x){
 		}
 		return q;
 	}
-	for(i in String){String[String[i].name]=String[i]};
+	if(String.K.name)	// for IE
+		for(i in String){String[String[i].name]=String[i]};
 	Array[0] = function displayArr(a){
 		return a.map(function(y){return y.map(function(t){return JSON.stringify(t)}).join("\t")}).join("\n")
 	}
@@ -1951,6 +1953,7 @@ function abin(x){
 	Array.ρ = function lengthParity(x){
 		return x.length%2;
 	}
+	if(Array.K.name)	// for IE
 	for(var key in Array)Array[Array[key].name]=Array[key];
 	Date[0] = Date.parse;
 	Date[1] = Date.now;
@@ -2175,7 +2178,8 @@ function abin(x){
 		return patterns.t(1,Math.ceil(h/2),w,c);
 	}
 
-	for(var i in patterns)patterns[patterns[i].name]=patterns[i];
+	if(patterns.T.name)	// for IE
+		for(var i in patterns)patterns[patterns[i].name]=patterns[i];
 
 	Error.log = console.error;
 
