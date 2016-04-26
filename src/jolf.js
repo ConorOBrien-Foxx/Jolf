@@ -843,6 +843,18 @@ function abin(x){
 		return firstN(1,func,arguments[1]||0)[0];
 	}
 
+	function allPairsSatisfying(condition, max){
+		var pairs = [];
+		var jMax = arguments[3] || max;
+		for(var i=(arguments[2]||0);i<max;i++){
+			for(var j=(arguments[2]||0);j<jMax;j++){
+				if(condition(i, j))
+					pairs.push([i, j]);
+			}
+		}
+		return pairs;
+	}
+
 	function ord(s){
 		return s.length==1?s.charCodeAt():s.split("").map(function(e){return String.greekPointAt(e)});
 	}
@@ -1288,6 +1300,9 @@ function abin(x){
 	Math.$ = function Catalan(n){
 		return Math.K(2*n,n)/(n+1);
 	}
+	Math[5] = function amicable(a,b){
+		return jolf("&=ΏuZhmδHjJ=ΏJj",a,b);
+	}
 	Math["/"] = Infinity;
 	Math["~"] = function stasisPropmt(){
 		return prompt();
@@ -1614,7 +1629,7 @@ function abin(x){
 		}
 		return q;
 	}
-	if(String.K.name)	// for IE
+	if(String.Z.name)	// for IE
 		for(i in String){String[String[i].name]=String[i]};
 	Array[0] = function displayArr(a){
 		return a.map(function(y){return y.map(function(t){return JSON.stringify(t)}).join("\t")}).join("\n")
@@ -3040,8 +3055,12 @@ var ops = {
 		return 2;
 	},
 	"~h": function(J){
-		J.comp += "propNth(function(H,S,n){";
+		J.comp += "propNth(function(H,S,n){return ";
 		return [2,")",["},"]];
+	},
+	"~j":function(J){
+		J.comp += "allPairsSatisfying(";
+		return 2;
 	},
 	"~B": function(J){
 		J.comp += "allBelow(";
@@ -3297,7 +3316,7 @@ var inf = {
 		J.comp += "τ";
 	},
 	"@": function(J){
-		J.comp += J.code[++J.index].charCodeAt();
+		J.comp += J.code[++J.index].greekPointAt();
 		return 1;
 	},
 	"Y": function(J){
@@ -4002,7 +4021,7 @@ Jolf.prototype.step = function(J){
 			break;
 		case 2:
 			this.comp += "\"";
-			this.comp += chr=="\n"?"\\n":chr;
+			this.comp += chr=="\n"?"\\n":chr=="\\"?"\\\\":chr;
 			this.comp += "\"";
 			this.check();
 			this.mode = 0;
