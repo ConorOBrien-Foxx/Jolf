@@ -3435,7 +3435,7 @@ var inf = {
 		J.comp += "X";
 	},
 	"q": function(J){
-		J.comp += "\""+J.code.replace(/\\/g,"\\\\").replace(/(["\n])/g,"\\$1")+"\"";
+		J.comp += JSON.stringify(J.code);
 	},
 	"Ν": function(J){
 		var l = String.greekPointAt(J.code[++J.index]);
