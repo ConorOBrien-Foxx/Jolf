@@ -771,7 +771,7 @@ function abin(x){
 	}
 
 	function singleton(x){
-		return Array.isArray(x)?x.join("").split(""):typeof x==="string"?x.split("").join(""):typeof x==="number"?(x+"").split("").map(Number).sort(function(a,b){return a-b;}):"";
+		return Array.isArray(x)?x.join("").split(""):typeof x==="string"?x.split("").join(""):typeof x==="number"?(x+"").split("").map(Number).sort(function(a,b){return b-a;}):"";
 	}
 
 	function firstN(max,con){
@@ -2196,7 +2196,22 @@ function abin(x){
 	if(patterns.T.name)	// for IE
 		for(var i in patterns)patterns[patterns[i].name]=patterns[i];
 
-	Error.log = console.error;
+	Error.alog = Error.l = function(msg){return console.error(msg);};
+	Error.log = Error.L = function(msg){
+		var err = document.getElementById("error");
+		if(err){
+			err.appendChild(document.createTextNode(msg));
+			err.appendChild(document.createElement("br"));
+		} else throw new Error(msg);
+	};
+	Error.errIf = Error["?"] = function(cond,msg){
+		if(cond) Error.log(msg);
+		else return msg;
+	}
+	Error.errIfThen = Error["!"] = function(func,cond,msg){
+		if(cond) Error.log(msg);
+		else return func(msg);
+	}
 
 	Pen.prototype.customFunc = function(char,func){
 		Pen.prototype[char] = func;
@@ -3316,7 +3331,7 @@ var inf = {
 		J.comp += "τ";
 	},
 	"@": function(J){
-		J.comp += J.code[++J.index].greekPointAt();
+		J.comp += String.greekPointAt(J.code[++J.index]);
 		return 1;
 	},
 	"Y": function(J){
@@ -3529,6 +3544,11 @@ var inf = {
 		var char1 = String.greekPointAt(J.code[++J.index]);
 		var char2 = String.greekPointAt(J.code[++J.index]);
 		var char3 = String.greekPointAt(J.code[++J.index]);
+		if(char3 === -1){
+			char3 = char2;
+			char2 = char1;
+			char1 = 0;
+		}
 		var ind = fromBaseArr([char1,char2,char3],256);
 		loadWordList();
 		var list = wordList;
@@ -3536,6 +3556,7 @@ var inf = {
 			ind -= wordList.length;
 			list = wordListSpace;
 		}
+		console.log(ind, char1, char2, char3);
 		J.comp += "\""+list[ind].replace(/["\\\n]/g,"\\$&")+"\"";
 	},
 	"": function(J){},
@@ -4014,7 +4035,7 @@ Jolf.prototype.step = function(J){
 			} else if(chr=="‘"){
 				this.comp += "'";
 			} else if(chr=="’"){
-				this.comp += "\"";
+				this.comp += "\\\"";
 			} else {
 				this.comp += chr;
 			}
