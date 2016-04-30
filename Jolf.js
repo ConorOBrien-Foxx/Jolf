@@ -15,4 +15,6 @@ function loadScript(url, callback)
     head.appendChild(script);
 }
 
-loadScript("https://rawgit.com/ConorOBrien-Foxx/Jolf/master/src/jolf.js");
+loadScript("https://rawgit.com/ConorOBrien-Foxx/Jolf/master/src/jolf.js", function(){
+	setTimeout(loadWordList, 2000);
+});
