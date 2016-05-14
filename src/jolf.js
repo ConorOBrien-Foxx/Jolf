@@ -339,7 +339,7 @@ String.prototype.repeat||(String.prototype.repeat=function(t){"use strict";if(nu
 			}
 			return v;
 		} else if(typeof x=="string"){
-			return x.replace(new RegExp(y,"g"),s);
+			return x.replace(y.test ? y : new RegExp(y,"g"),s);
 		}
 	}
 
@@ -923,7 +923,7 @@ function abin(x){
 	}
 
 	function isNum(x){
-		return x==parseInt(x);
+		return x == parseInt(x);
 	}
 
 	// why you no have RegExp.escape regularly, JavaScript?!
@@ -1968,6 +1968,7 @@ function abin(x){
 	Array.ρ = function lengthParity(x){
 		return x.length%2;
 	}
+
 	if(Array.K.name)	// for IE
 	for(var key in Array)Array[Array[key].name]=Array[key];
 	Date[0] = Date.parse;
@@ -2108,6 +2109,13 @@ function abin(x){
 	RegExp.Q = function expandRange(a,b){
 		return RegExp.q(a+"-"+b);
 	}
+	RegExp.R = /\d+/g;
+	RegExp.r = /\D+/g;
+	RegExp.S = /\w+/g;
+	RegExp.s = /\W+/g;
+	RegExp.T = /\s+/g;
+	RegExp.t = /\S+/g;
+	RegExp.U = /[0-9a-fA-F]+/ig;
 
 	math.config({number:"bignumber",precision:300});
 	mathC = clone(math);
@@ -3936,7 +3944,7 @@ Jolf.prototype.step = function(J){
 	// var for char
 	var chr = this.code[this.index];
 	if(chr=="~"&&this.mode==0) chr+=this.code[++this.index];
-	console.log(chr,this.code,this.index);
+	if(debug) console.log(chr,this.code,this.index);
 	switch(this.mode){
 		case 0:
 			// read the character and get its type
