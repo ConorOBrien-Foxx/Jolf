@@ -2412,6 +2412,24 @@ function abin(x){
 		return corner+horiz.repeat(w-2)+corner+"\n"+
 		String.repeatVertically(vert+inner.repeat(w-2)+vert,h-2)+corner+horiz.repeat(w-2)+corner;
 	}
+	Misc.A = function drawBetterBox(width, height, corner, horizontal, vertical, fill){
+		var topLeftCorner = corner[0] || corner;
+		var botRightCorner = corner[1] || corner;
+		var topRightCorner = corner[2] || topLeftCorner;
+		var botLeftCorner = corner[3] || botRightCorner;
+		var topHorizontal = horizontal[0] || horizontal;
+		var botHorizontal = horizontal[1] || horizontal;
+		var leftVertical = vertical[0] || vertical;
+		var rightVertical = vertical[1] || vertical;
+		
+		var topPart = topLeftCorner + topHorizontal.repeat(width) + topRightCorner + "\n";
+		var midPart = leftVertical + " ".repeat(width) + rightVertical + "\n";
+		var botPart = botLeftCorner + botHorizontal.repeat(width) + botRightCorner;
+		
+		var whole = topPart + midPart.repeat(height) + botPart;
+		
+		return whole.replace(RegExp(" ".repeat(fill.length), "g"), fill);
+	}
 	Misc.b = bAW;
 	Misc.B = drawBoxPlot;
 	Misc.d = function boundBox(x){
