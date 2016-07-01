@@ -1989,6 +1989,7 @@ function abin(x){
 	Date[7] = function american(){
 		return [Date.t(),Date.k(),Date.u()];
 	}
+    Date[8] = Date.daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
 	Date["$"] = function nowTimeUTCHMS(a,b,c){
 		return jolf("‘fDm:fFm:fHm:’",a,b,c);
 	}
@@ -2012,6 +2013,12 @@ function abin(x){
 	Date.U = function getSuffixYearInput(d){
 		return +(Date.c(d)+"").slice(-2);
 	}
+    Date.v = function getDayOfWeekNow(){
+        return Date.daysOfWeek[Date[3]().getDay()];
+    }
+    Date.V = function getDayOfWeekInput(d){
+        return Date.daysOfWeek[d.getDay()];
+    }
 
 	RegExp[0] = function evalAsRegExp(x){
 		return RegExp(x);
