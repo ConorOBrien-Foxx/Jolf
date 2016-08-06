@@ -562,17 +562,17 @@ function abin(x){
 		).join("");
 	}
 
-	function toBaseArr(n,b){
-		h = Math.ceil(logBASE(n,b));
-		a = new Array(h+1) .fill(0);
-		while(n){
-			h = Math.floor(logBASE(n,b));
-			n-=Math.pow(b,h);
-			a[h]++;
-		}
-		a.pop();
-		return a.reverse();
-	}
+    function toBaseArr(n, b){
+        if(n === 0 || n === 1) return [n];
+        var maxLen = Math.ceil(logBASE(n + 1, b));
+        var a = Array(maxLen).fill(0);
+        while(n > 0){
+            var c = Math.floor(logBASE(n, b));
+            n -= Math.pow(b, c);
+            a[maxLen - c - 1]++;
+        }
+        return a;
+    }
 
 	function fromBaseArr(a,b){
 		f = 0;
