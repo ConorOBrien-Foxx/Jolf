@@ -3,6 +3,6 @@ Jolf is a prefix golfing language. It runs and compiles to JavaScript. Keep in m
 
  - [Read the Docs](http://jolf.readthedocs.org/es/latest/)
  - [Commands](https://github.com/ConorOBrien-Foxx/Jolf/blob/master/docs/2.%20Commands.md)
- - [Online interpreter](http://conorobrien-foxx.github.io/Jolf/)
+ - [Online interpreter](http://conorobrien-foxx.github.io/Jolf/) (does not work in Chrome due to a error with math.js, use Firefox instead)
 
 (Jolf would not be possible without [ETHproductions's](https://github.com/ETHproductions) invaluable help.)
